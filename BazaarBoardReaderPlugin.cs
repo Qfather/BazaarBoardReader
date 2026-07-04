@@ -156,6 +156,7 @@ namespace BazaarBoardReader
 
             _buildsPath = Path.Combine(Paths.ConfigPath, "BazaarBoardReader_Builds.json");
             LoadBuilds();
+            CleanBuilds();
             LoadTranslations();
             LoadShopRecommendationData();
 
@@ -541,7 +542,8 @@ namespace BazaarBoardReader
                 mr.ShopFlexMatches = mr.FlexMissing.FindAll(n => shopItems.Contains(n));
             }
 
-            _recScroll = GUI.BeginScrollView(new Rect(px + 5, py + 50, pw - 10, ph - 60), _recScroll,
+            var contentY = hy + 22; // 英雄按钮下方
+            _recScroll = GUI.BeginScrollView(new Rect(px + 5, contentY, pw - 10, py + ph - contentY - 10), _recScroll,
                 new Rect(0, 0, pw - 30, _matchResults.Count * 90 + 10));
 
             float ry = 5;
@@ -1098,6 +1100,19 @@ namespace BazaarBoardReader
                     _builds = JsonConvert.DeserializeObject<List<BuildTemplate>>(File.ReadAllText(_buildsPath, Encoding.UTF8)) ?? new List<BuildTemplate>();
             }
             catch { _builds = new List<BuildTemplate>(); }
+        }
+
+        private void CleanBuilds()
+        {
+            int removed = 0;
+            foreach (var b in _builds)
+            {
+                removed += b.CoreItems.RemoveAll(i => i.Contains("包裹"));
+                removed += b.FlexItems.RemoveAll(i => i.Contains("包裹"));
+                removed += b.CoreSkills.RemoveAll(i => i.Contains("包裹"));
+                removed += b.FlexSkills.RemoveAll(i => i.Contains("包裹"));
+            }
+            if (removed > 0) { SaveBuildsAtomic(); _logger.LogInfo(string.Format("[BoardReader] 清理包裹物品: {0} 个", removed)); }
         }
 
         private void SaveBuildsAtomic()
