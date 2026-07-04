@@ -849,39 +849,70 @@ namespace BazaarBoardReader
         private List<string> GatherCurrentBoardItemNames()
         {
             var result = new List<string>();
+            // 方法与 overlay 一致：通过 CardController 扫描
             try
             {
-                if (_playerCardsOnBoardField != null)
+#pragma warning disable 0618
+                var all = UnityEngine.Object.FindObjectsOfType<CardController>();
+#pragma warning restore 0618
+                if (all != null)
                 {
-                    var bm = BoardManager.Instance;
-                    if (bm != null)
+                    foreach (var cc in all)
                     {
-                        var list = _playerCardsOnBoardField.GetValue(bm) as IList;
-                        if (list != null)
+                        try
                         {
-                            foreach (var o in list)
+                            var cd = cc.CardData;
+                            if (cd == null || cd.Type.ToString() != "Item") continue;
+                            // 只取玩家棋盘上的物品
+                            if (_isPlayerBoardProp != null)
                             {
-                                if (o == null) continue;
-                                var ctrl = o as ItemController;
-                                if (ctrl == null) continue;
-                                var cd = ctrl.CardData;
-                                if (cd == null) continue;
-                                // 只取棋盘上的物品
                                 try
                                 {
-                                    if (_isPlayerBoardProp != null && !((bool)_isPlayerBoardProp.GetValue(ctrl, null)))
+                                    if (!((bool)_isPlayerBoardProp.GetValue(cc, null)))
                                         continue;
                                 }
-                                catch { }
-                                var name = GetCardName(cd);
-                                if (!string.IsNullOrEmpty(name) && name != "???")
-                                    result.Add(name);
+                                catch { /* 无法判断则保留 */ }
                             }
+                            var name = GetCardName(cd);
+                            if (!string.IsNullOrEmpty(name) && name != "???")
+                                result.Add(name);
                         }
+                        catch { }
                     }
                 }
             }
             catch { }
+
+            // 回退：BoardManager 方法
+            if (result.Count == 0)
+            {
+                try
+                {
+                    if (_playerCardsOnBoardField != null)
+                    {
+                        var bm = BoardManager.Instance;
+                        if (bm != null)
+                        {
+                            var list = _playerCardsOnBoardField.GetValue(bm) as IList;
+                            if (list != null)
+                            {
+                                foreach (var o in list)
+                                {
+                                    if (o == null) continue;
+                                    var ctrl = o as ItemController;
+                                    if (ctrl == null) continue;
+                                    var cd = ctrl.CardData;
+                                    if (cd == null) continue;
+                                    var name = GetCardName(cd);
+                                    if (!string.IsNullOrEmpty(name) && name != "???")
+                                        result.Add(name);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
             return result;
         }
 
