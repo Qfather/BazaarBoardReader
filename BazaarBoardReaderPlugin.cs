@@ -422,47 +422,65 @@ namespace BazaarBoardReader
             GUI.Label(new Rect(px + 10, py + 28, pw - 20, 18),
                 string.Format("当前英雄: {0}", string.IsNullOrEmpty(_detectedHero) ? "未检测" : _detectedHero), s);
 
-            // 刷新匹配
-            if (GUI.Button(new Rect(px + pw - 60, py + 5, 50, 22), "刷新", GUI.skin.button))
-            {
-                var currentItems = GatherAllItemNames();
-                _matchResults = MatchBuilds(_detectedHero, currentItems);
-            }
-            if (_matchResults.Count == 0)
-            {
-                var currentItems = GatherAllItemNames();
-                _matchResults = MatchBuilds(_detectedHero, currentItems);
-            }
+            // 实时刷新匹配结果
+            var currentItems = GatherAllItemNames();
+            _matchResults = MatchBuilds(_detectedHero, currentItems);
 
             // 匹配结果
             _recScroll = GUI.BeginScrollView(new Rect(px + 5, py + 50, pw - 10, ph - 60), _recScroll,
                 new Rect(0, 0, pw - 30, _matchResults.Count * 85 + 10));
 
             float ry = 5;
+            float barMaxW = pw - 95; // 进度条最大宽度（留空间给百分比）
             for (int i = 0; i < _matchResults.Count && i < 10; i++)
             {
                 var mr = _matchResults[i];
-                var cs = new GUIStyle(s) { fontSize = 13 };
-                if (i == 0) cs.normal.textColor = new Color(1f, 0.8f, 0.2f); // 最佳匹配金色
-                else cs.normal.textColor = Color.gray;
+                var score = mr.MatchScore * 100f;
 
-                var label = string.Format("{0}. {1} [{2:F0}%]", i + 1, mr.Template.BuildName, mr.MatchScore * 100f);
-                GUI.Label(new Rect(10, ry, 300, 18), label, cs);
+                // 阵容名
+                var cs = new GUIStyle(s) { fontSize = 13 };
+                cs.normal.textColor = (i == 0) ? new Color(1f, 0.8f, 0.2f) : Color.white;
+                GUI.Label(new Rect(10, ry, pw - 30, 18), string.Format("{0}. {1}", i + 1, mr.Template.BuildName), cs);
                 ry += 20;
 
+                // 绿色进度条 + 右对齐百分比
+                var barY = ry;
+                var barH = 16f;
+                var barBgRect = new Rect(10, barY, barMaxW, barH);
+                GUI.DrawTexture(barBgRect, Tex(new Color(0.15f, 0.15f, 0.15f, 0.8f))); // 底色
+
+                var barFillW = barMaxW * (score / 100f);
+                if (barFillW > 0)
+                {
+                    var fillColor = score >= 70f ? new Color(0.1f, 0.9f, 0.2f)
+                        : score >= 40f ? new Color(0.8f, 0.8f, 0.1f)
+                        : new Color(0.8f, 0.3f, 0.1f);
+                    GUI.DrawTexture(new Rect(10, barY, barFillW, barH), Tex(fillColor));
+                }
+
+                // 百分比右对齐
+                var pctStyle = new GUIStyle(s) { fontSize = 12, alignment = TextAnchor.MiddleRight };
+                pctStyle.normal.textColor = Color.white;
+                GUI.Label(new Rect(10 + barMaxW, barY, 55, barH), string.Format("{0:F0}%", score), pctStyle);
+
+                ry += barH + 4;
+
+                // 缺失物品
                 if (mr.CoreMissing.Count > 0)
                 {
-                    cs.normal.textColor = new Color(1f, 0.3f, 0.3f);
-                    GUI.Label(new Rect(25, ry, 300, 18),
-                        string.Format("缺核心: {0}", string.Join(", ", mr.CoreMissing.ToArray())), cs);
-                    ry += 18;
+                    var ms = new GUIStyle(s) { fontSize = 11 };
+                    ms.normal.textColor = new Color(1f, 0.3f, 0.3f);
+                    GUI.Label(new Rect(15, ry, pw - 30, 16),
+                        string.Format("缺核心: {0}", string.Join(", ", mr.CoreMissing.ToArray())), ms);
+                    ry += 16;
                 }
                 if (mr.FlexMissing.Count > 0)
                 {
-                    cs.normal.textColor = new Color(1f, 0.7f, 0.3f);
-                    GUI.Label(new Rect(25, ry, 300, 18),
-                        string.Format("缺灵活: {0}", string.Join(", ", mr.FlexMissing.ToArray())), cs);
-                    ry += 18;
+                    var ms = new GUIStyle(s) { fontSize = 11 };
+                    ms.normal.textColor = new Color(1f, 0.7f, 0.3f);
+                    GUI.Label(new Rect(15, ry, pw - 30, 16),
+                        string.Format("缺灵活: {0}", string.Join(", ", mr.FlexMissing.ToArray())), ms);
+                    ry += 16;
                 }
                 ry += 5;
             }
@@ -480,6 +498,11 @@ namespace BazaarBoardReader
                 _captureMode = true;
             if (GUI.Button(new Rect(px + 70, py + ph - 25, 55, 20), "F10管理", GUI.skin.button))
                 _showBuildManager = true;
+            if (GUI.Button(new Rect(px + 130, py + ph - 25, 55, 20), "F5导出", GUI.skin.button))
+            {
+                try { ExportToJson(GatherBoardData()); }
+                catch { }
+            }
         }
 
         // ==================== F10 阵容管理面板 ====================
@@ -932,34 +955,67 @@ namespace BazaarBoardReader
 
         private List<string> GatherAllItemNames()
         {
+            // 与 F8 捕获使用相同数据源：CardController 扫描（棋盘 + 仓库）
             var result = new List<string>();
-            // 棋盘 + 仓库
             try
             {
-                if (_playerCardsOnBoardField != null)
+#pragma warning disable 0618
+                var all = UnityEngine.Object.FindObjectsOfType<CardController>();
+#pragma warning restore 0618
+                if (all != null)
                 {
-                    var bm = BoardManager.Instance;
-                    if (bm != null)
+                    foreach (var cc in all)
                     {
-                        var list = _playerCardsOnBoardField.GetValue(bm) as IList;
-                        if (list != null)
+                        try
                         {
-                            foreach (var o in list)
+                            var cd = cc.CardData;
+                            if (cd == null || cd.Type.ToString() != "Item") continue;
+                            // 只取玩家的物品（棋盘 + 仓库）
+                            if (_isPlayerBoardProp != null)
                             {
-                                if (o == null) continue;
-                                var ctrl = o as ItemController;
-                                if (ctrl == null) continue;
-                                var cd = ctrl.CardData;
-                                if (cd == null) continue;
-                                var name = GetCardName(cd);
-                                if (!string.IsNullOrEmpty(name) && name != "???")
-                                    result.Add(name);
+                                try { /* 忽略 IsPlayerBoard — 棋盘和仓库都算 */ }
+                                catch { }
                             }
+                            var name = GetCardName(cd);
+                            if (!string.IsNullOrEmpty(name) && name != "???")
+                                result.Add(name);
                         }
+                        catch { }
                     }
                 }
             }
             catch { }
+
+            // 回退：BoardManager 方法
+            if (result.Count == 0)
+            {
+                try
+                {
+                    if (_playerCardsOnBoardField != null)
+                    {
+                        var bm = BoardManager.Instance;
+                        if (bm != null)
+                        {
+                            var list = _playerCardsOnBoardField.GetValue(bm) as IList;
+                            if (list != null)
+                            {
+                                foreach (var o in list)
+                                {
+                                    if (o == null) continue;
+                                    var ctrl = o as ItemController;
+                                    if (ctrl == null) continue;
+                                    var cd = ctrl.CardData;
+                                    if (cd == null) continue;
+                                    var name = GetCardName(cd);
+                                    if (!string.IsNullOrEmpty(name) && name != "???")
+                                        result.Add(name);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
             return result;
         }
 
