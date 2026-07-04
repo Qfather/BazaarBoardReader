@@ -75,6 +75,11 @@ namespace BazaarBoardReader
         private string _newBuildHeroInput = "";
         private string _selectedBuildForEdit = "";
 
+        // 本地化
+        private Dictionary<string, string> _locCache = new Dictionary<string, string>();
+        private float _locCheckTime;
+        private bool _locCacheBuilt;
+
         // Config
         private const string CfgSec = "Offsets";
         private const string CfgItem = "ItemOffsetY";
@@ -185,10 +190,16 @@ namespace BazaarBoardReader
                 _logger.LogInfo(string.Format("[BoardReader] F8 捕获阵容: {0} 个物品", items.Count));
             }
 
+            // 本地化延迟加载：每10秒尝试一次
+            if (!_locCacheBuilt && Time.time - _locCheckTime > 10f)
+            {
+                _locCheckTime = Time.time;
+                TryBuildLocalizationCache();
+            }
+
             if (_overlayEnabled && Time.frameCount % 60 == 0)
             {
                 RefreshOverlayLabels();
-                // 每60帧检测一次英雄
                 if (string.IsNullOrEmpty(_detectedHero))
                     _detectedHero = DetectHero();
             }
@@ -892,10 +903,132 @@ namespace BazaarBoardReader
             y += 16;
         }
 
+        // ==================== 本地化 ====================
+
+        private void TryBuildLocalizationCache()
+        {
+            if (_locCache.Count > 100) { _locCacheBuilt = true; return; }
+            try
+            {
+                var allSO = Resources.FindObjectsOfTypeAll(typeof(ScriptableObject));
+                foreach (var so in allSO)
+                {
+                    if (so == null) continue;
+                    if (so.GetType().FullName != "TheBazaar.Localization.LocalizationLookupDataModel") continue;
+
+                    // 尝试 _localizationLookup 字典
+                    var df = so.GetType().GetField("_localizationLookup", BindingFlags.Instance | BindingFlags.NonPublic);
+                    if (df != null)
+                    {
+                        var dict = df.GetValue(so) as IDictionary;
+                        if (dict != null && dict.Count > 0)
+                        {
+                            _locCache.Clear();
+                            foreach (DictionaryEntry kv in dict)
+                            {
+                                try
+                                {
+                                    var key = kv.Key != null ? kv.Key.ToString() : "";
+                                    var val = kv.Value;
+                                    if (val != null)
+                                    {
+                                        var vt = val.GetType();
+                                        var tp = vt.GetProperty("Text", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                        if (tp != null)
+                                        {
+                                            var txt = tp.GetValue(val, null);
+                                            if (txt != null && !string.IsNullOrEmpty(txt.ToString()))
+                                                _locCache[key] = txt.ToString();
+                                        }
+                                    }
+                                }
+                                catch { }
+                            }
+                            _logger.LogInfo(string.Format("[BoardReader] 本地化字典加载: {0} 条", _locCache.Count));
+                            _locCacheBuilt = true;
+                            return;
+                        }
+                    }
+
+                    // 尝试 _localizableTexts 数组
+                    var af = so.GetType().GetField("_localizableTexts", BindingFlags.Instance | BindingFlags.NonPublic);
+                    if (af != null)
+                    {
+                        var arr = af.GetValue(so) as Array;
+                        if (arr != null && arr.Length > 0)
+                        {
+                            _locCache.Clear();
+                            foreach (var item in arr)
+                            {
+                                try
+                                {
+                                    if (item == null) continue;
+                                    var it = item.GetType();
+                                    var kp = it.GetProperty("Key", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                    var tp = it.GetProperty("Text", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                    if (kp != null && tp != null)
+                                    {
+                                        var k = kp.GetValue(item, null);
+                                        var t = tp.GetValue(item, null);
+                                        if (k != null && t != null && !string.IsNullOrEmpty(t.ToString()))
+                                            _locCache[k.ToString()] = t.ToString();
+                                    }
+                                }
+                                catch { }
+                            }
+                            _logger.LogInfo(string.Format("[BoardReader] 本地化数组加载: {0} 条 (共{1})", _locCache.Count, arr.Length));
+                            _locCacheBuilt = true;
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format("[BoardReader] 本地化加载失败: {0}", ex));
+            }
+        }
+
+        private string GetLocalizedName(BazaarGameClient.Domain.Models.Cards.Card c)
+        {
+            try
+            {
+                if (c.Template == null) return null;
+                var tt = c.Template.GetType();
+                var locProp = tt.GetProperty("Localization", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (locProp == null) return null;
+                var loc = locProp.GetValue(c.Template, null);
+                if (loc == null) return null;
+                var titleProp = loc.GetType().GetProperty("Title", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (titleProp == null) return null;
+                var title = titleProp.GetValue(loc, null);
+                if (title == null) return null;
+
+                // 读 Key 查缓存
+                var kp = title.GetType().GetProperty("Key", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (kp != null)
+                {
+                    var key = kp.GetValue(title, null);
+                    if (key != null && _locCache.Count > 0)
+                    {
+                        string val;
+                        if (_locCache.TryGetValue(key.ToString(), out val))
+                            return val;
+                    }
+                }
+            }
+            catch { }
+            return null;
+        }
+
         private string GetCardName(BazaarGameClient.Domain.Models.Cards.Card c)
         {
             try
             {
+                // 尝试本地化名称
+                var locName = GetLocalizedName(c);
+                if (!string.IsNullOrEmpty(locName)) return locName;
+
                 if (c.Template != null && !string.IsNullOrEmpty(c.Template.InternalName))
                     return c.Template.InternalName;
                 if (!string.IsNullOrEmpty(c.Name)) return c.Name;
