@@ -138,8 +138,10 @@ namespace BazaarBoardReader
         private const string CfgRecY = "RecPanelY";
         private const string CfgMgrX = "MgrPanelX";
         private const string CfgMgrY = "MgrPanelY";
+        private const string CfgPanelAlpha = "PanelAlpha";
         private const string CfgSecGeneral = "General";
         private float _recPanelX, _recPanelY, _mgrPanelX, _mgrPanelY;
+        private float _panelAlpha = 0.8f;
 
         private void Awake()
         {
@@ -154,6 +156,7 @@ namespace BazaarBoardReader
             _recPanelY = Config.Bind(CfgSec, CfgRecY, 50f).Value;
             _mgrPanelX = Config.Bind(CfgSec, CfgMgrX, 10f).Value;
             _mgrPanelY = Config.Bind(CfgSec, CfgMgrY, 300f).Value;
+            _panelAlpha = Config.Bind(CfgSec, CfgPanelAlpha, 0.8f).Value;
             // 默认全部开启
             _showRecommendations = true;
             _showBuildManager = true;
@@ -426,11 +429,10 @@ namespace BazaarBoardReader
 
         private void DrawSlidersPanel()
         {
-            var px = 10f;
-            var py = Screen.height * 0.5f - 180f;
-            var pw = 270f;
-            var ph = 310f;
-            DrawRect(new Rect(px, py, pw, ph), new Color(0, 0, 0, 0.8f));
+            var pw = 270f; var ph = 330f;
+            var px = Screen.width - pw - 10f;
+            var py = Screen.height - ph - 10f;
+            DrawRect(new Rect(px, py, pw, ph), new Color(0, 0, 0, _panelAlpha));
 
             var s = new GUIStyle(_labelStyle) { fontSize = 12 };
             s.normal.textColor = Color.white;
@@ -456,7 +458,10 @@ namespace BazaarBoardReader
             GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("管理面板 X:{0} Y:{1}", (int)_mgrPanelX, (int)_mgrPanelY), s);
             _mgrPanelX = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 110, 10), _mgrPanelX, 0f, Screen.width - 380f);
             _mgrPanelY = GUI.HorizontalSlider(new Rect(px + 135, ry + 14, 110, 10), _mgrPanelY, 0f, Screen.height - 200f);
-            ry += 32;
+            ry += 28;
+            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("面板透明度: {0:F0}%", _panelAlpha * 100f), s);
+            _panelAlpha = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _panelAlpha, 0.2f, 0.95f);
+            ry += 30;
 
             var bs = new GUIStyle(GUI.skin.button) { fontSize = 12, fontStyle = FontStyle.Bold };
             if (GUI.Button(new Rect(px + 20, ry, 48, 24), "保存", bs))
@@ -469,6 +474,7 @@ namespace BazaarBoardReader
                 Config[CfgSec, CfgRecY].BoxedValue = _recPanelY;
                 Config[CfgSec, CfgMgrX].BoxedValue = _mgrPanelX;
                 Config[CfgSec, CfgMgrY].BoxedValue = _mgrPanelY;
+                Config[CfgSec, CfgPanelAlpha].BoxedValue = _panelAlpha;
                 Config.Save();
             }
             if (GUI.Button(new Rect(px + 72, ry, 40, 24), _useChinese ? "中" : "EN", bs))
@@ -503,7 +509,7 @@ namespace BazaarBoardReader
         {
             var w = 330f; var h = 200f;
             var x = (Screen.width - w) / 2; var y = (Screen.height - h) / 2;
-            DrawRect(new Rect(x, y, w, h), new Color(0.1f, 0.1f, 0.15f, 0.95f));
+            DrawRect(new Rect(x, y, w, h), new Color(0.1f, 0.1f, 0.15f, _panelAlpha));
 
             var s = new GUIStyle(_labelStyle) { fontSize = 14, wordWrap = true };
             s.normal.textColor = Color.white;
@@ -538,7 +544,7 @@ namespace BazaarBoardReader
         private void DrawRecommendationPanel()
         {
             var px = _recPanelX; var py = _recPanelY; var pw = 350f; var ph = Mathf.Min(400f, Screen.height - py - 10f);
-            DrawRect(new Rect(px, py, pw, ph), new Color(0, 0, 0, 0.85f));
+            DrawRect(new Rect(px, py, pw, ph), new Color(0, 0, 0, _panelAlpha));
 
             var s = new GUIStyle(_labelStyle) { fontSize = 13, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
@@ -663,7 +669,7 @@ namespace BazaarBoardReader
             var px = _mgrPanelX; var py = _mgrPanelY; var pw = 380f; var ph = 400f;
             if (py + ph > Screen.height) py = Screen.height - ph - 10;
             if (py < 10) py = 10;
-            DrawRect(new Rect(px, py, pw, ph), new Color(0.05f, 0.05f, 0.1f, 0.95f));
+            DrawRect(new Rect(px, py, pw, ph), new Color(0.05f, 0.05f, 0.1f, _panelAlpha));
 
             var s = new GUIStyle(_labelStyle) { fontSize = 12, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
