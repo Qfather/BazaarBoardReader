@@ -958,7 +958,7 @@ namespace BazaarBoardReader
                             var cd = cc.CardData;
                             if (cd == null || cd.Type.ToString() != "Item") continue;
                             if (!IsPlayerItem(cc.transform)) continue;
-                            var name = GetCardNameStatic(cd);
+                            var name = GetCardName(cd);
                             if (string.IsNullOrEmpty(name) || name == "???") continue;
                             if (_isPlayerBoardProp != null)
                             {
@@ -1007,7 +1007,7 @@ namespace BazaarBoardReader
                                 var cd = cc.CardData;
                                 if (cd == null || cd.Type.ToString() != "Item") continue;
                                 if (!IsPlayerItem(cc.transform)) continue;
-                                var name = GetCardNameStatic(cd);
+                                var name = GetCardName(cd);
                                 if (!string.IsNullOrEmpty(name) && name != "???") result.Add(name);
                             }
                             catch { }
@@ -1046,7 +1046,7 @@ namespace BazaarBoardReader
                             var cd = cc.CardData;
                             if (cd == null || cd.Type.ToString() != "Item") continue;
                             if (IsPlayerItem(cc.transform)) continue;
-                            var name = GetCardNameStatic(cd);
+                            var name = GetCardName(cd);
                             if (string.IsNullOrEmpty(name) || name == "???") continue;
                             if (!owned.Contains(name)) result.Add(name);
                         }
@@ -1188,7 +1188,7 @@ namespace BazaarBoardReader
                                 {
                                     var r = obj as TheBazaar.SkillProxyRenderer;
                                     if (r == null || r.Card == null) continue;
-                                    var name = GetCardNameStatic(r.Card);
+                                    var name = GetCardName(r.Card);
                                     if (!string.IsNullOrEmpty(name) && name != "???") result.Add(name);
                                 }
                                 catch { }
