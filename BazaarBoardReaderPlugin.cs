@@ -340,7 +340,7 @@ namespace BazaarBoardReader
                 if (lbl.SubText == "推荐") subStyle.normal.textColor = new Color(0.2f, 1f, 0.3f);
                 else if (lbl.SubText == "一般") subStyle.normal.textColor = new Color(1f, 0.8f, 0.2f);
                 else if (lbl.SubText == "不推荐") subStyle.normal.textColor = new Color(0.7f, 0.3f, 0.3f);
-                else { subStyle.normal.textColor = new Color(1f, 0.25f, 0.2f); subStyle.fontSize = 13; subStyle.fontStyle = FontStyle.Bold; isCrit = true; }
+                else { subStyle.normal.textColor = new Color(1f, 0.25f, 0.2f); subStyle.fontSize = 18; subStyle.fontStyle = FontStyle.Bold; isCrit = true; }
                 var subRect = new Rect(r.x, r.y + 3 + sz.y + 1, w, extraH);
                 if (isCrit)
                 {
@@ -379,7 +379,7 @@ namespace BazaarBoardReader
             var th = sz.y + 10;
             if (mx + tw > Screen.width) mx = Screen.width - tw - 10;
             if (my + th > Screen.height) my = _lastHoverRect.y - th - 5;
-            GUI.DrawTexture(new Rect(mx, my, tw, th), Tex(new Color(0, 0, 0, 0.9f)));
+            DrawRect(new Rect(mx, my, tw, th), new Color(0, 0, 0, 0.9f));
             GUI.Label(new Rect(mx + 8, my + 5, sz.x, sz.y), _hoverTooltip, ts);
             _hoverTooltip = "";
         }
@@ -404,7 +404,10 @@ namespace BazaarBoardReader
             return tex;
         }
 
-        private Texture2D Tex(Color c) { var t = new Texture2D(1, 1); t.SetPixel(0, 0, c); t.Apply(); return t; }
+        private Texture2D _whiteTex;
+        private Texture2D WhiteTex() { if (_whiteTex == null) { _whiteTex = new Texture2D(1, 1); _whiteTex.SetPixel(0, 0, Color.white); _whiteTex.Apply(); } return _whiteTex; }
+        // 画纯色矩形（复用白色纹理+GUI.color）
+        private void DrawRect(Rect r, Color c) { var old = GUI.color; GUI.color = c; GUI.DrawTexture(r, WhiteTex()); GUI.color = old; }
 
         private void DrawSlidersPanel()
         {
@@ -412,7 +415,7 @@ namespace BazaarBoardReader
             var py = Screen.height * 0.5f - 130f;
             var pw = 270f;
             var ph = 210f;
-            GUI.DrawTexture(new Rect(px, py, pw, ph), Tex(new Color(0, 0, 0, 0.8f)));
+            DrawRect(new Rect(px, py, pw, ph), new Color(0, 0, 0, 0.8f));
 
             var s = new GUIStyle(_labelStyle) { fontSize = 13 };
             s.normal.textColor = Color.white;
@@ -469,7 +472,7 @@ namespace BazaarBoardReader
         {
             var w = 330f; var h = 200f;
             var x = (Screen.width - w) / 2; var y = (Screen.height - h) / 2;
-            GUI.DrawTexture(new Rect(x, y, w, h), Tex(new Color(0.1f, 0.1f, 0.15f, 0.95f)));
+            DrawRect(new Rect(x, y, w, h), new Color(0.1f, 0.1f, 0.15f, 0.95f));
 
             var s = new GUIStyle(_labelStyle) { fontSize = 14, wordWrap = true };
             s.normal.textColor = Color.white;
@@ -504,7 +507,7 @@ namespace BazaarBoardReader
         private void DrawRecommendationPanel()
         {
             var px = 10f; var py = 10f; var pw = 350f; var ph = Mathf.Min(400f, Screen.height - 20f);
-            GUI.DrawTexture(new Rect(px, py, pw, ph), Tex(new Color(0, 0, 0, 0.85f)));
+            DrawRect(new Rect(px, py, pw, ph), new Color(0, 0, 0, 0.85f));
 
             var s = new GUIStyle(_labelStyle) { fontSize = 13, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
@@ -512,22 +515,21 @@ namespace BazaarBoardReader
             var ts = new GUIStyle(s) { fontSize = 15, fontStyle = FontStyle.Bold };
             ts.normal.textColor = new Color(1f, 0.8f, 0.2f);
             GUI.Label(new Rect(px + 10, py + 5, pw - 50, 22), "阵容推荐 (F6)", ts);
-            // 英雄按钮
+            // 英雄按钮（简写+颜色+换行）
             var heroes = CollectHeroNames();
-            GUI.Label(new Rect(px + 10, py + 28, 30, 18), "英雄:", s);
-            float hx = px + 42;
+            float hx = px + 10; float hy = py + 46;
             foreach (var h in heroes)
             {
-                var hbw = s.CalcSize(new GUIContent(h)).x + 10;
-                if (hx + hbw > px + pw - 10) { hx = px + 10; /* would wrap but skip for now */ }
+                var abbrev = GetHeroAbbrev(h);
+                var hbw = s.CalcSize(new GUIContent(abbrev)).x + 8;
+                if (hx + hbw > px + pw - 10) { hx = px + 10; hy += 20; }
                 var isActive = _detectedHero == h;
-                var hbs = new GUIStyle(GUI.skin.button) { fontSize = 11 };
-                if (isActive) hbs.normal.textColor = Color.yellow;
-                if (GUI.Button(new Rect(hx, py + 26, hbw, 18), h, hbs))
-                {
+                var hbs = new GUIStyle(GUI.skin.button) { fontSize = 10, fontStyle = FontStyle.Bold };
+                hbs.normal.textColor = GetHeroColor(h);
+                if (isActive) GUI.DrawTexture(new Rect(hx, hy, hbw, 18), WhiteTex());
+                if (GUI.Button(new Rect(hx, hy, hbw, 18), abbrev, hbs))
                     _detectedHero = (_detectedHero == h) ? "" : h;
-                }
-                hx += hbw + 2;
+                hx += hbw + 1;
             }
 
             var currentItems = GatherAllItemNames();
@@ -556,12 +558,12 @@ namespace BazaarBoardReader
                 ry += 20;
 
                 var barH = 16f;
-                GUI.DrawTexture(new Rect(10, ry, barMaxW, barH), Tex(new Color(0.15f, 0.15f, 0.15f, 0.8f)));
+                DrawRect(new Rect(10, ry, barMaxW, barH), new Color(0.15f, 0.15f, 0.15f, 0.8f));
                 var barFillW = barMaxW * (score / 100f);
                 if (barFillW > 0)
                 {
                     var fc = score >= 70f ? new Color(0.1f, 0.9f, 0.2f) : score >= 40f ? new Color(0.8f, 0.8f, 0.1f) : new Color(0.8f, 0.3f, 0.1f);
-                    GUI.DrawTexture(new Rect(10, ry, barFillW, barH), Tex(fc));
+                    DrawRect(new Rect(10, ry, barFillW, barH), fc);
                 }
                 var ps2 = new GUIStyle(s) { fontSize = 12, alignment = TextAnchor.MiddleRight };
                 ps2.normal.textColor = Color.white;
@@ -624,7 +626,7 @@ namespace BazaarBoardReader
         {
             var px = 10f; var py = Screen.height - 410f; var pw = 380f; var ph = 400f;
             if (py < 10) py = 10;
-            GUI.DrawTexture(new Rect(px, py, pw, ph), Tex(new Color(0.05f, 0.05f, 0.1f, 0.95f)));
+            DrawRect(new Rect(px, py, pw, ph), new Color(0.05f, 0.05f, 0.1f, 0.95f));
 
             var s = new GUIStyle(_labelStyle) { fontSize = 12, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
@@ -672,8 +674,8 @@ namespace BazaarBoardReader
             {
                 var isSelected = _selectedBuildForEdit == build.BuildName;
                 var expandH = isSelected ? 330f : 22f;
-                GUI.DrawTexture(new Rect(0, ry, pw - 35, expandH),
-                    Tex(isSelected ? new Color(0.15f, 0.15f, 0.25f, 0.7f) : new Color(0.1f, 0.1f, 0.15f, 0.5f)));
+                DrawRect(new Rect(0, ry, pw - 35, expandH),
+                    isSelected ? new Color(0.15f, 0.15f, 0.25f, 0.7f) : new Color(0.1f, 0.1f, 0.15f, 0.5f));
 
                 GUI.Label(new Rect(5, ry + 2, 120, 18), string.Format("{0} ({1})", Translate(build.BuildName), build.HeroName), s);
                 if (GUI.Button(new Rect(250, ry + 1, 35, 18), isSelected ? "收起" : "编辑"))
@@ -891,6 +893,31 @@ namespace BazaarBoardReader
         }
 
         // ==================== 英雄检测 ====================
+
+        private string GetHeroAbbrev(string hero)
+        {
+            var h = hero.ToLower();
+            if (h.Contains("vanessa")) return "VAN";
+            if (h.Contains("pygmalien")) return "PYG";
+            if (h.Contains("dooley")) return "DOO";
+            if (h.Contains("mak")) return "MAK";
+            if (h.Contains("stelle")) return "STE";
+            if (h.Contains("jules")) return "JUL";
+            if (h.Contains("karnok")) return "KAR";
+            return hero.Length > 3 ? hero.Substring(0, 3).ToUpper() : hero.ToUpper();
+        }
+        private Color GetHeroColor(string hero)
+        {
+            var h = hero.ToLower();
+            if (h.Contains("vanessa")) return new Color(1f, 0.3f, 0.3f);
+            if (h.Contains("pygmalien")) return new Color(0.3f, 0.5f, 1f);
+            if (h.Contains("dooley")) return new Color(1f, 0.6f, 0.1f);
+            if (h.Contains("mak")) return new Color(0.3f, 1f, 0.4f);
+            if (h.Contains("stelle")) return new Color(1f, 0.9f, 0.2f);
+            if (h.Contains("jules")) return new Color(0.7f, 0.3f, 1f);
+            if (h.Contains("karnok")) return new Color(0.3f, 0.7f, 1f);
+            return Color.gray;
+        }
 
         private List<string> CollectHeroNames()
         {
