@@ -948,10 +948,9 @@ namespace BazaarBoardReader
                         {
                             var cd = cc.CardData;
                             if (cd == null || cd.Type.ToString() != "Item") continue;
-                            // 排除非玩家物品（商店物品不在 BoardManager 里）
-                            var owned = GetOwnedItemNames();
+                            // 排除非玩家物品（父级无 BoardManager = 商店物品）
+                            if (!IsPlayerItem(cc.transform)) continue;
                             var name = GetCardName(cd);
-                            if (!owned.Contains(name)) continue;
                             if (string.IsNullOrEmpty(name) || name == "???") continue;
                             // 只取棋盘上的（IsPlayerBoard == true）
                             if (_isPlayerBoardProp != null)
@@ -1014,67 +1013,8 @@ namespace BazaarBoardReader
 
         private List<string> GatherAllItemNames()
         {
-            // 从 BoardManager 获取玩家拥有的物品（最可靠）
-            var owned = GetOwnedItemNames();
+            // CardController 扫描，只取玩家物品（父级有 BoardManager）
             var result = new List<string>();
-            foreach (var n in owned) result.Add(n);
-            return result;
-        }
-
-        private bool IsUnderEncounter(Transform t)
-        {
-            while (t != null)
-            {
-                var ec = t.GetComponent<EncounterController>();
-                if (ec != null) return true;
-                t = t.parent;
-            }
-            return false;
-        }
-
-        // 构建玩家物品 HashSet（从 BoardManager）
-        private HashSet<string> _ownedItemCache = new HashSet<string>();
-        private int _ownedItemCacheFrame;
-
-        private HashSet<string> GetOwnedItemNames()
-        {
-            if (_ownedItemCacheFrame == Time.frameCount) return _ownedItemCache;
-            _ownedItemCache.Clear();
-            _ownedItemCacheFrame = Time.frameCount;
-            try
-            {
-                if (_playerCardsOnBoardField != null)
-                {
-                    var bm = BoardManager.Instance;
-                    if (bm != null)
-                    {
-                        var list = _playerCardsOnBoardField.GetValue(bm) as IList;
-                        if (list != null)
-                        {
-                            foreach (var o in list)
-                            {
-                                if (o == null) continue;
-                                var ctrl = o as ItemController;
-                                if (ctrl == null) continue;
-                                var cd = ctrl.CardData;
-                                if (cd == null) continue;
-                                var name = GetCardName(cd);
-                                if (!string.IsNullOrEmpty(name) && name != "???")
-                                    _ownedItemCache.Add(name);
-                            }
-                        }
-                    }
-                }
-            }
-            catch { }
-            return _ownedItemCache;
-        }
-
-        // 扫描商店待售物品 = CardController 物品 - 玩家已拥有物品
-        private List<string> GatherShopItemNames()
-        {
-            var result = new List<string>();
-            var owned = GetOwnedItemNames();
             try
             {
 #pragma warning disable 0618
@@ -1088,10 +1028,52 @@ namespace BazaarBoardReader
                         {
                             var cd = cc.CardData;
                             if (cd == null || cd.Type.ToString() != "Item") continue;
+                            if (!IsPlayerItem(cc.transform)) continue;
+                            var name = GetCardName(cd);
+                            if (!string.IsNullOrEmpty(name) && name != "???")
+                                result.Add(name);
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+            return result;
+        }
+
+        // 判断物品是否属于玩家：检查父级是否有 BoardManager（玩家物品挂载在 BoardBase 下）
+        private bool IsPlayerItem(Transform t)
+        {
+            while (t != null)
+            {
+                var bm = t.GetComponent<BoardManager>();
+                if (bm != null) return true;
+                t = t.parent;
+            }
+            return false;
+        }
+
+        // 扫描商店待售物品 = 不在玩家 BoardManager 下的物品
+        private List<string> GatherShopItemNames()
+        {
+            var result = new List<string>();
+            try
+            {
+#pragma warning disable 0618
+                var all = UnityEngine.Object.FindObjectsOfType<CardController>();
+#pragma warning restore 0618
+                if (all != null)
+                {
+                    foreach (var cc in all)
+                    {
+                        try
+                        {
+                            var cd = cc.CardData;
+                            if (cd == null || cd.Type.ToString() != "Item") continue;
+                            if (IsPlayerItem(cc.transform)) continue;
                             var name = GetCardName(cd);
                             if (string.IsNullOrEmpty(name) || name == "???") continue;
-                            if (!owned.Contains(name))
-                                result.Add(name);
+                            result.Add(name);
                         }
                         catch { }
                     }
