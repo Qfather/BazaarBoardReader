@@ -336,19 +336,22 @@ namespace BazaarBoardReader
         private void CaptureCurrentBoardAsBuild()
         {
             var items = GatherCurrentBoardItemNames();
-            if (items.Count == 0) return;
+            var skills = GatherPlayerSkillNames();
+            if (items.Count == 0 && skills.Count == 0) return;
             var hero = string.IsNullOrEmpty(_captureHeroInput) ? _detectedHero : _captureHeroInput;
             var build = new BuildTemplate
             {
                 HeroName = hero,
                 BuildName = _captureBuildName,
                 CoreItems = items,
-                FlexItems = new List<string>()
+                FlexItems = new List<string>(),
+                CoreSkills = skills,
+                FlexSkills = new List<string>()
             };
             _builds.Add(build);
             SaveBuilds();
-            _logger.LogInfo(string.Format("[BoardReader] 已保存阵容: {0} 英雄={1} 物品={2}",
-                _captureBuildName, hero, string.Join(", ", items.ToArray())));
+            _logger.LogInfo(string.Format("[BoardReader] 已保存阵容: {0} 英雄={1} 物品={2} 技能={3}",
+                _captureBuildName, hero, string.Join(", ", items.ToArray()), string.Join(", ", skills.ToArray())));
         }
 
         private void DrawCaptureDialog()
@@ -365,9 +368,12 @@ namespace BazaarBoardReader
             GUI.Label(new Rect(x + 15, y + 10, 300, 22), "捕获当前棋盘阵容", s);
 
             var boardItems = GatherCurrentBoardItemNames();
+            var boardSkills = GatherPlayerSkillNames();
             s.fontSize = 12;
             GUI.Label(new Rect(x + 15, y + 35, 300, 40),
-                string.Format("当前棋盘物品 ({0}):\n{1}", boardItems.Count, string.Join(", ", boardItems.ToArray())), s);
+                string.Format("物品({0}): {1}\n技能({2}): {3}",
+                    boardItems.Count, string.Join(", ", boardItems.ToArray()),
+                    boardSkills.Count, string.Join(", ", boardSkills.ToArray())), s);
 
             s.fontSize = 13;
             GUI.Label(new Rect(x + 15, y + 85, 60, 22), "阵容名:", s);
@@ -483,6 +489,16 @@ namespace BazaarBoardReader
                     DrawMissingLine(15, ref ry, pw - 30, "缺灵活: ", mr.FlexMissing, mr.ShopFlexMatches,
                         new Color(1f, 0.7f, 0.3f), new Color(0.5f, 1f, 0.5f));
                 }
+                if (mr.SkillCoreMissing.Count > 0)
+                {
+                    DrawMissingLine(15, ref ry, pw - 30, "缺技核: ", mr.SkillCoreMissing, new List<string>(),
+                        new Color(0.4f, 0.5f, 1f), new Color(0.5f, 1f, 0.5f));
+                }
+                if (mr.SkillFlexMissing.Count > 0)
+                {
+                    DrawMissingLine(15, ref ry, pw - 30, "缺技灵: ", mr.SkillFlexMissing, new List<string>(),
+                        new Color(0.5f, 0.6f, 1f), new Color(0.5f, 1f, 0.5f));
+                }
                 ry += 5;
             }
 
@@ -570,7 +586,7 @@ namespace BazaarBoardReader
             foreach (var build in heroBuilds)
             {
                 var isSelected = _selectedBuildForEdit == build.BuildName;
-                var expandH = isSelected ? 170f : 22f;
+                var expandH = isSelected ? 330f : 22f;
 
                 // 背景
                 GUI.DrawTexture(new Rect(0, ry, pw - 35, expandH),
@@ -637,9 +653,9 @@ namespace BazaarBoardReader
                     }
 
                     // 添加物品输入
-                    GUI.Label(new Rect(15, iy, 50, 18), "添加:", s);
-                    _newItemInput = GUI.TextField(new Rect(65, iy, 150, 20), _newItemInput ?? "", 30);
-                    if (GUI.Button(new Rect(220, iy, 35, 20), "核心"))
+                    GUI.Label(new Rect(15, iy, 50, 18), "加物:", s);
+                    _newItemInput = GUI.TextField(new Rect(55, iy, 140, 20), _newItemInput ?? "", 30);
+                    if (GUI.Button(new Rect(198, iy, 35, 20), "核心"))
                     {
                         if (!string.IsNullOrEmpty(_newItemInput) && !build.CoreItems.Contains(_newItemInput))
                         {
@@ -648,11 +664,76 @@ namespace BazaarBoardReader
                             _newItemInput = "";
                         }
                     }
-                    if (GUI.Button(new Rect(260, iy, 35, 20), "灵活"))
+                    if (GUI.Button(new Rect(236, iy, 35, 20), "灵活"))
                     {
                         if (!string.IsNullOrEmpty(_newItemInput) && !build.FlexItems.Contains(_newItemInput))
                         {
                             build.FlexItems.Add(_newItemInput);
+                            SaveBuilds();
+                            _newItemInput = "";
+                        }
+                    }
+                    iy += 22;
+
+                    // 核心技能
+                    ns.normal.textColor = new Color(0.4f, 0.5f, 1f);
+                    GUI.Label(new Rect(15, iy, 330, 16), "核心技能:", ns);
+                    iy += 16;
+                    for (int i = 0; i < build.CoreSkills.Count; i++)
+                    {
+                        GUI.Label(new Rect(25, iy, 160, 16), build.CoreSkills[i], ns);
+                        if (GUI.Button(new Rect(195, iy, 25, 15), "↓"))
+                        {
+                            build.FlexSkills.Add(build.CoreSkills[i]);
+                            build.CoreSkills.RemoveAt(i);
+                            SaveBuilds();
+                        }
+                        if (GUI.Button(new Rect(222, iy, 25, 15), "X"))
+                        {
+                            build.CoreSkills.RemoveAt(i);
+                            SaveBuilds();
+                        }
+                        iy += 17;
+                    }
+
+                    // 灵活技能
+                    ns.normal.textColor = new Color(0.5f, 0.6f, 1f);
+                    GUI.Label(new Rect(15, iy, 330, 16), "灵活技能:", ns);
+                    iy += 16;
+                    for (int i = 0; i < build.FlexSkills.Count; i++)
+                    {
+                        GUI.Label(new Rect(25, iy, 160, 16), build.FlexSkills[i], ns);
+                        if (GUI.Button(new Rect(195, iy, 25, 15), "↑"))
+                        {
+                            build.CoreSkills.Add(build.FlexSkills[i]);
+                            build.FlexSkills.RemoveAt(i);
+                            SaveBuilds();
+                        }
+                        if (GUI.Button(new Rect(222, iy, 25, 15), "X"))
+                        {
+                            build.FlexSkills.RemoveAt(i);
+                            SaveBuilds();
+                        }
+                        iy += 17;
+                    }
+
+                    // 添加技能输入
+                    GUI.Label(new Rect(15, iy, 50, 18), "加技:", s);
+                    _newItemInput = GUI.TextField(new Rect(55, iy, 140, 20), _newItemInput ?? "", 30);
+                    if (GUI.Button(new Rect(198, iy, 35, 20), "核心"))
+                    {
+                        if (!string.IsNullOrEmpty(_newItemInput) && !build.CoreSkills.Contains(_newItemInput))
+                        {
+                            build.CoreSkills.Add(_newItemInput);
+                            SaveBuilds();
+                            _newItemInput = "";
+                        }
+                    }
+                    if (GUI.Button(new Rect(236, iy, 35, 20), "灵活"))
+                    {
+                        if (!string.IsNullOrEmpty(_newItemInput) && !build.FlexSkills.Contains(_newItemInput))
+                        {
+                            build.FlexSkills.Add(_newItemInput);
                             SaveBuilds();
                             _newItemInput = "";
                         }
@@ -1121,6 +1202,8 @@ namespace BazaarBoardReader
         {
             var results = new List<BuildMatchResult>();
             var ownedSet = new HashSet<string>(currentItems);
+            var ownedSkills = GatherPlayerSkillNames();
+            var skillSet = new HashSet<string>(ownedSkills);
 
             foreach (var build in _builds)
             {
@@ -1129,6 +1212,7 @@ namespace BazaarBoardReader
                     && build.HeroName != heroName)
                     continue;
 
+                // 物品匹配
                 var coreOwned = new List<string>();
                 var coreMissing = new List<string>();
                 foreach (var item in build.CoreItems)
@@ -1145,11 +1229,42 @@ namespace BazaarBoardReader
                     else flexMissing.Add(item);
                 }
 
-                float coreScore = build.CoreItems.Count > 0
+                // 技能匹配
+                var skillCoreOwned = new List<string>();
+                var skillCoreMissing = new List<string>();
+                foreach (var s in build.CoreSkills)
+                {
+                    if (skillSet.Contains(s)) skillCoreOwned.Add(s);
+                    else skillCoreMissing.Add(s);
+                }
+
+                var skillFlexOwned = new List<string>();
+                var skillFlexMissing = new List<string>();
+                foreach (var s in build.FlexSkills)
+                {
+                    if (skillSet.Contains(s)) skillFlexOwned.Add(s);
+                    else skillFlexMissing.Add(s);
+                }
+
+                // 综合分数：物品70% + 技能30%
+                float itemCoreScore = build.CoreItems.Count > 0
                     ? (float)coreOwned.Count / build.CoreItems.Count : 0f;
-                float flexScore = build.FlexItems.Count > 0
+                float itemFlexScore = build.FlexItems.Count > 0
                     ? (float)flexOwned.Count / build.FlexItems.Count : 0f;
-                float totalScore = coreScore * 0.7f + flexScore * 0.3f;
+                float skillCoreScore = build.CoreSkills.Count > 0
+                    ? (float)skillCoreOwned.Count / build.CoreSkills.Count : 0f;
+                float skillFlexScore = build.FlexSkills.Count > 0
+                    ? (float)skillFlexOwned.Count / build.FlexSkills.Count : 0f;
+                float itemTotal = itemCoreScore * 0.7f + itemFlexScore * 0.3f;
+                float skillTotal = skillCoreScore * 0.7f + skillFlexScore * 0.3f;
+                float totalItems = build.CoreItems.Count + build.FlexItems.Count;
+                float totalSkills = build.CoreSkills.Count + build.FlexSkills.Count;
+                float totalWeight = totalItems + totalSkills;
+                float totalScore;
+                if (totalWeight > 0)
+                    totalScore = (itemTotal * totalItems + skillTotal * totalSkills) / totalWeight;
+                else
+                    totalScore = 0f;
 
                 results.Add(new BuildMatchResult
                 {
@@ -1158,12 +1273,49 @@ namespace BazaarBoardReader
                     CoreOwned = coreOwned,
                     CoreMissing = coreMissing,
                     FlexOwned = flexOwned,
-                    FlexMissing = flexMissing
+                    FlexMissing = flexMissing,
+                    SkillCoreMissing = skillCoreMissing,
+                    SkillFlexMissing = skillFlexMissing
                 });
             }
 
             results.Sort((a, b) => b.MatchScore.CompareTo(a.MatchScore));
             return results;
+        }
+
+        private List<string> GatherPlayerSkillNames()
+        {
+            var result = new List<string>();
+            try
+            {
+                if (_skillListField != null)
+                {
+#pragma warning disable 0618
+                    var spm = UnityEngine.Object.FindObjectsOfType<TheBazaar.SkillPresentationManager>();
+#pragma warning restore 0618
+                    if (spm != null && spm.Length > 0)
+                    {
+                        var list = _skillListField.GetValue(spm[0]) as IList;
+                        if (list != null)
+                        {
+                            foreach (var obj in list)
+                            {
+                                try
+                                {
+                                    var r = obj as TheBazaar.SkillProxyRenderer;
+                                    if (r == null || r.Card == null) continue;
+                                    var name = GetCardName(r.Card);
+                                    if (!string.IsNullOrEmpty(name) && name != "???")
+                                        result.Add(name);
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+            return result;
         }
 
         // ==================== JSON导出 ====================
@@ -1287,6 +1439,8 @@ namespace BazaarBoardReader
         public string BuildName = "";
         public List<string> CoreItems = new List<string>();
         public List<string> FlexItems = new List<string>();
+        public List<string> CoreSkills = new List<string>();
+        public List<string> FlexSkills = new List<string>();
     }
 
     public class BuildMatchResult
@@ -1297,6 +1451,8 @@ namespace BazaarBoardReader
         public List<string> CoreMissing = new List<string>();
         public List<string> FlexOwned = new List<string>();
         public List<string> FlexMissing = new List<string>();
+        public List<string> SkillCoreMissing = new List<string>();
+        public List<string> SkillFlexMissing = new List<string>();
         public List<string> ShopCoreMatches = new List<string>();
         public List<string> ShopFlexMatches = new List<string>();
     }
