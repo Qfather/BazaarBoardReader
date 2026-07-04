@@ -133,7 +133,13 @@ namespace BazaarBoardReader
         private const string CfgShop = "ShopOffsetY";
         private const string CfgBg = "BgOpacity";
         private const string CfgOverlay = "OverlayEnabled";
+        private const string CfgHero = "SelectedHero";
+        private const string CfgRecX = "RecPanelX";
+        private const string CfgRecY = "RecPanelY";
+        private const string CfgMgrX = "MgrPanelX";
+        private const string CfgMgrY = "MgrPanelY";
         private const string CfgSecGeneral = "General";
+        private float _recPanelX, _recPanelY, _mgrPanelX, _mgrPanelY;
 
         private void Awake()
         {
@@ -143,6 +149,14 @@ namespace BazaarBoardReader
             _shopOffsetY = Config.Bind(CfgSec, CfgShop, 80f).Value;
             _bgOpacity = Config.Bind(CfgSec, CfgBg, 0.55f).Value;
             _overlayEnabled = Config.Bind(CfgSecGeneral, CfgOverlay, true).Value;
+            _detectedHero = Config.Bind(CfgSecGeneral, CfgHero, "").Value;
+            _recPanelX = Config.Bind(CfgSec, CfgRecX, 10f).Value;
+            _recPanelY = Config.Bind(CfgSec, CfgRecY, 50f).Value;
+            _mgrPanelX = Config.Bind(CfgSec, CfgMgrX, 10f).Value;
+            _mgrPanelY = Config.Bind(CfgSec, CfgMgrY, 300f).Value;
+            // 默认全部开启
+            _showRecommendations = true;
+            _showBuildManager = true;
             _logger.LogInfo(string.Format("[BoardReader] v7.0 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
                 (int)_itemOffsetY, (int)_skillOffsetY, (int)_shopOffsetY, _bgOpacity * 100f));
 
@@ -413,42 +427,58 @@ namespace BazaarBoardReader
         private void DrawSlidersPanel()
         {
             var px = 10f;
-            var py = Screen.height * 0.5f - 130f;
+            var py = Screen.height * 0.5f - 180f;
             var pw = 270f;
-            var ph = 210f;
+            var ph = 310f;
             DrawRect(new Rect(px, py, pw, ph), new Color(0, 0, 0, 0.8f));
 
-            var s = new GUIStyle(_labelStyle) { fontSize = 13 };
+            var s = new GUIStyle(_labelStyle) { fontSize = 12 };
             s.normal.textColor = Color.white;
+            float ry = py + 8;
 
-            GUI.Label(new Rect(px + 12, py + 8, 246, 18), string.Format("物品偏移: {0}px", (int)_itemOffsetY), s);
-            _itemOffsetY = GUI.HorizontalSlider(new Rect(px + 12, py + 26, 246, 14), _itemOffsetY, 0f, 300f);
+            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("物品偏移: {0}px", (int)_itemOffsetY), s);
+            _itemOffsetY = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _itemOffsetY, 0f, 300f);
+            ry += 30;
+            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("技能偏移: {0}px", (int)_skillOffsetY), s);
+            _skillOffsetY = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _skillOffsetY, 0f, 300f);
+            ry += 30;
+            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("商店偏移: {0}px", (int)_shopOffsetY), s);
+            _shopOffsetY = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _shopOffsetY, 0f, 300f);
+            ry += 30;
+            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("背景透明度: {0:F0}%", _bgOpacity * 100f), s);
+            _bgOpacity = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _bgOpacity, 0.1f, 0.95f);
+            ry += 30;
+            // 面板位置
+            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("推荐面板 X:{0} Y:{1}", (int)_recPanelX, (int)_recPanelY), s);
+            _recPanelX = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 110, 10), _recPanelX, 0f, Screen.width - 350f);
+            _recPanelY = GUI.HorizontalSlider(new Rect(px + 135, ry + 14, 110, 10), _recPanelY, 0f, Screen.height - 200f);
+            ry += 28;
+            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("管理面板 X:{0} Y:{1}", (int)_mgrPanelX, (int)_mgrPanelY), s);
+            _mgrPanelX = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 110, 10), _mgrPanelX, 0f, Screen.width - 380f);
+            _mgrPanelY = GUI.HorizontalSlider(new Rect(px + 135, ry + 14, 110, 10), _mgrPanelY, 0f, Screen.height - 200f);
+            ry += 32;
 
-            GUI.Label(new Rect(px + 12, py + 44, 246, 18), string.Format("技能偏移: {0}px", (int)_skillOffsetY), s);
-            _skillOffsetY = GUI.HorizontalSlider(new Rect(px + 12, py + 62, 246, 14), _skillOffsetY, 0f, 300f);
-
-            GUI.Label(new Rect(px + 12, py + 80, 246, 18), string.Format("商店偏移: {0}px", (int)_shopOffsetY), s);
-            _shopOffsetY = GUI.HorizontalSlider(new Rect(px + 12, py + 98, 246, 14), _shopOffsetY, 0f, 300f);
-
-            GUI.Label(new Rect(px + 12, py + 116, 246, 18), string.Format("背景透明度: {0:F0}%", _bgOpacity * 100f), s);
-            _bgOpacity = GUI.HorizontalSlider(new Rect(px + 12, py + 134, 246, 14), _bgOpacity, 0.1f, 0.95f);
-
-            var bs = new GUIStyle(GUI.skin.button) { fontSize = 13, fontStyle = FontStyle.Bold };
-            if (GUI.Button(new Rect(px + 20, py + 158, 48, 28), "保存", bs))
+            var bs = new GUIStyle(GUI.skin.button) { fontSize = 12, fontStyle = FontStyle.Bold };
+            if (GUI.Button(new Rect(px + 20, ry, 48, 24), "保存", bs))
             {
                 Config[CfgSec, CfgItem].BoxedValue = _itemOffsetY;
                 Config[CfgSec, CfgSkill].BoxedValue = _skillOffsetY;
                 Config[CfgSec, CfgShop].BoxedValue = _shopOffsetY;
                 Config[CfgSec, CfgBg].BoxedValue = _bgOpacity;
+                Config[CfgSec, CfgRecX].BoxedValue = _recPanelX;
+                Config[CfgSec, CfgRecY].BoxedValue = _recPanelY;
+                Config[CfgSec, CfgMgrX].BoxedValue = _mgrPanelX;
+                Config[CfgSec, CfgMgrY].BoxedValue = _mgrPanelY;
                 Config.Save();
             }
-            if (GUI.Button(new Rect(px + 72, py + 158, 45, 28), _useChinese ? "中" : "EN", bs))
+            if (GUI.Button(new Rect(px + 72, ry, 40, 24), _useChinese ? "中" : "EN", bs))
             {
                 _useChinese = !_useChinese;
             }
-            if (GUI.Button(new Rect(px + 122, py + 158, 55, 28), "重置", bs))
+            if (GUI.Button(new Rect(px + 118, ry, 50, 24), "重置", bs))
             {
                 _itemOffsetY = 30f; _skillOffsetY = 20f; _shopOffsetY = 80f; _bgOpacity = 0.55f;
+                _recPanelX = 10f; _recPanelY = 50f; _mgrPanelX = 10f; _mgrPanelY = 300f;
             }
         }
 
@@ -507,7 +537,7 @@ namespace BazaarBoardReader
 
         private void DrawRecommendationPanel()
         {
-            var px = 10f; var py = 10f; var pw = 350f; var ph = Mathf.Min(400f, Screen.height - 20f);
+            var px = _recPanelX; var py = _recPanelY; var pw = 350f; var ph = Mathf.Min(400f, Screen.height - py - 10f);
             DrawRect(new Rect(px, py, pw, ph), new Color(0, 0, 0, 0.85f));
 
             var s = new GUIStyle(_labelStyle) { fontSize = 13, alignment = TextAnchor.UpperLeft };
@@ -529,7 +559,11 @@ namespace BazaarBoardReader
                 hbs.normal.textColor = GetHeroColor(h);
                 if (isActive) GUI.DrawTexture(new Rect(hx, hy, hbw, 18), WhiteTex());
                 if (GUI.Button(new Rect(hx, hy, hbw, 18), abbrev, hbs))
+                {
                     _detectedHero = (_detectedHero == h) ? "" : h;
+                    Config[CfgSecGeneral, CfgHero].BoxedValue = _detectedHero;
+                    Config.Save();
+                }
                 hx += hbw + 1;
             }
 
@@ -626,7 +660,8 @@ namespace BazaarBoardReader
 
         private void DrawBuildManagerPanel()
         {
-            var px = 10f; var py = Screen.height - 410f; var pw = 380f; var ph = 400f;
+            var px = _mgrPanelX; var py = _mgrPanelY; var pw = 380f; var ph = 400f;
+            if (py + ph > Screen.height) py = Screen.height - ph - 10;
             if (py < 10) py = 10;
             DrawRect(new Rect(px, py, pw, ph), new Color(0.05f, 0.05f, 0.1f, 0.95f));
 
