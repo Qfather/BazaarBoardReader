@@ -422,9 +422,16 @@ namespace BazaarBoardReader
             GUI.Label(new Rect(px + 10, py + 28, pw - 20, 18),
                 string.Format("当前英雄: {0}", string.IsNullOrEmpty(_detectedHero) ? "未检测" : _detectedHero), s);
 
-            // 实时刷新匹配结果
+            // 实时刷新匹配结果（仅玩家物品） + 商店物品
             var currentItems = GatherAllItemNames();
+            var shopItems = GatherShopItemNames();
             _matchResults = MatchBuilds(_detectedHero, currentItems);
+            // 检查商店中是否有匹配的缺失物品
+            foreach (var mr in _matchResults)
+            {
+                mr.ShopCoreMatches = mr.CoreMissing.FindAll(n => shopItems.Contains(n));
+                mr.ShopFlexMatches = mr.FlexMissing.FindAll(n => shopItems.Contains(n));
+            }
 
             // 匹配结果
             _recScroll = GUI.BeginScrollView(new Rect(px + 5, py + 50, pw - 10, ph - 60), _recScroll,
@@ -465,22 +472,16 @@ namespace BazaarBoardReader
 
                 ry += barH + 4;
 
-                // 缺失物品
+                // 缺失物品（商店有货的醒目闪烁）
                 if (mr.CoreMissing.Count > 0)
                 {
-                    var ms = new GUIStyle(s) { fontSize = 11 };
-                    ms.normal.textColor = new Color(1f, 0.3f, 0.3f);
-                    GUI.Label(new Rect(15, ry, pw - 30, 16),
-                        string.Format("缺核心: {0}", string.Join(", ", mr.CoreMissing.ToArray())), ms);
-                    ry += 16;
+                    DrawMissingLine(15, ref ry, pw - 30, "缺核心: ", mr.CoreMissing, mr.ShopCoreMatches,
+                        new Color(1f, 0.3f, 0.3f), new Color(0.2f, 1f, 0.5f));
                 }
                 if (mr.FlexMissing.Count > 0)
                 {
-                    var ms = new GUIStyle(s) { fontSize = 11 };
-                    ms.normal.textColor = new Color(1f, 0.7f, 0.3f);
-                    GUI.Label(new Rect(15, ry, pw - 30, 16),
-                        string.Format("缺灵活: {0}", string.Join(", ", mr.FlexMissing.ToArray())), ms);
-                    ry += 16;
+                    DrawMissingLine(15, ref ry, pw - 30, "缺灵活: ", mr.FlexMissing, mr.ShopFlexMatches,
+                        new Color(1f, 0.7f, 0.3f), new Color(0.5f, 1f, 0.5f));
                 }
                 ry += 5;
             }
@@ -755,6 +756,49 @@ namespace BazaarBoardReader
             catch { }
         }
 
+        private void DrawMissingLine(float x, ref float y, float maxW, string prefix,
+            List<string> missing, List<string> inShop, Color missingColor, Color shopColor)
+        {
+            var ms = new GUIStyle(_labelStyle) { fontSize = 11, alignment = TextAnchor.UpperLeft };
+            ms.normal.textColor = missingColor;
+            // 前缀
+            GUI.Label(new Rect(x, y, 55, 16), prefix, ms);
+
+            float cx = x + 55;
+            for (int i = 0; i < missing.Count; i++)
+            {
+                var item = missing[i];
+                var inStore = inShop.Contains(item);
+
+                // 商店有货 → 闪烁绿色
+                if (inStore)
+                {
+                    var blink = 0.6f + 0.4f * Mathf.Sin(Time.time * 5f);
+                    ms.normal.textColor = new Color(shopColor.r, shopColor.g, shopColor.b, blink);
+                }
+                else
+                {
+                    ms.normal.textColor = missingColor;
+                }
+
+                var itemText = (i < missing.Count - 1) ? item + ", " : item;
+                var sz = ms.CalcSize(new GUIContent(itemText));
+                GUI.Label(new Rect(cx, y, sz.x + 5, 16), itemText, ms);
+
+                // 商店有货加 ★ 标记
+                if (inStore)
+                {
+                    var starStyle = new GUIStyle(ms) { fontSize = 10 };
+                    starStyle.normal.textColor = new Color(1f, 0.9f, 0.1f);
+                    GUI.Label(new Rect(cx + sz.x - 2, y - 2, 20, 16), "★", starStyle);
+                }
+
+                cx += sz.x + 2;
+                if (cx > x + maxW - 30) { cx = x + 55; y += 16; }
+            }
+            y += 16;
+        }
+
         private string GetCardName(BazaarGameClient.Domain.Models.Cards.Card c)
         {
             try
@@ -892,6 +936,8 @@ namespace BazaarBoardReader
                         {
                             var cd = cc.CardData;
                             if (cd == null || cd.Type.ToString() != "Item") continue;
+                            // 排除商店物品
+                            if (IsUnderEncounter(cc.transform)) continue;
                             // 只取玩家棋盘上的物品
                             if (_isPlayerBoardProp != null)
                             {
@@ -955,7 +1001,7 @@ namespace BazaarBoardReader
 
         private List<string> GatherAllItemNames()
         {
-            // 与 F8 捕获使用相同数据源：CardController 扫描（棋盘 + 仓库）
+            // CardController 扫描，排除 EncounterController 子对象（商店物品）
             var result = new List<string>();
             try
             {
@@ -970,12 +1016,8 @@ namespace BazaarBoardReader
                         {
                             var cd = cc.CardData;
                             if (cd == null || cd.Type.ToString() != "Item") continue;
-                            // 只取玩家的物品（棋盘 + 仓库）
-                            if (_isPlayerBoardProp != null)
-                            {
-                                try { /* 忽略 IsPlayerBoard — 棋盘和仓库都算 */ }
-                                catch { }
-                            }
+                            // 排除商店物品：检查父级是否有 EncounterController
+                            if (IsUnderEncounter(cc.transform)) continue;
                             var name = GetCardName(cd);
                             if (!string.IsNullOrEmpty(name) && name != "???")
                                 result.Add(name);
@@ -985,37 +1027,47 @@ namespace BazaarBoardReader
                 }
             }
             catch { }
+            return result;
+        }
 
-            // 回退：BoardManager 方法
-            if (result.Count == 0)
+        private bool IsUnderEncounter(Transform t)
+        {
+            while (t != null)
             {
-                try
+                var ec = t.GetComponent<EncounterController>();
+                if (ec != null) return true;
+                t = t.parent;
+            }
+            return false;
+        }
+
+        // 扫描商店待售物品
+        private List<string> GatherShopItemNames()
+        {
+            var result = new List<string>();
+            try
+            {
+#pragma warning disable 0618
+                var all = UnityEngine.Object.FindObjectsOfType<CardController>();
+#pragma warning restore 0618
+                if (all != null)
                 {
-                    if (_playerCardsOnBoardField != null)
+                    foreach (var cc in all)
                     {
-                        var bm = BoardManager.Instance;
-                        if (bm != null)
+                        try
                         {
-                            var list = _playerCardsOnBoardField.GetValue(bm) as IList;
-                            if (list != null)
-                            {
-                                foreach (var o in list)
-                                {
-                                    if (o == null) continue;
-                                    var ctrl = o as ItemController;
-                                    if (ctrl == null) continue;
-                                    var cd = ctrl.CardData;
-                                    if (cd == null) continue;
-                                    var name = GetCardName(cd);
-                                    if (!string.IsNullOrEmpty(name) && name != "???")
-                                        result.Add(name);
-                                }
-                            }
+                            var cd = cc.CardData;
+                            if (cd == null || cd.Type.ToString() != "Item") continue;
+                            if (!IsUnderEncounter(cc.transform)) continue;
+                            var name = GetCardName(cd);
+                            if (string.IsNullOrEmpty(name) || name == "???") continue;
+                            result.Add(name);
                         }
+                        catch { }
                     }
                 }
-                catch { }
             }
+            catch { }
             return result;
         }
 
@@ -1233,6 +1285,8 @@ namespace BazaarBoardReader
         public List<string> CoreMissing = new List<string>();
         public List<string> FlexOwned = new List<string>();
         public List<string> FlexMissing = new List<string>();
+        public List<string> ShopCoreMatches = new List<string>();
+        public List<string> ShopFlexMatches = new List<string>();
     }
 
     [Serializable]
