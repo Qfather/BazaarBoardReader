@@ -1027,7 +1027,7 @@ namespace BazaarBoardReader
                 {
                     var wrapper = JsonConvert.DeserializeObject<TranslationData>(File.ReadAllText(path, Encoding.UTF8));
                     if (wrapper != null && wrapper.by_name != null)
-                    { _translations = wrapper.by_name; _logger.LogInfo(string.Format("[BoardReader] 翻译表: {0}", _translations.Count)); }
+                    { _translations = wrapper.by_name; _logger.LogInfo(string.Format("[BoardReader] 翻译: {0} 条", _translations.Count)); }
                 }
             }
             catch { }
@@ -1039,6 +1039,20 @@ namespace BazaarBoardReader
             if (!_useChinese) return english;
             string chinese;
             if (_translations.TryGetValue(english, out chinese)) return chinese;
+            // 去掉 [Karnok Unique] / [Vanessa] 等方括号前缀
+            var bracketEnd = english.IndexOf(']');
+            if (bracketEnd > 0 && english.StartsWith("["))
+            {
+                var stripped = english.Substring(bracketEnd + 1);
+                if (_translations.TryGetValue(stripped, out chinese)) return chinese;
+            }
+            // 去掉括号后缀 (Gold) (Silver) 等
+            var parenIdx = english.IndexOf('(');
+            if (parenIdx > 0)
+            {
+                var stripped = english.Substring(0, parenIdx).TrimEnd();
+                if (_translations.TryGetValue(stripped, out chinese)) return chinese;
+            }
             return english;
         }
 
