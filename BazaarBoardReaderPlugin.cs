@@ -64,6 +64,7 @@ namespace BazaarBoardReader
         private bool _showRecommendations;
         private bool _showBuildManager;
 
+        private float _lastRefreshTime;
         private float _itemOffsetY = 30f;
         private float _skillOffsetY = 20f;
         private float _shopOffsetY = 80f;
@@ -254,9 +255,11 @@ namespace BazaarBoardReader
                 }
             }
 
-            if (_overlayEnabled && Time.frameCount % 60 == 0)
+            if (_overlayEnabled && Time.frameCount % 60 == 0 && Time.time - _lastRefreshTime > 0.5f)
             {
-                RefreshOverlayLabels();
+                _lastRefreshTime = Time.time;
+                try { RefreshOverlayLabels(); }
+                catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] Refresh: {0}", ex)); }
                 if (string.IsNullOrEmpty(_detectedHero)) _detectedHero = DetectHero();
             }
         }
