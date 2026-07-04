@@ -601,8 +601,14 @@ namespace BazaarBoardReader
                     float iy = ry + 42;
                     for (int i = 0; i < build.CoreItems.Count; i++)
                     {
-                        GUI.Label(new Rect(25, iy, 200, 16), build.CoreItems[i], ns);
-                        if (GUI.Button(new Rect(250, iy, 25, 15), "X"))
+                        GUI.Label(new Rect(25, iy, 160, 16), build.CoreItems[i], ns);
+                        if (GUI.Button(new Rect(195, iy, 25, 15), "↓"))
+                        {
+                            build.FlexItems.Add(build.CoreItems[i]);
+                            build.CoreItems.RemoveAt(i);
+                            SaveBuilds();
+                        }
+                        if (GUI.Button(new Rect(222, iy, 25, 15), "X"))
                         {
                             build.CoreItems.RemoveAt(i);
                             SaveBuilds();
@@ -615,8 +621,14 @@ namespace BazaarBoardReader
                     iy += 16;
                     for (int i = 0; i < build.FlexItems.Count; i++)
                     {
-                        GUI.Label(new Rect(25, iy, 200, 16), build.FlexItems[i], ns);
-                        if (GUI.Button(new Rect(250, iy, 25, 15), "X"))
+                        GUI.Label(new Rect(25, iy, 160, 16), build.FlexItems[i], ns);
+                        if (GUI.Button(new Rect(195, iy, 25, 15), "↑"))
+                        {
+                            build.CoreItems.Add(build.FlexItems[i]);
+                            build.FlexItems.RemoveAt(i);
+                            SaveBuilds();
+                        }
+                        if (GUI.Button(new Rect(222, iy, 25, 15), "X"))
                         {
                             build.FlexItems.RemoveAt(i);
                             SaveBuilds();
@@ -936,9 +948,12 @@ namespace BazaarBoardReader
                         {
                             var cd = cc.CardData;
                             if (cd == null || cd.Type.ToString() != "Item") continue;
-                            // 排除商店物品
-                            if (IsUnderEncounter(cc.transform)) continue;
-                            // 只取玩家棋盘上的物品
+                            // 排除非玩家物品（商店物品不在 BoardManager 里）
+                            var owned = GetOwnedItemNames();
+                            var name = GetCardName(cd);
+                            if (!owned.Contains(name)) continue;
+                            if (string.IsNullOrEmpty(name) || name == "???") continue;
+                            // 只取棋盘上的（IsPlayerBoard == true）
                             if (_isPlayerBoardProp != null)
                             {
                                 try
@@ -948,9 +963,7 @@ namespace BazaarBoardReader
                                 }
                                 catch { }
                             }
-                            var name = GetCardName(cd);
-                            if (!string.IsNullOrEmpty(name) && name != "???")
-                                result.Add(new KeyValuePair<float, string>(cc.transform.position.x, name));
+                            result.Add(new KeyValuePair<float, string>(cc.transform.position.x, name));
                         }
                         catch { }
                     }
@@ -1001,32 +1014,10 @@ namespace BazaarBoardReader
 
         private List<string> GatherAllItemNames()
         {
-            // CardController 扫描，排除 EncounterController 子对象（商店物品）
+            // 从 BoardManager 获取玩家拥有的物品（最可靠）
+            var owned = GetOwnedItemNames();
             var result = new List<string>();
-            try
-            {
-#pragma warning disable 0618
-                var all = UnityEngine.Object.FindObjectsOfType<CardController>();
-#pragma warning restore 0618
-                if (all != null)
-                {
-                    foreach (var cc in all)
-                    {
-                        try
-                        {
-                            var cd = cc.CardData;
-                            if (cd == null || cd.Type.ToString() != "Item") continue;
-                            // 排除商店物品：检查父级是否有 EncounterController
-                            if (IsUnderEncounter(cc.transform)) continue;
-                            var name = GetCardName(cd);
-                            if (!string.IsNullOrEmpty(name) && name != "???")
-                                result.Add(name);
-                        }
-                        catch { }
-                    }
-                }
-            }
-            catch { }
+            foreach (var n in owned) result.Add(n);
             return result;
         }
 
@@ -1041,10 +1032,49 @@ namespace BazaarBoardReader
             return false;
         }
 
-        // 扫描商店待售物品
+        // 构建玩家物品 HashSet（从 BoardManager）
+        private HashSet<string> _ownedItemCache = new HashSet<string>();
+        private int _ownedItemCacheFrame;
+
+        private HashSet<string> GetOwnedItemNames()
+        {
+            if (_ownedItemCacheFrame == Time.frameCount) return _ownedItemCache;
+            _ownedItemCache.Clear();
+            _ownedItemCacheFrame = Time.frameCount;
+            try
+            {
+                if (_playerCardsOnBoardField != null)
+                {
+                    var bm = BoardManager.Instance;
+                    if (bm != null)
+                    {
+                        var list = _playerCardsOnBoardField.GetValue(bm) as IList;
+                        if (list != null)
+                        {
+                            foreach (var o in list)
+                            {
+                                if (o == null) continue;
+                                var ctrl = o as ItemController;
+                                if (ctrl == null) continue;
+                                var cd = ctrl.CardData;
+                                if (cd == null) continue;
+                                var name = GetCardName(cd);
+                                if (!string.IsNullOrEmpty(name) && name != "???")
+                                    _ownedItemCache.Add(name);
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+            return _ownedItemCache;
+        }
+
+        // 扫描商店待售物品 = CardController 物品 - 玩家已拥有物品
         private List<string> GatherShopItemNames()
         {
             var result = new List<string>();
+            var owned = GetOwnedItemNames();
             try
             {
 #pragma warning disable 0618
@@ -1058,10 +1088,10 @@ namespace BazaarBoardReader
                         {
                             var cd = cc.CardData;
                             if (cd == null || cd.Type.ToString() != "Item") continue;
-                            if (!IsUnderEncounter(cc.transform)) continue;
                             var name = GetCardName(cd);
                             if (string.IsNullOrEmpty(name) || name == "???") continue;
-                            result.Add(name);
+                            if (!owned.Contains(name))
+                                result.Add(name);
                         }
                         catch { }
                     }
