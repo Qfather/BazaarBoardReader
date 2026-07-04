@@ -180,6 +180,7 @@ namespace BazaarBoardReader
             {
                 _captureMode = true;
                 _captureBuildName = "";
+                _captureHeroInput = "";
                 var items = GatherCurrentBoardItemNames();
                 _logger.LogInfo(string.Format("[BoardReader] F8 捕获阵容: {0} 个物品", items.Count));
             }
@@ -330,13 +331,16 @@ namespace BazaarBoardReader
 
         // ==================== F8 捕获对话框 ====================
 
+        private string _captureHeroInput = "";
+
         private void CaptureCurrentBoardAsBuild()
         {
             var items = GatherCurrentBoardItemNames();
             if (items.Count == 0) return;
+            var hero = string.IsNullOrEmpty(_captureHeroInput) ? _detectedHero : _captureHeroInput;
             var build = new BuildTemplate
             {
-                HeroName = _detectedHero,
+                HeroName = hero,
                 BuildName = _captureBuildName,
                 CoreItems = items,
                 FlexItems = new List<string>()
@@ -344,7 +348,7 @@ namespace BazaarBoardReader
             _builds.Add(build);
             SaveBuilds();
             _logger.LogInfo(string.Format("[BoardReader] 已保存阵容: {0} 英雄={1} 物品={2}",
-                _captureBuildName, _detectedHero, string.Join(", ", items.ToArray())));
+                _captureBuildName, hero, string.Join(", ", items.ToArray())));
         }
 
         private void DrawCaptureDialog()
@@ -370,7 +374,9 @@ namespace BazaarBoardReader
             _captureBuildName = GUI.TextField(new Rect(x + 80, y + 85, 160, 22), _captureBuildName ?? "", 30);
 
             GUI.Label(new Rect(x + 15, y + 115, 60, 22), "英雄:", s);
-            GUI.Label(new Rect(x + 80, y + 115, 160, 22), string.IsNullOrEmpty(_detectedHero) ? "未检测到" : _detectedHero, s);
+            var heroDisplay = string.IsNullOrEmpty(_detectedHero) ? "手动输入" : _detectedHero;
+            var heroPlaceholder = string.IsNullOrEmpty(_captureHeroInput) ? heroDisplay : _captureHeroInput;
+            _captureHeroInput = GUI.TextField(new Rect(x + 80, y + 115, 160, 22), heroPlaceholder, 30);
 
             var bs = new GUIStyle(GUI.skin.button) { fontSize = 13, fontStyle = FontStyle.Bold };
             if (GUI.Button(new Rect(x + 20, y + 150, 90, 28), "保存", bs))
@@ -848,7 +854,7 @@ namespace BazaarBoardReader
 
         private List<string> GatherCurrentBoardItemNames()
         {
-            var result = new List<string>();
+            var result = new List<KeyValuePair<float, string>>();
             // 方法与 overlay 一致：通过 CardController 扫描
             try
             {
@@ -871,11 +877,11 @@ namespace BazaarBoardReader
                                     if (!((bool)_isPlayerBoardProp.GetValue(cc, null)))
                                         continue;
                                 }
-                                catch { /* 无法判断则保留 */ }
+                                catch { }
                             }
                             var name = GetCardName(cd);
                             if (!string.IsNullOrEmpty(name) && name != "???")
-                                result.Add(name);
+                                result.Add(new KeyValuePair<float, string>(cc.transform.position.x, name));
                         }
                         catch { }
                     }
@@ -905,7 +911,7 @@ namespace BazaarBoardReader
                                     if (cd == null) continue;
                                     var name = GetCardName(cd);
                                     if (!string.IsNullOrEmpty(name) && name != "???")
-                                        result.Add(name);
+                                        result.Add(new KeyValuePair<float, string>(((MonoBehaviour)ctrl).transform.position.x, name));
                                 }
                             }
                         }
@@ -913,7 +919,15 @@ namespace BazaarBoardReader
                 }
                 catch { }
             }
-            return result;
+
+            // 按 X 坐标排序（从左到右，游戏棋盘顺序）
+            result.Sort(delegate (KeyValuePair<float, string> a, KeyValuePair<float, string> b)
+            {
+                return a.Key.CompareTo(b.Key);
+            });
+            var names = new List<string>();
+            foreach (var kv in result) names.Add(kv.Value);
+            return names;
         }
 
         private List<string> GatherAllItemNames()
