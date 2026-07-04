@@ -23,6 +23,7 @@ $refs += "$managedDir\BazaarGameClient.dll"
 $refs += "$managedDir\BazaarGameShared.dll"
 $refs += "$managedDir\TheBazaarRuntime.dll"
 $refs += "$managedDir\Newtonsoft.Json.dll"
+$refs += "$managedDir\Mono.Data.Sqlite.dll"
 
 $refArgs = ""
 foreach ($r in $refs) {

@@ -329,15 +329,25 @@ namespace BazaarBoardReader
             }
             GUI.Label(tr, lbl.Text, style);
 
-            // 副文字（推荐/暴击）
+            // 副文字（推荐/暴击率）
             if (!string.IsNullOrEmpty(lbl.SubText))
             {
-                var subStyle = new GUIStyle(style) { fontSize = 11 };
+                var subStyle = new GUIStyle(style) { fontSize = 11, alignment = TextAnchor.UpperCenter };
+                var isCrit = false;
                 if (lbl.SubText == "推荐") subStyle.normal.textColor = new Color(0.2f, 1f, 0.3f);
                 else if (lbl.SubText == "一般") subStyle.normal.textColor = new Color(1f, 0.8f, 0.2f);
                 else if (lbl.SubText == "不推荐") subStyle.normal.textColor = new Color(0.7f, 0.3f, 0.3f);
-                else subStyle.normal.textColor = new Color(0.8f, 0.8f, 0.8f);
-                var subRect = new Rect(r.x + 8, r.y + 3 + sz.y + 1, w - 16, extraH);
+                else { subStyle.normal.textColor = new Color(1f, 0.25f, 0.2f); subStyle.fontSize = 13; subStyle.fontStyle = FontStyle.Bold; isCrit = true; }
+                var subRect = new Rect(r.x, r.y + 3 + sz.y + 1, w, extraH);
+                if (isCrit)
+                {
+                    // 白色描边
+                    var sk = new GUIStyle(subStyle) { normal = { textColor = Color.black } };
+                    for (int dx = -1; dx <= 1; dx++)
+                        for (int dy = -1; dy <= 1; dy++)
+                            if (dx != 0 || dy != 0)
+                                GUI.Label(new Rect(subRect.x + dx, subRect.y + dy, subRect.width, subRect.height), lbl.SubText, sk);
+                }
                 GUI.Label(subRect, lbl.SubText, subStyle);
             }
 
@@ -499,8 +509,23 @@ namespace BazaarBoardReader
             var ts = new GUIStyle(s) { fontSize = 15, fontStyle = FontStyle.Bold };
             ts.normal.textColor = new Color(1f, 0.8f, 0.2f);
             GUI.Label(new Rect(px + 10, py + 5, pw - 50, 22), "阵容推荐 (F9)", ts);
-            GUI.Label(new Rect(px + 10, py + 28, pw - 20, 18),
-                string.Format("英雄: {0}", string.IsNullOrEmpty(_detectedHero) ? "?" : _detectedHero), s);
+            // 英雄按钮
+            var heroes = CollectHeroNames();
+            GUI.Label(new Rect(px + 10, py + 28, 30, 18), "英雄:", s);
+            float hx = px + 42;
+            foreach (var h in heroes)
+            {
+                var hbw = s.CalcSize(new GUIContent(h)).x + 10;
+                if (hx + hbw > px + pw - 10) { hx = px + 10; /* would wrap but skip for now */ }
+                var isActive = _detectedHero == h;
+                var hbs = new GUIStyle(GUI.skin.button) { fontSize = 11 };
+                if (isActive) hbs.normal.textColor = Color.yellow;
+                if (GUI.Button(new Rect(hx, py + 26, hbw, 18), h, hbs))
+                {
+                    _detectedHero = (_detectedHero == h) ? "" : h;
+                }
+                hx += hbw + 2;
+            }
 
             var currentItems = GatherAllItemNames();
             var shopItems = GatherShopItemNames();
@@ -603,7 +628,11 @@ namespace BazaarBoardReader
             var ts = new GUIStyle(s) { fontSize = 14, fontStyle = FontStyle.Bold };
             ts.normal.textColor = new Color(0.3f, 0.8f, 1f);
 
-            GUI.Label(new Rect(px + 10, py + 5, pw - 50, 22), "阵容管理 (F10)", ts);
+            GUI.Label(new Rect(px + 10, py + 5, pw - 90, 22), "阵容管理 (F10)", ts);
+            if (GUI.Button(new Rect(px + pw - 80, py + 5, 70, 20), "导入社区"))
+            {
+                ImportCommunityBuilds();
+            }
             GUI.Label(new Rect(px + 10, py + 28, pw - 20, 18),
                 string.Format("英雄: {0} | {1} 阵容", string.IsNullOrEmpty(_detectedHero) ? "?" : _detectedHero, _builds.Count), s);
 
@@ -798,6 +827,8 @@ namespace BazaarBoardReader
                 {
                     if (ec == null) continue;
                     var t = ec.transform;
+                    // 排除玩家角色框 (Encounter_Frame_xxx_PV)
+                    if (t.name.Contains("_Frame_") || t.name.Contains("_PV")) continue;
                     var sp = cam.WorldToScreenPoint(t.position);
                     sp.y -= _shopOffsetY;
                     var shopName = t.name;
@@ -826,7 +857,7 @@ namespace BazaarBoardReader
                     foreach (var kv in cd.Attributes)
                     {
                         if (kv.Key.ToString().ToLower().Contains("crit") && kv.Value != 0)
-                            return string.Format("暴击:{0}%", kv.Value);
+                            return kv.Value + "%";
                     }
                 }
             }
@@ -857,6 +888,30 @@ namespace BazaarBoardReader
         }
 
         // ==================== 英雄检测 ====================
+
+        private List<string> CollectHeroNames()
+        {
+            var heroes = new HashSet<string>();
+            foreach (var b in _builds)
+                if (!string.IsNullOrEmpty(b.HeroName)) heroes.Add(b.HeroName);
+            // 加入社区阵容英雄
+            try
+            {
+                var path = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "community_builds.json");
+                if (File.Exists(path))
+                {
+                    var cb = JsonConvert.DeserializeObject<Dictionary<string, CommunityBuild>>(File.ReadAllText(path, Encoding.UTF8));
+                    if (cb != null)
+                        foreach (var kv in cb)
+                            if (kv.Value != null && !string.IsNullOrEmpty(kv.Value.hero))
+                                heroes.Add(kv.Value.hero);
+                }
+            }
+            catch { }
+            var list = new List<string>(heroes);
+            list.Sort();
+            return list;
+        }
 
         private string DetectHero()
         {
@@ -1021,6 +1076,45 @@ namespace BazaarBoardReader
             catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] 保存失败: {0}", ex)); }
         }
 
+        private void ImportCommunityBuilds()
+        {
+            try
+            {
+                var path = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "community_builds.json");
+                if (!File.Exists(path))
+                {
+                    _logger.LogWarning("[BoardReader] 未找到 community_builds.json");
+                    return;
+                }
+                var json = File.ReadAllText(path, Encoding.UTF8);
+                var builds = JsonConvert.DeserializeObject<Dictionary<string, CommunityBuild>>(json);
+                if (builds == null) return;
+                int imported = 0;
+                foreach (var kv in builds)
+                {
+                    var cb = kv.Value;
+                    if (cb == null) continue;
+                    // 检查是否已存在同名
+                    if (_builds.Exists(b => b.BuildName == cb.display_name)) continue;
+                    var bt = new BuildTemplate
+                    {
+                        HeroName = cb.hero ?? "",
+                        BuildName = cb.display_name ?? kv.Key,
+                        CoreItems = cb.core_cards ?? new List<string>(),
+                        FlexItems = (cb.transition_cards ?? new List<string>())
+                            .Concat(cb.optional_cards ?? new List<string>()).ToList(),
+                        CoreSkills = new List<string>(),
+                        FlexSkills = new List<string>()
+                    };
+                    _builds.Add(bt);
+                    imported++;
+                }
+                SaveBuildsAtomic();
+                _logger.LogInfo(string.Format("[BoardReader] 导入社区阵容: {0} 个", imported));
+            }
+            catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] 导入失败: {0}", ex)); }
+        }
+
         private static void WriteJsonAtomic(string path, string json)
         {
             var tmp = path + ".tmp";
@@ -1111,6 +1205,58 @@ namespace BazaarBoardReader
 
         private void LoadTranslations()
         {
+            // 方案1：从游戏 SQLite 缓存读取（永远最新）
+            try
+            {
+                var localLow = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                localLow = localLow.Substring(0, localLow.Length - 7) + "Low"; // AppData\Local → LocalLow
+                var dbPath = Path.Combine(localLow, "Tempo Storm", "The Bazaar", "prod", "cache", "translations", "zh-CN.bytes");
+                if (File.Exists(dbPath))
+                {
+                    var conn = new Mono.Data.Sqlite.SqliteConnection("URI=file:" + dbPath);
+                    conn.Open();
+                    var cmd = conn.CreateCommand();
+                    // 查表结构
+                    cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table'";
+                    var tableName = "";
+                    using (var r = cmd.ExecuteReader()) { if (r.Read()) tableName = r.GetString(0); }
+                    if (!string.IsNullOrEmpty(tableName))
+                    {
+                        // 查列结构
+                        var cols = new List<string>();
+                        cmd.CommandText = "PRAGMA table_info(" + tableName + ")";
+                        using (var r = cmd.ExecuteReader())
+                        { while (r.Read()) cols.Add(r.GetString(1)); }
+
+                        // 找到 key/value 对应的列名
+                        var keyCol = cols.Find(c => c.ToLower().Contains("key") || c.ToLower().Contains("source") || c.ToLower().Contains("string"));
+                        var valCol = cols.Find(c => c.ToLower().Contains("value") || c.ToLower().Contains("text") || c.ToLower().Contains("translation") || c.ToLower().Contains("target"));
+                        if (keyCol == null) keyCol = cols[0];
+                        if (valCol == null) valCol = cols[cols.Count - 1];
+
+                        cmd.CommandText = string.Format("SELECT [{0}], [{1}] FROM {2}", keyCol, valCol, tableName);
+                        using (var r = cmd.ExecuteReader())
+                        {
+                            while (r.Read())
+                            {
+                                var k = r.GetValue(0);
+                                var v = r.GetValue(1);
+                                if (k != null && v != null && !DBNull.Value.Equals(k) && !DBNull.Value.Equals(v))
+                                    _translations[k.ToString()] = v.ToString();
+                            }
+                        }
+                    }
+                    conn.Close();
+                    if (_translations.Count > 100)
+                    {
+                        _logger.LogInfo(string.Format("[BoardReader] SQLite翻译: {0} 条", _translations.Count));
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex) { _logger.LogWarning(string.Format("[BoardReader] SQLite: {0}", ex)); }
+
+            // 方案2：JSON 文件回退
             try
             {
                 var dir = Path.GetDirectoryName(typeof(BazaarBoardReaderPlugin).Assembly.Location);
@@ -1121,7 +1267,7 @@ namespace BazaarBoardReader
                 {
                     var wrapper = JsonConvert.DeserializeObject<TranslationData>(File.ReadAllText(path, Encoding.UTF8));
                     if (wrapper != null && wrapper.by_name != null)
-                    { _translations = wrapper.by_name; _logger.LogInfo(string.Format("[BoardReader] 翻译: {0} 条", _translations.Count)); }
+                    { _translations = wrapper.by_name; _logger.LogInfo(string.Format("[BoardReader] JSON翻译: {0} 条", _translations.Count)); }
                 }
             }
             catch { }
@@ -1228,19 +1374,19 @@ namespace BazaarBoardReader
             if (!_useChinese) return english;
             string chinese;
             if (_translations.TryGetValue(english, out chinese)) return chinese;
-            // 去掉 [Karnok Unique] / [Vanessa] 等方括号前缀
-            var bracketEnd = english.IndexOf(']');
-            if (bracketEnd > 0 && english.StartsWith("["))
+            // 循环去掉 [Karnok Unique] [Crash Site Expedition] 等方括号前缀
+            var stripped = english;
+            while (stripped.StartsWith("[") && stripped.IndexOf(']') > 0)
             {
-                var stripped = english.Substring(bracketEnd + 1);
+                stripped = stripped.Substring(stripped.IndexOf(']') + 1).TrimStart();
                 if (_translations.TryGetValue(stripped, out chinese)) return chinese;
             }
             // 去掉括号后缀 (Gold) (Silver) 等
             var parenIdx = english.IndexOf('(');
             if (parenIdx > 0)
             {
-                var stripped = english.Substring(0, parenIdx).TrimEnd();
-                if (_translations.TryGetValue(stripped, out chinese)) return chinese;
+                var s2 = english.Substring(0, parenIdx).TrimEnd();
+                if (_translations.TryGetValue(s2, out chinese)) return chinese;
             }
             return english;
         }
@@ -1360,6 +1506,7 @@ namespace BazaarBoardReader
     [Serializable]
     public class EventsData { public List<EventShopEntry> shops; }
     public class CardDbEntry { public string internal_name; public string type; public string hero; public List<string> heroes; public List<string> tags; public string size; public string rarity; }
+    public class CommunityBuild { public string hero; public string display_name; public List<string> core_cards; public List<string> transition_cards; public List<string> optional_cards; }
 
     [Serializable]
     public class BuildTemplate
