@@ -218,15 +218,15 @@ namespace BazaarBoardReader
 
         private void Update()
         {
-            if (IsKeyPressed("f7")) _showSliders = !_showSliders;
             if (IsKeyPressed("f6"))
             {
                 _overlayEnabled = !_overlayEnabled;
+                _showSliders = _overlayEnabled;
+                _showRecommendations = _overlayEnabled;
+                _showBuildManager = _overlayEnabled;
                 Config[CfgSecGeneral, CfgOverlay].BoxedValue = _overlayEnabled;
                 Config.Save();
             }
-            if (IsKeyPressed("f9")) _showRecommendations = !_showRecommendations;
-            if (IsKeyPressed("f10")) { _showBuildManager = !_showBuildManager; _captureMode = false; }
 
             if (IsKeyPressed("f5"))
             {
@@ -511,7 +511,7 @@ namespace BazaarBoardReader
 
             var ts = new GUIStyle(s) { fontSize = 15, fontStyle = FontStyle.Bold };
             ts.normal.textColor = new Color(1f, 0.8f, 0.2f);
-            GUI.Label(new Rect(px + 10, py + 5, pw - 50, 22), "阵容推荐 (F9)", ts);
+            GUI.Label(new Rect(px + 10, py + 5, pw - 50, 22), "阵容推荐 (F6)", ts);
             // 英雄按钮
             var heroes = CollectHeroNames();
             GUI.Label(new Rect(px + 10, py + 28, 30, 18), "英雄:", s);
@@ -583,9 +583,9 @@ namespace BazaarBoardReader
             { s.normal.textColor = Color.gray; GUI.Label(new Rect(10, ry, 300, 18), "暂无匹配阵容 (F10添加)", s); }
             GUI.EndScrollView();
 
-            if (GUI.Button(new Rect(px + 10, py + ph - 25, 55, 20), "F8捕获", GUI.skin.button)) _captureMode = true;
-            if (GUI.Button(new Rect(px + 70, py + ph - 25, 55, 20), "F10管理", GUI.skin.button)) _showBuildManager = true;
-            if (GUI.Button(new Rect(px + 130, py + ph - 25, 55, 20), "F5导出", GUI.skin.button))
+            if (GUI.Button(new Rect(px + 10, py + ph - 25, 55, 20), "F6捕获", GUI.skin.button)) _captureMode = true;
+            if (GUI.Button(new Rect(px + 70, py + ph - 25, 55, 20), "F6管理", GUI.skin.button)) _showBuildManager = true;
+            if (GUI.Button(new Rect(px + 130, py + ph - 25, 55, 20), "F5", GUI.skin.button))
             { try { ExportToJson(GatherBoardData()); } catch { } }
         }
 
@@ -631,7 +631,7 @@ namespace BazaarBoardReader
             var ts = new GUIStyle(s) { fontSize = 14, fontStyle = FontStyle.Bold };
             ts.normal.textColor = new Color(0.3f, 0.8f, 1f);
 
-            GUI.Label(new Rect(px + 10, py + 5, pw - 90, 22), "阵容管理 (F10)", ts);
+            GUI.Label(new Rect(px + 10, py + 5, pw - 90, 22), "阵容管理 (F6)", ts);
             if (GUI.Button(new Rect(px + pw - 80, py + 5, 70, 20), "导入社区"))
             {
                 ImportCommunityBuilds();
