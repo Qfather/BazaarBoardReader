@@ -1,0 +1,21 @@
+# 编译产物
+*.dll
+*.exe
+*.pdb
+
+# 临时文件
+*.tmp
+*.log
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+
+# 系统文件
+Thumbs.db
+Desktop.ini
+
+# 诊断脚本
+find_shops.ps1
