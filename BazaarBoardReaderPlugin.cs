@@ -45,7 +45,7 @@ namespace BazaarBoardReader
     {
         private const string PluginGuid = "com.bazaar.boardreader";
         private const string PluginName = "BazaarBoardReader";
-        private const string PluginVersion = "7.0.0";
+        private const string PluginVersion = "7.1.0";
 
         private ManualLogSource _logger;
         private float _lastExportTime;
@@ -152,15 +152,16 @@ namespace BazaarBoardReader
             _bgOpacity = Config.Bind(CfgSec, CfgBg, 0.55f).Value;
             _overlayEnabled = Config.Bind(CfgSecGeneral, CfgOverlay, true).Value;
             _detectedHero = Config.Bind(CfgSecGeneral, CfgHero, "").Value;
-            _recPanelX = Config.Bind(CfgSec, CfgRecX, 10f).Value;
+            _recPanelX = Config.Bind(CfgSec, CfgRecX, 50f).Value;
             _recPanelY = Config.Bind(CfgSec, CfgRecY, 50f).Value;
-            _mgrPanelX = Config.Bind(CfgSec, CfgMgrX, 10f).Value;
-            _mgrPanelY = Config.Bind(CfgSec, CfgMgrY, 300f).Value;
+            _mgrPanelX = Config.Bind(CfgSec, CfgMgrX, 50f).Value;
+            _mgrPanelY = Config.Bind(CfgSec, CfgMgrY, 470f).Value;
             _panelAlpha = Config.Bind(CfgSec, CfgPanelAlpha, 0.8f).Value;
             // 默认全部开启
+            _showSliders = true;
             _showRecommendations = true;
             _showBuildManager = true;
-            _logger.LogInfo(string.Format("[BoardReader] v7.0 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
+            _logger.LogInfo(string.Format("[BoardReader] v7.1 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
                 (int)_itemOffsetY, (int)_skillOffsetY, (int)_shopOffsetY, _bgOpacity * 100f));
 
             _labelStyle = new GUIStyle { fontSize = 18, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter, wordWrap = false };
@@ -299,10 +300,10 @@ namespace BazaarBoardReader
                     { if (lbl.ScreenPos.z <= 0) continue; DrawLabel(lbl, true); }
                 }
             }
-            if (_showSliders) DrawSlidersPanel();
-            if (_captureMode) DrawCaptureDialog();
-            if (_showRecommendations) DrawRecommendationPanel();
-            if (_showBuildManager) DrawBuildManagerPanel();
+            if (_showSliders) { try { DrawSlidersPanel(); } catch (Exception e) { _logger.LogError("F7面板: " + e); } }
+            if (_captureMode) { try { DrawCaptureDialog(); } catch (Exception e) { _logger.LogError("捕获: " + e); } }
+            if (_showRecommendations) { try { DrawRecommendationPanel(); } catch (Exception e) { _logger.LogError("推荐: " + e); } }
+            if (_showBuildManager) { try { DrawBuildManagerPanel(); } catch (Exception e) { _logger.LogError("管理: " + e); } }
             DrawHoverTooltip();
         }
 
@@ -427,12 +428,45 @@ namespace BazaarBoardReader
         // 画纯色矩形（复用白色纹理+GUI.color）
         private void DrawRect(Rect r, Color c) { var old = GUI.color; GUI.color = c; GUI.DrawTexture(r, WhiteTex()); GUI.color = old; }
 
+        // 画圆角矩形（用竖条逐步逼近圆角，无需生成纹理）
+        private void DrawRoundedRect(Rect r, Color c, int radius = 10)
+        {
+            if (radius < 2 || r.width < radius * 2 || r.height < radius * 2) { DrawRect(r, c); return; }
+            var old = GUI.color;
+            GUI.color = c;
+            var wt = WhiteTex();
+            // 主体：中间矩形 + 左右两条（去掉圆角区域）
+            GUI.DrawTexture(new Rect(r.x + radius, r.y, r.width - 2 * radius, r.height), wt);
+            GUI.DrawTexture(new Rect(r.x, r.y + radius, r.width, r.height - 2 * radius), wt);
+            // 四角：逐列从外向内画竖条，竖条高度逐步增加到完整高度
+            for (int i = 0; i < radius; i++)
+            {
+                int step = radius - i;
+                GUI.DrawTexture(new Rect(r.x + i, r.y + step, 1, r.height - 2 * step), wt);
+                GUI.DrawTexture(new Rect(r.x + r.width - 1 - i, r.y + step, 1, r.height - 2 * step), wt);
+            }
+            GUI.color = old;
+        }
+
+        // 面板背景颜色=英雄颜色暗化版（未选英雄则黑色）
+        private Color GetPanelBgColor()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_detectedHero))
+                    return new Color(0, 0, 0, _panelAlpha);
+                var hc = GetHeroColor(_detectedHero);
+                return new Color(hc.r * 0.12f, hc.g * 0.12f, hc.b * 0.12f, _panelAlpha);
+            }
+            catch { return new Color(0, 0, 0, _panelAlpha); }
+        }
+
         private void DrawSlidersPanel()
         {
             var pw = 270f; var ph = 330f;
-            var px = Screen.width - pw - 10f;
-            var py = Screen.height - ph - 10f;
-            DrawRect(new Rect(px, py, pw, ph), new Color(0, 0, 0, _panelAlpha));
+            var px = 50f;
+            var py = Screen.height - ph - 50f;
+            DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
 
             var s = new GUIStyle(_labelStyle) { fontSize = 12 };
             s.normal.textColor = Color.white;
@@ -484,7 +518,7 @@ namespace BazaarBoardReader
             if (GUI.Button(new Rect(px + 118, ry, 50, 24), "重置", bs))
             {
                 _itemOffsetY = 30f; _skillOffsetY = 20f; _shopOffsetY = 80f; _bgOpacity = 0.55f;
-                _recPanelX = 10f; _recPanelY = 50f; _mgrPanelX = 10f; _mgrPanelY = 300f;
+                _recPanelX = 50f; _recPanelY = 50f; _mgrPanelX = 50f; _mgrPanelY = 470f;
             }
         }
 
@@ -509,7 +543,7 @@ namespace BazaarBoardReader
         {
             var w = 330f; var h = 200f;
             var x = (Screen.width - w) / 2; var y = (Screen.height - h) / 2;
-            DrawRect(new Rect(x, y, w, h), new Color(0.1f, 0.1f, 0.15f, _panelAlpha));
+            DrawRoundedRect(new Rect(x, y, w, h), new Color(0.1f, 0.1f, 0.15f, _panelAlpha));
 
             var s = new GUIStyle(_labelStyle) { fontSize = 14, wordWrap = true };
             s.normal.textColor = Color.white;
@@ -544,7 +578,7 @@ namespace BazaarBoardReader
         private void DrawRecommendationPanel()
         {
             var px = _recPanelX; var py = _recPanelY; var pw = 350f; var ph = Mathf.Min(400f, Screen.height - py - 10f);
-            DrawRect(new Rect(px, py, pw, ph), new Color(0, 0, 0, _panelAlpha));
+            DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
 
             var s = new GUIStyle(_labelStyle) { fontSize = 13, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
@@ -669,7 +703,7 @@ namespace BazaarBoardReader
             var px = _mgrPanelX; var py = _mgrPanelY; var pw = 380f; var ph = 400f;
             if (py + ph > Screen.height) py = Screen.height - ph - 10;
             if (py < 10) py = 10;
-            DrawRect(new Rect(px, py, pw, ph), new Color(0.05f, 0.05f, 0.1f, _panelAlpha));
+            DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
 
             var s = new GUIStyle(_labelStyle) { fontSize = 12, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
