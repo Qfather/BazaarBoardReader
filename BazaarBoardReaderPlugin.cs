@@ -101,6 +101,9 @@ namespace BazaarBoardReader
 
         private Dictionary<string, string> _translations = new Dictionary<string, string>();
         private bool _useChinese = true;
+        // 商店推荐
+        private Dictionary<string, EventShopEntry> _shopData = new Dictionary<string, EventShopEntry>();
+        private Dictionary<string, CardDbEntry> _cardDb = new Dictionary<string, CardDbEntry>();
 
         public static Dictionary<int, TrackedCard> TrackedCards = new Dictionary<int, TrackedCard>();
 
@@ -153,6 +156,7 @@ namespace BazaarBoardReader
             _buildsPath = Path.Combine(Paths.ConfigPath, "BazaarBoardReader_Builds.json");
             LoadBuilds();
             LoadTranslations();
+            LoadShopRecommendationData();
 
             try
             {
@@ -278,19 +282,31 @@ namespace BazaarBoardReader
             if (_captureMode) DrawCaptureDialog();
             if (_showRecommendations) DrawRecommendationPanel();
             if (_showBuildManager) DrawBuildManagerPanel();
+            DrawHoverTooltip();
         }
 
         // ==================== 绘制基础 ====================
+
+        private Rect _lastHoverRect;
+        private string _hoverTooltip = "";
 
         private void DrawLabel(OverlayLabel lbl, bool isShop)
         {
             var style = isShop ? _shopStyle : _labelStyle;
             var sz = style.CalcSize(new GUIContent(lbl.Text));
             var w = (int)(sz.x + 16);
-            var h = (int)(sz.y + 6);
+            var extraH = 0;
+            if (!string.IsNullOrEmpty(lbl.SubText))
+            {
+                var subSz = style.CalcSize(new GUIContent(lbl.SubText));
+                if (subSz.x + 16 > w) w = (int)(subSz.x + 16);
+                extraH = (int)(subSz.y + 2);
+            }
+            var h = (int)(sz.y + 6) + extraH;
             var r = new Rect(lbl.ScreenPos.x - w / 2, Screen.height - lbl.ScreenPos.y, w, h);
             GUI.DrawTexture(r, GetRoundedBg(w, h));
 
+            // 描边
             var os = new GUIStyle(style) { normal = { textColor = new Color(0, 0, 0, 0.9f) } };
             var tr = new Rect(r.x + 8, r.y + 3, sz.x, sz.y);
             for (int dx = -2; dx <= 2; dx++)
@@ -298,10 +314,61 @@ namespace BazaarBoardReader
                     if (dx != 0 || dy != 0)
                         GUI.Label(new Rect(tr.x + dx, tr.y + dy, sz.x, sz.y), lbl.Text, os);
 
-            style.normal.textColor = isShop ? new Color(0.2f, 1f, 0.3f) : Color.white;
-            if (!isShop && _tierColors.ContainsKey(lbl.Tier))
+            // 主文字颜色
+            if (isShop)
+            {
+                style.normal.textColor = new Color(0.2f, 1f, 0.3f);
+            }
+            else if (_tierColors.ContainsKey(lbl.Tier))
+            {
                 style.normal.textColor = _tierColors[lbl.Tier];
+            }
+            else
+            {
+                style.normal.textColor = Color.white;
+            }
             GUI.Label(tr, lbl.Text, style);
+
+            // 副文字（推荐/暴击）
+            if (!string.IsNullOrEmpty(lbl.SubText))
+            {
+                var subStyle = new GUIStyle(style) { fontSize = 11 };
+                if (lbl.SubText == "推荐") subStyle.normal.textColor = new Color(0.2f, 1f, 0.3f);
+                else if (lbl.SubText == "一般") subStyle.normal.textColor = new Color(1f, 0.8f, 0.2f);
+                else if (lbl.SubText == "不推荐") subStyle.normal.textColor = new Color(0.7f, 0.3f, 0.3f);
+                else subStyle.normal.textColor = new Color(0.8f, 0.8f, 0.8f);
+                var subRect = new Rect(r.x + 8, r.y + 3 + sz.y + 1, w - 16, extraH);
+                GUI.Label(subRect, lbl.SubText, subStyle);
+            }
+
+            // 悬停检测
+            if (!string.IsNullOrEmpty(lbl.HoverData))
+            {
+                var mousePos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+                if (r.Contains(mousePos))
+                {
+                    _hoverTooltip = lbl.HoverData;
+                    _lastHoverRect = r;
+                }
+            }
+        }
+
+        // 在 OnGUI 末尾绘制悬停提示
+        private void DrawHoverTooltip()
+        {
+            if (string.IsNullOrEmpty(_hoverTooltip)) return;
+            var ts = new GUIStyle(_labelStyle) { fontSize = 12, alignment = TextAnchor.UpperLeft };
+            ts.normal.textColor = Color.white;
+            var sz = ts.CalcSize(new GUIContent(_hoverTooltip));
+            var mx = _lastHoverRect.x + _lastHoverRect.width / 2;
+            var my = _lastHoverRect.y + _lastHoverRect.height + 5;
+            var tw = sz.x + 16;
+            var th = sz.y + 10;
+            if (mx + tw > Screen.width) mx = Screen.width - tw - 10;
+            if (my + th > Screen.height) my = _lastHoverRect.y - th - 5;
+            GUI.DrawTexture(new Rect(mx, my, tw, th), Tex(new Color(0, 0, 0, 0.9f)));
+            GUI.Label(new Rect(mx + 8, my + 5, sz.x, sz.y), _hoverTooltip, ts);
+            _hoverTooltip = "";
         }
 
         private Texture2D GetRoundedBg(int w, int h)
@@ -671,7 +738,8 @@ namespace BazaarBoardReader
                             if (typeStr == "Item")
                             {
                                 sp.y -= _itemOffsetY;
-                                _itemLabels.Add(new OverlayLabel { Text = GetCardName(cd), Tier = cd.Tier.ToString(), ScreenPos = sp });
+                                var subText = GetCritText(cd);
+                                _itemLabels.Add(new OverlayLabel { Text = GetCardName(cd), Tier = cd.Tier.ToString(), ScreenPos = sp, SubText = subText });
                             }
                             else if (typeStr == "Skill")
                             {
@@ -734,10 +802,36 @@ namespace BazaarBoardReader
                     sp.y -= _shopOffsetY;
                     var shopName = t.name;
                     if (shopName.EndsWith("(Clone)")) shopName = shopName.Substring(0, shopName.Length - 7);
-                    _shopLabels.Add(new OverlayLabel { Text = Translate(shopName), Tier = "Invalid", ScreenPos = sp });
+                    var rating = RateShop(shopName);
+                    var subText = "";
+                    var hoverData = "";
+                    if (rating != null)
+                    {
+                        var parts = rating.Split('|');
+                        subText = parts[0];
+                        hoverData = parts.Length > 1 ? parts[1] : "";
+                    }
+                    _shopLabels.Add(new OverlayLabel { Text = Translate(shopName), Tier = "Invalid", ScreenPos = sp, SubText = subText, HoverData = hoverData });
                 }
             }
             catch { }
+        }
+
+        private string GetCritText(BazaarGameClient.Domain.Models.Cards.Card cd)
+        {
+            try
+            {
+                if (cd.Attributes != null)
+                {
+                    foreach (var kv in cd.Attributes)
+                    {
+                        if (kv.Key.ToString().ToLower().Contains("crit") && kv.Value != 0)
+                            return string.Format("暴击:{0}%", kv.Value);
+                    }
+                }
+            }
+            catch { }
+            return null;
         }
 
         private bool IsPlayerItem(Transform t)
@@ -1033,6 +1127,101 @@ namespace BazaarBoardReader
             catch { }
         }
 
+        // ==================== 商店推荐 ====================
+
+        private void LoadShopRecommendationData()
+        {
+            try
+            {
+                var dataDir = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data");
+                // 加载 events.json
+                var eventsPath = Path.Combine(dataDir, "events.json");
+                if (File.Exists(eventsPath))
+                {
+                    var json = File.ReadAllText(eventsPath, Encoding.UTF8);
+                    // events.json 结构: { "shops": [...], "skill_shops": [...], ... }
+                    var wrapper = JsonConvert.DeserializeObject<Dictionary<string, List<EventShopEntry>>>(json);
+                    if (wrapper != null && wrapper.ContainsKey("shops"))
+                    {
+                        foreach (var shop in wrapper["shops"])
+                        {
+                            if (!string.IsNullOrEmpty(shop.name))
+                                _shopData[shop.name.ToLower()] = shop;
+                        }
+                    }
+                }
+                // 加载 cards_generated.json (只取需要的字段)
+                var cardsPath = Path.Combine(dataDir, "cards_generated.json");
+                if (File.Exists(cardsPath))
+                {
+                    var cardsJson = File.ReadAllText(cardsPath, Encoding.UTF8);
+                    var cardsDict = JsonConvert.DeserializeObject<Dictionary<string, CardDbEntry>>(cardsJson);
+                    if (cardsDict != null)
+                    {
+                        foreach (var kv in cardsDict)
+                        {
+                            if (kv.Value != null)
+                                _cardDb[kv.Key.ToLower()] = kv.Value;
+                        }
+                    }
+                }
+                _logger.LogInfo(string.Format("[BoardReader] 商店数据: {0}店 {1}卡", _shopData.Count, _cardDb.Count));
+            }
+            catch (Exception ex) { _logger.LogWarning(string.Format("[BoardReader] 商店数据加载失败: {0}", ex)); }
+        }
+
+        private string RateShop(string shopName)
+        {
+            if (_shopData.Count == 0 || _cardDb.Count == 0) return null;
+            var key = shopName.ToLower();
+            EventShopEntry shop;
+            if (!_shopData.TryGetValue(key, out shop)) return null;
+            if (shop.shop_pool == null || shop.shop_pool.reward_tags == null) return null;
+
+            // 收集当前阵容缺失的核心物品
+            var missingCore = new HashSet<string>();
+            foreach (var b in _builds)
+            {
+                if (!string.IsNullOrEmpty(_detectedHero) && !string.IsNullOrEmpty(b.HeroName) && b.HeroName != _detectedHero) continue;
+                foreach (var item in b.CoreItems) missingCore.Add(item.ToLower());
+                foreach (var item in b.CoreSkills) missingCore.Add(item.ToLower());
+            }
+            // 去掉已拥有的
+            var owned = new HashSet<string>();
+            foreach (var n in GatherAllItemNames()) owned.Add(n.ToLower());
+            foreach (var n in GatherPlayerSkillNames()) owned.Add(n.ToLower());
+            missingCore.RemoveWhere(n => owned.Contains(n));
+
+            if (missingCore.Count == 0) return null;
+
+            // 构建商店卡池
+            var poolCards = new List<string>();
+            foreach (var tag in shop.shop_pool.reward_tags)
+            {
+                foreach (var kv in _cardDb)
+                {
+                    if (kv.Value.tags != null && kv.Value.tags.Contains(tag))
+                        poolCards.Add(kv.Key);
+                }
+            }
+            if (poolCards.Count == 0) return null;
+
+            // 计算核心命中
+            var hits = new List<string>();
+            foreach (var card in poolCards)
+            {
+                if (missingCore.Contains(card)) hits.Add(card);
+            }
+
+            if (hits.Count == 0) return "不推荐";
+            float hitRate = (float)hits.Count / missingCore.Count;
+            if (hitRate >= 0.3f) return "推荐|命中:" + string.Join(",", hits.ToArray());
+            if (hitRate >= 0.1f) return "一般|命中:" + string.Join(",", hits.ToArray());
+            return "不推荐";
+        }
+
+        // ==================== 翻译 ====================
+
         private string Translate(string english)
         {
             if (string.IsNullOrEmpty(english)) return english;
@@ -1160,9 +1349,17 @@ namespace BazaarBoardReader
 
     // ==================== 数据类 ====================
 
-    internal class OverlayLabel { public string Text; public string Tier; public Vector3 ScreenPos; }
+    internal class OverlayLabel { public string Text; public string Tier; public Vector3 ScreenPos; public string SubText; public string HoverData; }
 
     public class TrackedCard { public string Name; public string Type; public bool IsPlayer; public float LastSeen; }
+
+    [Serializable]
+    public class EventShopPool { public List<string> reward_tags; public string match_mode; public string rarity_rule; public List<string> excluded_tags; public string hero_scope; }
+    [Serializable]
+    public class EventShopEntry { public string name; public string shop_type; public List<string> event_heroes; public EventShopPool shop_pool; }
+    [Serializable]
+    public class EventsData { public List<EventShopEntry> shops; }
+    public class CardDbEntry { public string internal_name; public string type; public string hero; public List<string> heroes; public List<string> tags; public string size; public string rarity; }
 
     [Serializable]
     public class BuildTemplate
