@@ -148,7 +148,7 @@
     ],
     "exclude_tags": [],
     "size": "",
-    "cross_hero": true,
+    "cross_hero": false,
     "desc": "Sells Heal and Regen items",
     "desc_zh": "出售治疗和生命再生物品"
   },
@@ -228,7 +228,7 @@
     ],
     "exclude_tags": [],
     "size": "",
-    "cross_hero": true,
+    "cross_hero": false,
     "desc": "Sells Haste, Slow and Cooldown items",
     "desc_zh": "出售加速、减速和冷却物品"
   },
@@ -461,7 +461,7 @@
     ],
     "exclude_tags": [],
     "size": "",
-    "cross_hero": true,
+    "cross_hero": false,
     "desc": "Sells Health and Shield items",
     "desc_zh": "出售生命值和护盾物品"
   },

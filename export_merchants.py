@@ -44,13 +44,13 @@ RULES = {
     'valpak':     {'cat':'通用', 'heroes':['Common'], 'size':'','tags':[]},
     # 多英雄→通用
     'aimbot':     {'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Crit'], 'cross_hero':True},
-    'herma':      {'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Heal','Regen'], 'cross_hero':True},
-    'kev\'s armory':{'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Shield','Health'], 'cross_hero':True},
+    'herma':      {'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Heal','Regen']},
+    'kev\'s armory':{'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Shield','Health']},
     'pinfeather': {'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Flying'], 'cross_hero':True},
     'private pitchfork':{'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Neutral']},
     'tatiana':    {'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Toys'], 'cross_hero':True},
     'the antiquarian':{'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Relic'], 'cross_hero':True},
-    'tok\'s clocks':{'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Haste','Slow','Cooldown'], 'cross_hero':True},
+    'tok\'s clocks':{'cat':'通用', 'heroes':['Common'], 'size':'','tags':['Haste','Slow','Cooldown']},
     # ── 专属 ──
     'aero':       {'cat':'专属', 'heroes':['Stelle'], 'size':'','tags':['Vehicle','Drone']},
     'colt':       {'cat':'专属', 'heroes':['Vanessa'], 'size':'','tags':['Ammo']},
