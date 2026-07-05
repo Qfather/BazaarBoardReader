@@ -1476,6 +1476,33 @@ namespace BazaarBoardReader
                         }
                     }
                 }
+                // 加载卡牌描述（用于描述关键词匹配，如 MaxHealth）
+                try
+                {
+                    var genPath = Path.Combine(dataDir, "cards_generated.json");
+                    if (File.Exists(genPath))
+                    {
+                        var genJson = File.ReadAllText(genPath, Encoding.UTF8);
+                        var genCards = JsonConvert.DeserializeObject<Dictionary<string, CardDescEntry>>(genJson);
+                        if (genCards != null)
+                        {
+                            int descLoaded = 0;
+                            foreach (var kv in genCards)
+                            {
+                                if (kv.Value == null || string.IsNullOrEmpty(kv.Value.internal_name)) continue;
+                                var key = kv.Value.internal_name.ToLower();
+                                if (_cardDb.ContainsKey(key))
+                                {
+                                    _cardDb[key].description = kv.Value.description ?? "";
+                                    descLoaded++;
+                                }
+                            }
+                            _logger.LogInfo(string.Format("[BoardReader] 描述加载: {0} 条", descLoaded));
+                        }
+                    }
+                }
+                catch (Exception ex) { _logger.LogWarning(string.Format("[BoardReader] 描述加载失败: {0}", ex)); }
+
                 // 加载 merchants.json
                 var merchantsPath = Path.Combine(dataDir, "merchants.json");
                 if (File.Exists(merchantsPath))
@@ -1493,6 +1520,42 @@ namespace BazaarBoardReader
                 _logger.LogInfo(string.Format("[BoardReader] 商人:{0} 卡:{1}", _merchants.Count, _cardDb.Count));
             }
             catch (Exception ex) { _logger.LogWarning(string.Format("[BoardReader] 数据加载: {0}", ex)); }
+        }
+
+        // 扩展标签匹配：精确 + Reference变体 + 描述关键词（如 MaxHealth→"max health"）
+        private bool CardMatchesMerchantTags(CardDataEntry card, List<string> allCardTags, List<string> merchantTags)
+        {
+            if (merchantTags == null || merchantTags.Count == 0) return true;
+
+            foreach (var mt in merchantTags)
+            {
+                // 1. 精确匹配
+                if (allCardTags.Any(ct => ct.Equals(mt, StringComparison.OrdinalIgnoreCase)))
+                    return true;
+
+                // 2. Reference 变体（如 HealReference 匹配 merchant tag="Heal"）
+                if (allCardTags.Any(ct => ct.StartsWith(mt, StringComparison.OrdinalIgnoreCase)))
+                    return true;
+
+                // 3. MaxHealth → Health 系列映射
+                if (mt.Equals("MaxHealth", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (allCardTags.Any(ct => ct.StartsWith("Health", StringComparison.OrdinalIgnoreCase)))
+                        return true;
+                }
+
+                // 4. 描述关键词匹配（MaxHealth 等卡片无对应标签的）
+                if (!string.IsNullOrEmpty(card.description))
+                {
+                    var descLower = card.description.ToLower();
+                    if (mt.Equals("MaxHealth", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (descLower.Contains("max health"))
+                            return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private string RateShop(string shopName)
@@ -1536,15 +1599,19 @@ namespace BazaarBoardReader
                     var sizes = merchant.size.Split(',').Select(s => s.Trim()).ToList();
                     if (!sizes.Any(s => (card.size ?? "").Equals(s, StringComparison.OrdinalIgnoreCase))) continue;
                 }
-                // tags过滤（至少匹配一个）
+                // 合并标签（显式tags + hidden_tags，后者含功能关键字如Burn/Shield/Heal等）
+                var allCardTags = new List<string>();
+                if (card.tags != null) allCardTags.AddRange(card.tags);
+                if (card.hidden_tags != null) allCardTags.AddRange(card.hidden_tags);
+                // tags过滤（精确 + Reference变体 + 描述关键词）
                 if (merchant.tags != null && merchant.tags.Count > 0)
                 {
-                    if (card.tags == null || !merchant.tags.Any(t => card.tags.Contains(t))) continue;
+                    if (!CardMatchesMerchantTags(card, allCardTags, merchant.tags)) continue;
                 }
                 // 排除标签
                 if (merchant.exclude_tags != null && merchant.exclude_tags.Count > 0)
                 {
-                    if (card.tags != null && merchant.exclude_tags.Any(t => card.tags.Contains(t))) continue;
+                    if (merchant.exclude_tags.Any(t => allCardTags.Contains(t))) continue;
                 }
                 pool.Add(kv.Value.internal_name ?? kv.Key);
             }
@@ -1770,8 +1837,9 @@ namespace BazaarBoardReader
 
     [Serializable]
     public class MerchantEntry { public string name; public string category; public List<string> heroes; public string tier; public List<string> tags; public List<string> exclude_tags; public string size; public bool cross_hero; }
-    public class CardDataEntry { public string internal_name; public string type; public List<string> heroes; public List<string> tags; public List<string> hidden_tags; public string size; }
+    public class CardDataEntry { public string internal_name; public string type; public List<string> heroes; public List<string> tags; public List<string> hidden_tags; public string size; public string description; }
     public class CardsData { public Dictionary<string, CardDataEntry> cards; }
+    private class CardDescEntry { public string internal_name; public string description; }
     public class CommunityBuild { public string hero; public string display_name; public List<string> core_cards; public List<string> transition_cards; public List<string> optional_cards; }
 
     [Serializable]
