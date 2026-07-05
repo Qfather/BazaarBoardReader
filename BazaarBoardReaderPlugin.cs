@@ -90,6 +90,7 @@ namespace BazaarBoardReader
         private List<BuildTemplate> _builds = new List<BuildTemplate>();
         private List<BuildMatchResult> _matchResults = new List<BuildMatchResult>();
         private string _detectedHero = "";
+        private string _selectedBuildName = ""; // 用户手动选择的阵容名
         private string _buildsPath;
         private Vector2 _buildListScroll;
         private Vector2 _recScroll;
@@ -639,18 +640,26 @@ namespace BazaarBoardReader
                 new Rect(0, 0, pw - 30, _matchResults.Count * 90 + 10));
 
             float ry = 5;
-            float barMaxW = pw - 95;
+            float barMaxW = pw - 75;
             for (int i = 0; i < _matchResults.Count && i < 10; i++)
             {
                 var mr = _matchResults[i];
                 var score = mr.MatchScore * 100f;
 
+                bool isSelected = _selectedBuildName == mr.Template.BuildName;
                 var cs = new GUIStyle(s) { fontSize = 13 };
-                cs.normal.textColor = (i == 0) ? new Color(1f, 0.8f, 0.2f) : Color.white;
-                GUI.Label(new Rect(10, ry, pw - 30, 18),
-                    string.Format("{0}. {1}", i + 1, Translate(mr.Template.BuildName)), cs);
+                cs.normal.textColor = isSelected ? new Color(0.2f, 1f, 0.4f) :
+                    (i == 0 && string.IsNullOrEmpty(_selectedBuildName)) ? new Color(1f, 0.8f, 0.2f) : Color.white;
+                var nameRect = new Rect(10, ry, pw - 30, 18);
+                GUI.Label(nameRect, string.Format("{0}. {1}", i + 1, Translate(mr.Template.BuildName)), cs);
                 ry += 20;
 
+                // 选择按钮在百分比条上方
+                var selBtnRect = new Rect(10 + barMaxW - 32, ry - 18, 30, 16);
+                if (GUI.Button(selBtnRect, isSelected ? "✓" : "+", GUI.skin.button))
+                {
+                    _selectedBuildName = isSelected ? "" : mr.Template.BuildName;
+                }
                 var barH = 16f;
                 DrawRect(new Rect(10, ry, barMaxW, barH), new Color(0.15f, 0.15f, 0.15f, 0.8f));
                 var barFillW = barMaxW * (score / 100f);
@@ -659,9 +668,10 @@ namespace BazaarBoardReader
                     var fc = score >= 70f ? new Color(0.1f, 0.9f, 0.2f) : score >= 40f ? new Color(0.8f, 0.8f, 0.1f) : new Color(0.8f, 0.3f, 0.1f);
                     DrawRect(new Rect(10, ry, barFillW, barH), fc);
                 }
-                var ps2 = new GUIStyle(s) { fontSize = 12, alignment = TextAnchor.MiddleRight };
+                // 百分比写在进度条内右侧
+                var ps2 = new GUIStyle(s) { fontSize = 11, alignment = TextAnchor.MiddleRight };
                 ps2.normal.textColor = Color.white;
-                GUI.Label(new Rect(10 + barMaxW, ry, 55, barH), string.Format("{0:F0}%", score), ps2);
+                GUI.Label(new Rect(10, ry, barMaxW - 4, barH), string.Format("{0:F0}%", score), ps2);
                 ry += barH + 4;
 
                 if (mr.CoreMissing.Count > 0)
@@ -1470,11 +1480,19 @@ namespace BazaarBoardReader
             }
             if (pool.Count == 0) return null;
 
-            // 用 MatchBuilds 找最佳匹配阵容
-            var currentItems = GatherAllItemNames();
-            var matchResults = MatchBuilds(_detectedHero, currentItems);
-            if (matchResults.Count == 0) return null;
-            var bestBuild = matchResults[0].Template;
+            // 选阵容：优先手动选择，否则取匹配度最高
+            BuildTemplate bestBuild = null;
+            if (!string.IsNullOrEmpty(_selectedBuildName))
+            {
+                bestBuild = _builds.Find(b => b.BuildName == _selectedBuildName);
+            }
+            if (bestBuild == null)
+            {
+                var currentItems = GatherAllItemNames();
+                var matchResults = MatchBuilds(_detectedHero, currentItems);
+                if (matchResults.Count > 0) bestBuild = matchResults[0].Template;
+            }
+            if (bestBuild == null) return null;
 
             // 收集缺失物品
             var ownedLower = new HashSet<string>();
