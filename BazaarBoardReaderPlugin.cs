@@ -45,7 +45,7 @@ namespace BazaarBoardReader
     {
         private const string PluginGuid = "com.bazaar.boardreader";
         private const string PluginName = "BazaarBoardReader";
-        private const string PluginVersion = "7.1.0";
+        private const string PluginVersion = "7.2.0";
 
         private ManualLogSource _logger;
         private float _lastExportTime;
@@ -1328,84 +1328,21 @@ namespace BazaarBoardReader
 
         private void LoadTranslations()
         {
-            // 方案1：从游戏 SQLite 缓存直接读取（永远最新，无需更新）
+            // 从 JSON 文件加载翻译（由 extract_translations.py 从游戏缓存生成）
             try
             {
-                var localLow = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                localLow = localLow.Substring(0, localLow.Length - 7) + "Low";
-                var dbPath = Path.Combine(localLow, "Tempo Storm", "The Bazaar", "prod", "cache", "translations", "zh-CN.bytes");
-                if (!File.Exists(dbPath)) throw new Exception("zh-CN.bytes 不存在");
-
-                var conn = new Mono.Data.Sqlite.SqliteConnection("URI=file:" + dbPath);
-                conn.Open();
-                var cmd = conn.CreateCommand();
-
-                // 获取所有表名
-                var tables = new List<string>();
-                cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table'";
-                using (var r = cmd.ExecuteReader()) { while (r.Read()) tables.Add(r.GetString(0)); }
-                _logger.LogInfo(string.Format("[BoardReader] SQLite表: [{0}]", string.Join(", ", tables.ToArray())));
-
-                foreach (var tableName in tables)
-                {
-                    var cols = new List<string>();
-                    cmd.CommandText = "PRAGMA table_info(" + tableName + ")";
-                    using (var r = cmd.ExecuteReader()) { while (r.Read()) cols.Add(r.GetString(1)); }
-                    if (cols.Count < 2) continue;
-
-                    // 尝试所有列对组合，找英文→中文的映射
-                    for (int ki = 0; ki < cols.Count; ki++)
-                    {
-                        for (int vi = 0; vi < cols.Count; vi++)
-                        {
-                            if (ki == vi) continue;
-                            _translations.Clear();
-                            cmd.CommandText = string.Format("SELECT [{0}], [{1}] FROM {2} LIMIT 5000", cols[ki], cols[vi], tableName);
-                            try
-                            {
-                                using (var r = cmd.ExecuteReader())
-                                {
-                                    while (r.Read())
-                                    {
-                                        var k = r.GetValue(0); var v = r.GetValue(1);
-                                        if (k != null && v != null && !DBNull.Value.Equals(k) && !DBNull.Value.Equals(v))
-                                        {
-                                            var ks = k.ToString(); var vs = v.ToString();
-                                            if (!string.IsNullOrEmpty(ks) && !string.IsNullOrEmpty(vs) && HasChinese(vs) && !HasChinese(ks))
-                                                _translations[ks] = vs;
-                                        }
-                                    }
-                                }
-                            }
-                            catch { continue; }
-                            if (_translations.Count > 3000)
-                            {
-                                conn.Close();
-                                _logger.LogInfo(string.Format("[BoardReader] SQLite直读: {0} 条 ({1}.{2}→{3})", _translations.Count, tableName, cols[ki], cols[vi]));
-                                return;
-                            }
-                        }
-                    }
-                }
-                conn.Close();
-                _logger.LogWarning(string.Format("[BoardReader] SQLite未找到有效翻译组合"));
-            }
-            catch (Exception ex) { _logger.LogWarning(string.Format("[BoardReader] SQLite: {0}", ex)); }
-
-            // 方案2：JSON 回退
-            try
-            {
-                var dir = Path.GetDirectoryName(typeof(BazaarBoardReaderPlugin).Assembly.Location);
-                var path = Path.Combine(dir, "translations_zh_cn.json");
-                if (!File.Exists(path)) path = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "translations_zh_cn.json");
+                var path = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "translations_zh_cn.json");
+                if (!File.Exists(path))
+                    path = Path.Combine(Path.GetDirectoryName(typeof(BazaarBoardReaderPlugin).Assembly.Location), "translations_zh_cn.json");
                 if (File.Exists(path))
                 {
                     var wrapper = JsonConvert.DeserializeObject<TranslationData>(File.ReadAllText(path, Encoding.UTF8));
                     if (wrapper != null && wrapper.by_name != null)
-                    { _translations = wrapper.by_name; _logger.LogInfo(string.Format("[BoardReader] JSON翻译: {0} 条", _translations.Count)); }
+                    { _translations = wrapper.by_name; _logger.LogInfo(string.Format("[BoardReader] 翻译加载: {0} 条", _translations.Count)); }
                 }
+                else _logger.LogWarning("[BoardReader] translations_zh_cn.json 未找到");
             }
-            catch { }
+            catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] 翻译失败: {0}", ex)); }
         }
 
         // ==================== 商店推荐 ====================
@@ -1511,10 +1448,24 @@ namespace BazaarBoardReader
             if (_translations.TryGetValue(english, out chinese)) return chinese;
             // 循环去掉 [Karnok Unique] [Crash Site Expedition] 等方括号前缀
             var stripped = english;
+            var bracketWords = new List<string>();
             while (stripped.StartsWith("[") && stripped.IndexOf(']') > 0)
             {
-                stripped = stripped.Substring(stripped.IndexOf(']') + 1).TrimStart();
+                var end = stripped.IndexOf(']');
+                var bracketContent = stripped.Substring(1, end - 1);
+                bracketWords.AddRange(bracketContent.Split(' '));
+                stripped = stripped.Substring(end + 1).TrimStart();
                 if (_translations.TryGetValue(stripped, out chinese)) return chinese;
+            }
+            // 去掉方括号后仍找不到？尝试移除括号内的单词（如 Expedition）
+            if (bracketWords.Count > 0)
+            {
+                foreach (var w in bracketWords)
+                {
+                    if (w.Length <= 3) continue;
+                    var trial = stripped.Replace(" " + w, "").Replace(w + " ", "").Trim();
+                    if (trial != stripped && _translations.TryGetValue(trial, out chinese)) return chinese;
+                }
             }
             // 去掉括号后缀 (Gold) (Silver) 等
             var parenIdx = english.IndexOf('(');
@@ -1522,6 +1473,12 @@ namespace BazaarBoardReader
             {
                 var s2 = english.Substring(0, parenIdx).TrimEnd();
                 if (_translations.TryGetValue(s2, out chinese)) return chinese;
+            }
+            // 模糊匹配：Creature ↔ Monster
+            if (english.Contains("Creature"))
+            {
+                var trial = english.Replace("Creature", "Monster");
+                if (_translations.TryGetValue(trial, out chinese)) return chinese;
             }
             return english;
         }
