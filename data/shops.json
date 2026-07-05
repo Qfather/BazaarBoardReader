@@ -1,0 +1,698 @@
+{
+  "shops": [
+    {
+      "name": "The Travel Agent",
+      "name_en": "The Travel Agent",
+      "display_name": "旅行代理人",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 1 Hour 5 - Jay Jay",
+      "name_en": "Jay Jay",
+      "display_name": "杰杰",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Finn's Big Bite",
+      "name_en": "Finn's Big Bite",
+      "display_name": "芬恩饱餐餐厅",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "[Crash Site Expedition] Cargo Hold",
+      "name_en": "Cargo Hold",
+      "display_name": "货舱",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 3 Hour 4 - Aila",
+      "name_en": "Aila",
+      "display_name": "爱伊拉",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Truffle Farming (Diamond)",
+      "name_en": "Truffle Farming",
+      "display_name": "松露种植",
+      "heroes": [
+        "Pygmalien"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 3 Hour 1 - Midsworth",
+      "name_en": "Midsworth",
+      "display_name": "米兹沃斯",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Core Initialization",
+      "name_en": "Core Initialization",
+      "display_name": "核心初始化",
+      "heroes": [
+        "Dooley"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Cinder Chase (Silver)",
+      "name_en": "Cinder Chase",
+      "display_name": "逐烬之石",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Supply Drop (Bronze)",
+      "name_en": "Supply Drop",
+      "display_name": "Supply Drop",
+      "heroes": [
+        "Vanessa"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Scrap Salvage (Bronze)",
+      "name_en": "Scrap Salvage",
+      "display_name": "废品回收",
+      "heroes": [
+        "Pygmalien",
+        "Stelle",
+        "Dooley",
+        "Karnok",
+        "Jules"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Jungle Ruins",
+      "name_en": "Jungle Ruins",
+      "display_name": "丛林遗迹",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Procure Medkit (Bronze)",
+      "name_en": "Procure Medkit",
+      "display_name": "采购医疗包",
+      "heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Karnok"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Claw Game",
+      "name_en": "Claw Game",
+      "display_name": "Claw Game",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "[Crash Site Expedition] Crystal Growth Chamber",
+      "name_en": "Crystal Growth Chamber",
+      "display_name": "水晶培养室",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Extract Extract (Diamond)",
+      "name_en": "Extract Extract",
+      "display_name": "双重提纯",
+      "heroes": [
+        "Mak",
+        "Dooley",
+        "Vanessa",
+        "Karnok"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 4 Hour 2 - Free Item",
+      "name_en": "Racetrack",
+      "display_name": "赛道",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 4 Hour 1 - Chronos",
+      "name_en": "Chronos",
+      "display_name": "时精",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Candy Stash (Day 4-6)",
+      "name_en": "Candy Stash",
+      "display_name": "糖果堆",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Ammo Cache (Silver) (Level Up)",
+      "name_en": "Ammo Cache",
+      "display_name": "弹药箱",
+      "heroes": [
+        "Vanessa"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 3 Hour 4 - Quixel",
+      "name_en": "Quixel",
+      "display_name": "葵仙子",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Look for Spare Change (Day 4-6)",
+      "name_en": "Look for Spare Change",
+      "display_name": "寻找零钱",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Kina Tutorial Day 1 Hour 5",
+      "name_en": "Kina",
+      "display_name": "吉娜",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Moonlit Meadow (Diamond)",
+      "name_en": "Moonlit Meadow",
+      "display_name": "月光草甸",
+      "heroes": [
+        "Mak",
+        "Jules"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Toxic Spoils (Day 7-9)",
+      "name_en": "Toxic Spoils",
+      "display_name": "Toxic Spoils",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 3 Hour 2 - Valpak",
+      "name_en": "Valpak",
+      "display_name": "瓦尔帕克",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Eating Contest",
+      "name_en": "Eating Contest",
+      "display_name": "大胃王竞赛",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Library",
+      "name_en": "Library",
+      "display_name": "图书馆",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Gunpowder Cache (Gold)",
+      "name_en": "Gunpowder Cache",
+      "display_name": "火药箱",
+      "heroes": [
+        "Mak",
+        "Vanessa",
+        "Karnok"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 5 Hour 1 - Hef",
+      "name_en": "Hef",
+      "display_name": "贺夫",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 4 Hour 2 - Silvia",
+      "name_en": "Silvia",
+      "display_name": "西尔维娅",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 3 Hour 5 - Ande",
+      "name_en": "Ande",
+      "display_name": "安德",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "[Shrouded Figure] Gold Chest",
+      "name_en": "Shrouded Figure's Chest",
+      "display_name": "长袍怪商的宝箱",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 4 Hour 4 - Free Item",
+      "name_en": "Obstacle Course",
+      "display_name": "障碍赛道",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 5 Hour 2 - Free Item",
+      "name_en": "Pyre",
+      "display_name": "火葬堆",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Reflecting Pool",
+      "name_en": "Reflecting Pool",
+      "display_name": "倒影池",
+      "heroes": [
+        "Mak"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Sharpening Kit (Silver)",
+      "name_en": "Sharpening Kit",
+      "display_name": "打磨套组",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "[Jungle Expedition] Temple Vault (Obsidian)",
+      "name_en": "Temple Vault",
+      "display_name": "神庙宝库",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Shrouded Figure",
+      "name_en": "Shrouded Figure",
+      "display_name": "长袍怪商",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 2 Hour 4 - Colt",
+      "name_en": "Colt",
+      "display_name": "寇特",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 5 Hour 5 - Free Item",
+      "name_en": "Excavation",
+      "display_name": "挖掘行动",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Bjorn's Gift Exchange",
+      "name_en": "Bjorn's Gift Exchange",
+      "display_name": "比约恩的礼物交换",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Salvage Yard (Encounter)",
+      "name_en": "Salvage Yard",
+      "display_name": "拆卸场",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 1 Hour 5 - Mittel",
+      "name_en": "Mittel",
+      "display_name": "米透",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Gumball Machine (Event)",
+      "name_en": "Gumball Machine",
+      "display_name": "口香糖球贩售机",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 4 Hour 4 - Cobweb",
+      "name_en": "Cobweb",
+      "display_name": "蛛网",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Catalyst (Level Up)",
+      "name_en": "Catalyst",
+      "display_name": "催化剂",
+      "heroes": [
+        "Mak"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Haddy",
+      "name_en": "Haddy",
+      "display_name": "哈迪",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Likit",
+      "name_en": "Likit",
+      "display_name": "糖果蛇丽基特",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Rebel Hideout Upgrade (Day 5+)",
+      "name_en": "Rebel Hideout",
+      "display_name": "Rebel Hideout",
+      "heroes": [
+        "Vanessa"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 3 Hour 4 - Free Item",
+      "name_en": "Armory",
+      "display_name": "军械库",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Family Reunion",
+      "name_en": "Family Reunion",
+      "display_name": "家庭团聚",
+      "heroes": [
+        "Stelle"
+      ],
+      "size": "Large",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 5 Hour 2 - Orion",
+      "name_en": "Orion",
+      "display_name": "奥利恩",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 5 Hour 1 - Knightshade",
+      "name_en": "Knightshade",
+      "display_name": "癫茄",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Thieves Guild",
+      "name_en": "Thieves Guild",
+      "display_name": "盗贼行会",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Small",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 3 Hour 5 - Free Item",
+      "name_en": "Security Center",
+      "display_name": "安保中心",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Large",
+      "tags": []
+    },
+    {
+      "name": "Financial District - Economic Seminar - Basic - Reward",
+      "name_en": "Seminar",
+      "display_name": "Seminar",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 3 Hour 2 - Free Item",
+      "name_en": "Go Fishing",
+      "display_name": "钓鱼",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    }
+  ],
+  "skill_shops": [
+    {
+      "name": "Jules' Cafe",
+      "name_en": "Jules' Cafe",
+      "display_name": "朱尔斯的咖啡店",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 1 Hour 4 - Pick Event",
+      "name_en": "Roadside Crate",
+      "display_name": "路边板条箱",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Pygmalien's Loft (Start Skill)",
+      "name_en": "Pygmalien's Loft",
+      "display_name": "皮格马利翁大厦",
+      "heroes": [
+        "Pygmalien"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Vanessa's Quarters (Start Skill)",
+      "name_en": "Vanessa's Quarters",
+      "display_name": "瓦内莎的房间",
+      "heroes": [
+        "Vanessa"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Tutorial - Level 2 - Argenta",
+      "name_en": "Argenta",
+      "display_name": "阿根塔",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Nufu (Pygmalien Restricted Skill List)",
+      "name_en": "Nufu",
+      "display_name": "努夫",
+      "heroes": [
+        "Pygmalien"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Mountain Pass",
+      "name_en": "Mountain Pass",
+      "display_name": "山间小路",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Tutorial Day 2 Hour 5 - Pick Event",
+      "name_en": "Visit the Docks",
+      "display_name": "前往码头",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "Tutorial - Level 1 - Pip",
+      "name_en": "Pip",
+      "display_name": "皮普",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    },
+    {
+      "name": "The Cult",
+      "name_en": "The Cult",
+      "display_name": "教团",
+      "heroes": [
+        "Common"
+      ],
+      "size": "Medium",
+      "tags": []
+    }
+  ]
+}

@@ -1,0 +1,642 @@
+[
+  {
+    "name": "Jay Jay",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Bronze",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells items",
+    "desc_zh": "出售物品"
+  },
+  {
+    "name": "Pol",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Silver",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "Large",
+    "cross_hero": false,
+    "desc": "Sells Large items",
+    "desc_zh": "出售大型物品"
+  },
+  {
+    "name": "Aila",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Bronze",
+    "tags": [
+      "Weapon"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Weapons",
+    "desc_zh": "出售武器"
+  },
+  {
+    "name": "Midsworth",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Bronze",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "Small,Large",
+    "cross_hero": false,
+    "desc": "Sells Small and Large items",
+    "desc_zh": "出售小型和大型物品"
+  },
+  {
+    "name": "Eli",
+    "category": "专属",
+    "heroes": [
+      "Mak"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Potion"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Potions",
+    "desc_zh": "出售药水"
+  },
+  {
+    "name": "Private Pitchfork",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Gold",
+    "tags": [
+      "Neutral"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Neutral items",
+    "desc_zh": "出售中立物品"
+  },
+  {
+    "name": "Nautica",
+    "category": "专属",
+    "heroes": [
+      "Vanessa"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Aquatic"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Aquatic items",
+    "desc_zh": "出售水系物品"
+  },
+  {
+    "name": "Goldie",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Gold",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Gold-tier items",
+    "desc_zh": "出售黄金级物品"
+  },
+  {
+    "name": "Tatiana",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Gold",
+    "tags": [
+      "Toys"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": true,
+    "desc": "Sells Toys from any Hero",
+    "desc_zh": "出售任意英雄的玩具"
+  },
+  {
+    "name": "Herma",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Heal",
+      "Regen"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": true,
+    "desc": "Sells Heal and Regen items",
+    "desc_zh": "出售治疗和生命再生物品"
+  },
+  {
+    "name": "Knightshade",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Diamond",
+    "tags": [
+      "Poison"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Poison items",
+    "desc_zh": "出售剧毒物品"
+  },
+  {
+    "name": "Quixel",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Silver",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "Small,Medium",
+    "cross_hero": false,
+    "desc": "Sells Small and Medium items. Buys your Large items at +{aura.3} value",
+    "desc_zh": "出售小型和中型物品。以+{aura.3}的溢价收购己方大型物品"
+  },
+  {
+    "name": "Chronos",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Diamond",
+    "tags": [
+      "Haste"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Haste items.",
+    "desc_zh": "出售加速物品。"
+  },
+  {
+    "name": "Kina",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Bronze",
+    "tags": [],
+    "exclude_tags": [
+      "Weapon"
+    ],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells non-Weapon items",
+    "desc_zh": "出售非武器物品"
+  },
+  {
+    "name": "Tok's Clocks",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Haste",
+      "Slow",
+      "Cooldown"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": true,
+    "desc": "Sells Haste, Slow and Cooldown items",
+    "desc_zh": "出售加速、减速和冷却物品"
+  },
+  {
+    "name": "The Tester",
+    "category": "专属",
+    "heroes": [
+      "Dooley",
+      "Stelle"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Tech"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Tech items",
+    "desc_zh": "出售科技物品"
+  },
+  {
+    "name": "Valpak",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Bronze",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells items",
+    "desc_zh": "出售物品"
+  },
+  {
+    "name": "Hef",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Diamond",
+    "tags": [
+      "Burn"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Burn items",
+    "desc_zh": "出售灼烧物品"
+  },
+  {
+    "name": "Silvia",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Silver",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Silver-tier items.",
+    "desc_zh": "出售白银级物品。"
+  },
+  {
+    "name": "Ande",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Bronze",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "Small",
+    "cross_hero": false,
+    "desc": "Sells Small items",
+    "desc_zh": "出售小型物品"
+  },
+  {
+    "name": "Pinfeather",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Gold",
+    "tags": [
+      "Flying"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": true,
+    "desc": "Sells Flying items from any Hero",
+    "desc_zh": "出售来自任意英雄的飞行物品"
+  },
+  {
+    "name": "Flex",
+    "category": "专属",
+    "heroes": [
+      "Pygmalien",
+      "Karnok"
+    ],
+    "tier": "Diamond",
+    "tags": [
+      "MaxHealth"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Max Health items",
+    "desc_zh": "出售最大生命值物品"
+  },
+  {
+    "name": "Colt",
+    "category": "专属",
+    "heroes": [
+      "Vanessa"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Ammo"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Ammo items",
+    "desc_zh": "出售弹药物品"
+  },
+  {
+    "name": "Aero",
+    "category": "专属",
+    "heroes": [
+      "Stelle"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Vehicle",
+      "Drone"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Vehicles or Drones",
+    "desc_zh": "出售载具或无人机"
+  },
+  {
+    "name": "Luxe",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Diamond",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Diamond-tier items",
+    "desc_zh": "出售钻石级物品"
+  },
+  {
+    "name": "Barkun",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Silver",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "Medium,Large",
+    "cross_hero": false,
+    "desc": "Sells Medium and Large items. Buys your Small items at +{aura.3} Value",
+    "desc_zh": "出售中型和大型物品。以+{aura.3}价值收购你的小型物品。"
+  },
+  {
+    "name": "Mittel",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Bronze",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "Medium",
+    "cross_hero": false,
+    "desc": "Sells Medium items",
+    "desc_zh": "出售中型物品"
+  },
+  {
+    "name": "Shelter Shelby",
+    "category": "专属",
+    "heroes": [
+      "Karnok",
+      "Vanessa"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Friend"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Friend items",
+    "desc_zh": "出售伙伴物品"
+  },
+  {
+    "name": "Gaseo",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Gold",
+    "tags": [
+      "Apparel"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": true,
+    "desc": "Sells Apparel from any Hero",
+    "desc_zh": "出售任意英雄的服饰"
+  },
+  {
+    "name": "Kev's Armory",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Shield",
+      "Health"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": true,
+    "desc": "Sells Health and Shield items",
+    "desc_zh": "出售生命值和护盾物品"
+  },
+  {
+    "name": "Cobweb",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Diamond",
+    "tags": [
+      "Slow"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Slow items.",
+    "desc_zh": "出售减速物品。"
+  },
+  {
+    "name": "Tinker",
+    "category": "专属",
+    "heroes": [
+      "Dooley"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Friend"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Friend items",
+    "desc_zh": "出售伙伴物品"
+  },
+  {
+    "name": "Serafina",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Diamond",
+    "tags": [],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Enchanted items",
+    "desc_zh": "出售附魔物品"
+  },
+  {
+    "name": "Prospero",
+    "category": "专属",
+    "heroes": [
+      "Pygmalien"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Economic"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Economic items from any hero",
+    "desc_zh": "出售来自任意英雄的经济类物品"
+  },
+  {
+    "name": "Freiya",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Diamond",
+    "tags": [
+      "Freeze"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Freeze items",
+    "desc_zh": "出售冻结物品"
+  },
+  {
+    "name": "Gastro",
+    "category": "专属",
+    "heroes": [
+      "Jules"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Food"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Foods",
+    "desc_zh": "出售食物"
+  },
+  {
+    "name": "Curio",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Neutral"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Bronze-tier Neutral items",
+    "desc_zh": "出售青铜级中立物品"
+  },
+  {
+    "name": "Orion",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Tools"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Tools",
+    "desc_zh": "出售工具"
+  },
+  {
+    "name": "Mr. Morland",
+    "category": "专属",
+    "heroes": [
+      "Pygmalien"
+    ],
+    "tier": "Silver",
+    "tags": [
+      "Property"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": false,
+    "desc": "Sells Property items",
+    "desc_zh": "出售地产物品"
+  },
+  {
+    "name": "The Antiquarian",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Gold",
+    "tags": [
+      "Relic"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": true,
+    "desc": "Sells Relics from any Hero",
+    "desc_zh": "出售任意英雄的遗物"
+  },
+  {
+    "name": "Aimbot",
+    "category": "通用",
+    "heroes": [
+      "Common"
+    ],
+    "tier": "Gold",
+    "tags": [
+      "Crit"
+    ],
+    "exclude_tags": [],
+    "size": "",
+    "cross_hero": true,
+    "desc": "Sells Crit items from any Hero",
+    "desc_zh": "出售任意英雄的暴击物品"
+  }
+]

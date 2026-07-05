@@ -32,8 +32,9 @@ namespace BazaarBoardReader
                 catch { }
                 lock (BazaarBoardReaderPlugin.TrackedCards)
                 {
+                    var tier = cd.Tier.ToString();
                     BazaarBoardReaderPlugin.TrackedCards[id] = new TrackedCard
-                    { Name = name, Type = typeStr, IsPlayer = isPlayer, LastSeen = Time.time };
+                    { Name = name, Type = typeStr, IsPlayer = isPlayer, LastSeen = Time.time, Tier = tier };
                 }
             }
             catch { }
@@ -103,8 +104,8 @@ namespace BazaarBoardReader
         private Dictionary<string, string> _translations = new Dictionary<string, string>();
         private bool _useChinese = true;
         // 商店推荐
-        private Dictionary<string, EventShopEntry> _shopData = new Dictionary<string, EventShopEntry>();
-        private Dictionary<string, CardDbEntry> _cardDb = new Dictionary<string, CardDbEntry>();
+        private Dictionary<string, MerchantEntry> _merchants = new Dictionary<string, MerchantEntry>();
+        private Dictionary<string, CardDataEntry> _cardDb = new Dictionary<string, CardDataEntry>();
 
         public static Dictionary<int, TrackedCard> TrackedCards = new Dictionary<int, TrackedCard>();
 
@@ -317,60 +318,77 @@ namespace BazaarBoardReader
             var style = isShop ? _shopStyle : _labelStyle;
             var sz = style.CalcSize(new GUIContent(lbl.Text));
             var w = (int)(sz.x + 16);
-            var extraH = 0;
-            if (!string.IsNullOrEmpty(lbl.SubText))
+
+            // 多行 SubText
+            var subLines = string.IsNullOrEmpty(lbl.SubText) ? new string[0] : lbl.SubText.Split('\n');
+            var subLineH = 0f;
+            var maxSubW = 0f;
+            var subStyle = new GUIStyle(style) { fontSize = 11, alignment = TextAnchor.UpperCenter };
+            foreach (var line in subLines)
             {
-                var subSz = style.CalcSize(new GUIContent(lbl.SubText));
-                if (subSz.x + 16 > w) w = (int)(subSz.x + 16);
-                extraH = (int)(subSz.y + 2);
+                var lsz = subStyle.CalcSize(new GUIContent(line));
+                if (lsz.x + 16 > maxSubW) maxSubW = lsz.x + 16;
+                subLineH += lsz.y + 1;
             }
-            var h = (int)(sz.y + 6) + extraH;
+            if (maxSubW > w) w = (int)maxSubW;
+            var h = (int)(sz.y + 6 + subLineH);
             var r = new Rect(lbl.ScreenPos.x - w / 2, Screen.height - lbl.ScreenPos.y, w, h);
             GUI.DrawTexture(r, GetRoundedBg(w, h));
 
-            // 描边
+            // 主文字描边
             var os = new GUIStyle(style) { normal = { textColor = new Color(0, 0, 0, 0.9f) } };
-            var tr = new Rect(r.x + 8, r.y + 3, sz.x, sz.y);
+            var tr = new Rect(r.x, r.y + 3, w, sz.y);
             for (int dx = -2; dx <= 2; dx++)
                 for (int dy = -2; dy <= 2; dy++)
                     if (dx != 0 || dy != 0)
-                        GUI.Label(new Rect(tr.x + dx, tr.y + dy, sz.x, sz.y), lbl.Text, os);
+                        GUI.Label(new Rect(tr.x + dx, tr.y + dy, w, sz.y), lbl.Text, os);
 
             // 主文字颜色
-            if (isShop)
+            if (isShop) style.normal.textColor = new Color(0.2f, 1f, 0.3f);
+            else if (_tierColors.ContainsKey(lbl.Tier)) style.normal.textColor = _tierColors[lbl.Tier];
+            else style.normal.textColor = Color.white;
+            GUI.Label(tr, lbl.Text, style);
+
+            // 多行副文字
+            float subY = r.y + 3 + sz.y + 1;
+            bool isShopRating = subLines.Length > 0 && (subLines[0].StartsWith("★") || subLines[0].StartsWith("☆"));
+            if (!isShopRating && subLines.Length == 1)
             {
-                style.normal.textColor = new Color(0.2f, 1f, 0.3f);
-            }
-            else if (_tierColors.ContainsKey(lbl.Tier))
-            {
-                style.normal.textColor = _tierColors[lbl.Tier];
+                // 暴击文本：根据数值动态颜色(白→红)和大小(50%→150%)
+                float pct = 0.5f;
+                var txt = subLines[0].Replace("%", "");
+                float.TryParse(txt, out pct);
+                pct = Mathf.Clamp(pct / 100f, 0.01f, 1f);
+                float baseSize = 12f;
+                subStyle.normal.textColor = new Color(1f, 1f - pct, 1f - pct); // 白→红
+                subStyle.fontSize = (int)(baseSize * (0.5f + pct * 2.5f)); // 50%→300%
+                subStyle.fontStyle = FontStyle.Bold;
+                var lineRect = new Rect(r.x + 4, subY, w - 8, subStyle.fontSize + 4);
+                var sk = new GUIStyle(subStyle) { normal = { textColor = Color.black } };
+                for (int dx = -1; dx <= 1; dx++)
+                    for (int dy = -1; dy <= 1; dy++)
+                        if (dx != 0 || dy != 0)
+                            GUI.Label(new Rect(lineRect.x + dx, lineRect.y + dy, lineRect.width, lineRect.height), subLines[0], sk);
+                GUI.Label(lineRect, subLines[0], subStyle);
             }
             else
             {
-                style.normal.textColor = Color.white;
-            }
-            GUI.Label(tr, lbl.Text, style);
-
-            // 副文字（推荐/暴击率）
-            if (!string.IsNullOrEmpty(lbl.SubText))
-            {
-                var subStyle = new GUIStyle(style) { fontSize = 11, alignment = TextAnchor.UpperCenter };
-                var isCrit = false;
-                if (lbl.SubText == "推荐") subStyle.normal.textColor = new Color(0.2f, 1f, 0.3f);
-                else if (lbl.SubText == "一般") subStyle.normal.textColor = new Color(1f, 0.8f, 0.2f);
-                else if (lbl.SubText == "不推荐") subStyle.normal.textColor = new Color(0.7f, 0.3f, 0.3f);
-                else { subStyle.normal.textColor = new Color(1f, 0.25f, 0.2f); subStyle.fontSize = 18; subStyle.fontStyle = FontStyle.Bold; isCrit = true; }
-                var subRect = new Rect(r.x, r.y + 3 + sz.y + 1, w, extraH);
-                if (isCrit)
+                for (int i = 0; i < subLines.Length; i++)
                 {
-                    // 白色描边
-                    var sk = new GUIStyle(subStyle) { normal = { textColor = Color.black } };
-                    for (int dx = -1; dx <= 1; dx++)
-                        for (int dy = -1; dy <= 1; dy++)
-                            if (dx != 0 || dy != 0)
-                                GUI.Label(new Rect(subRect.x + dx, subRect.y + dy, subRect.width, subRect.height), lbl.SubText, sk);
+                    var line = subLines[i];
+                    var lsz = subStyle.CalcSize(new GUIContent(line));
+                    if (line.StartsWith("★★") || line.StartsWith("★"))
+                        subStyle.normal.textColor = new Color(1f, 0.85f, 0.2f);
+                    else if (i == 1)
+                        subStyle.normal.textColor = new Color(1f, 0.25f, 0.2f);  // 核心=红色
+                    else if (i == 2)
+                        subStyle.normal.textColor = new Color(1f, 0.85f, 0.1f);  // 灵活=黄色
+                    else
+                        subStyle.normal.textColor = new Color(0.7f, 0.7f, 0.7f);
+                    var lineRect = new Rect(r.x + 4, subY, w - 8, lsz.y + 1);
+                    GUI.Label(lineRect, line, subStyle);
+                    subY += lsz.y + 1;
                 }
-                GUI.Label(subRect, lbl.SubText, subStyle);
             }
 
             // 悬停检测
@@ -916,15 +934,8 @@ namespace BazaarBoardReader
                     var shopName = t.name;
                     if (shopName.EndsWith("(Clone)")) shopName = shopName.Substring(0, shopName.Length - 7);
                     var rating = RateShop(shopName);
-                    var subText = "";
-                    var hoverData = "";
-                    if (rating != null)
-                    {
-                        var parts = rating.Split('|');
-                        subText = parts[0];
-                        hoverData = parts.Length > 1 ? parts[1] : "";
-                    }
-                    _shopLabels.Add(new OverlayLabel { Text = Translate(shopName), Tier = "Invalid", ScreenPos = sp, SubText = subText, HoverData = hoverData });
+                    if (rating == null) _logger.LogInfo(string.Format("[BoardReader] 无匹配: {0}", shopName));
+                    _shopLabels.Add(new OverlayLabel { Text = Translate(shopName), Tier = "Invalid", ScreenPos = sp, SubText = rating ?? "", HoverData = "" });
                 }
             }
             catch { }
@@ -1122,6 +1133,21 @@ namespace BazaarBoardReader
                     }
                 }
                 catch { }
+            }
+            return result;
+        }
+
+        private List<KeyValuePair<string, string>> GatherAllItemsWithTier()
+        {
+            var result = new List<KeyValuePair<string, string>>();
+            lock (TrackedCards)
+            {
+                foreach (var kv in TrackedCards)
+                {
+                    var tc = kv.Value;
+                    if (tc.IsPlayer && tc.Type == "Item" && !string.IsNullOrEmpty(tc.Name))
+                        result.Add(new KeyValuePair<string, string>(BoardCardName(tc.Name), tc.Tier ?? "Bronze"));
+                }
             }
             return result;
         }
@@ -1352,93 +1378,138 @@ namespace BazaarBoardReader
             try
             {
                 var dataDir = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data");
-                // 加载 events.json
-                var eventsPath = Path.Combine(dataDir, "events.json");
-                if (File.Exists(eventsPath))
-                {
-                    var json = File.ReadAllText(eventsPath, Encoding.UTF8);
-                    // events.json 结构: { "shops": [...], "skill_shops": [...], ... }
-                    var wrapper = JsonConvert.DeserializeObject<Dictionary<string, List<EventShopEntry>>>(json);
-                    if (wrapper != null && wrapper.ContainsKey("shops"))
-                    {
-                        foreach (var shop in wrapper["shops"])
-                        {
-                            if (!string.IsNullOrEmpty(shop.name))
-                                _shopData[shop.name.ToLower()] = shop;
-                        }
-                    }
-                }
-                // 加载 cards_generated.json (只取需要的字段)
-                var cardsPath = Path.Combine(dataDir, "cards_generated.json");
+                // 加载 cards.json
+                var cardsPath = Path.Combine(dataDir, "cards.json");
                 if (File.Exists(cardsPath))
                 {
-                    var cardsJson = File.ReadAllText(cardsPath, Encoding.UTF8);
-                    var cardsDict = JsonConvert.DeserializeObject<Dictionary<string, CardDbEntry>>(cardsJson);
-                    if (cardsDict != null)
+                    var wrapper = JsonConvert.DeserializeObject<CardsData>(File.ReadAllText(cardsPath, Encoding.UTF8));
+                    if (wrapper != null && wrapper.cards != null)
                     {
-                        foreach (var kv in cardsDict)
+                        foreach (var kv in wrapper.cards)
                         {
-                            if (kv.Value != null)
-                                _cardDb[kv.Key.ToLower()] = kv.Value;
+                            var c = kv.Value; if (c == null) continue;
+                            // 过滤：排除DEBUG/TEMPLATE/Package/技能
+                            if (kv.Key.Contains("[DEBUG]") || kv.Key.Contains("[TEMPLATE]")) continue;
+                            if (c.hidden_tags != null && c.hidden_tags.Contains("Package")) continue;
+                            if (c.type == "Skill") continue;
+                            _cardDb[kv.Key.ToLower()] = c;
                         }
                     }
                 }
-                _logger.LogInfo(string.Format("[BoardReader] 商店数据: {0}店 {1}卡", _shopData.Count, _cardDb.Count));
+                // 加载 merchants.json
+                var merchantsPath = Path.Combine(dataDir, "merchants.json");
+                if (File.Exists(merchantsPath))
+                {
+                    var mlist = JsonConvert.DeserializeObject<List<MerchantEntry>>(File.ReadAllText(merchantsPath, Encoding.UTF8));
+                    if (mlist != null)
+                    {
+                        foreach (var m in mlist)
+                        {
+                            if (!string.IsNullOrEmpty(m.name))
+                                _merchants[m.name.ToLower()] = m;
+                        }
+                    }
+                }
+                _logger.LogInfo(string.Format("[BoardReader] 商人:{0} 卡:{1}", _merchants.Count, _cardDb.Count));
             }
-            catch (Exception ex) { _logger.LogWarning(string.Format("[BoardReader] 商店数据加载失败: {0}", ex)); }
+            catch (Exception ex) { _logger.LogWarning(string.Format("[BoardReader] 数据加载: {0}", ex)); }
         }
 
         private string RateShop(string shopName)
         {
-            if (_shopData.Count == 0 || _cardDb.Count == 0) return null;
+            if (_merchants.Count == 0 || _cardDb.Count == 0) return null;
             var key = shopName.ToLower();
-            EventShopEntry shop;
-            if (!_shopData.TryGetValue(key, out shop)) return null;
-            if (shop.shop_pool == null || shop.shop_pool.reward_tags == null) return null;
+            // 去掉等级后缀 (Gold) (Silver) 等
+            var parenIdx = key.IndexOf('(');
+            if (parenIdx > 0) key = key.Substring(0, parenIdx).Trim();
+            MerchantEntry merchant = null;
+            _merchants.TryGetValue(key, out merchant);
+            if (merchant == null) return null;
+            _logger.LogInfo(string.Format("[BoardReader] 匹配: {0} → {1}", shopName, merchant.name));
+            if (string.IsNullOrEmpty(_detectedHero)) return null;
 
-            // 收集当前阵容缺失的核心物品
-            var missingCore = new HashSet<string>();
-            foreach (var b in _builds)
+            // 动态构建该英雄在此商店的物品池
+            var pool = new List<string>();
+            foreach (var kv in _cardDb)
             {
-                if (!string.IsNullOrEmpty(_detectedHero) && !string.IsNullOrEmpty(b.HeroName) && b.HeroName != _detectedHero) continue;
-                foreach (var item in b.CoreItems) missingCore.Add(item.ToLower());
-                foreach (var item in b.CoreSkills) missingCore.Add(item.ToLower());
-            }
-            // 去掉已拥有的
-            var owned = new HashSet<string>();
-            foreach (var n in GatherAllItemNames()) owned.Add(n.ToLower());
-            foreach (var n in GatherPlayerSkillNames()) owned.Add(n.ToLower());
-            missingCore.RemoveWhere(n => owned.Contains(n));
-
-            if (missingCore.Count == 0) return null;
-
-            // 构建商店卡池
-            var poolCards = new List<string>();
-            foreach (var tag in shop.shop_pool.reward_tags)
-            {
-                foreach (var kv in _cardDb)
+                var card = kv.Value;
+                // 英雄过滤
+                var cardHeroes = card.heroes ?? new List<string>();
+                if (merchant.cross_hero)
                 {
-                    if (kv.Value.tags != null && kv.Value.tags.Contains(tag))
-                        poolCards.Add(kv.Key);
+                    // ALL: 所有英雄物品
                 }
+                else if (merchant.heroes != null && merchant.heroes.Count == 1 && merchant.heroes[0] == "Common")
+                {
+                    // 当前英雄
+                    if (!cardHeroes.Contains(_detectedHero)) continue;
+                }
+                else
+                {
+                    // 专属：玩家英雄在商人的英雄列表中
+                    if (merchant.heroes == null || !merchant.heroes.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
+                    if (!cardHeroes.Contains(_detectedHero)) continue;
+                }
+                // size过滤
+                if (!string.IsNullOrEmpty(merchant.size))
+                {
+                    var sizes = merchant.size.Split(',').Select(s => s.Trim()).ToList();
+                    if (!sizes.Any(s => (card.size ?? "").Equals(s, StringComparison.OrdinalIgnoreCase))) continue;
+                }
+                // tags过滤（至少匹配一个）
+                if (merchant.tags != null && merchant.tags.Count > 0)
+                {
+                    if (card.tags == null || !merchant.tags.Any(t => card.tags.Contains(t))) continue;
+                }
+                // 排除标签
+                if (merchant.exclude_tags != null && merchant.exclude_tags.Count > 0)
+                {
+                    if (card.tags != null && merchant.exclude_tags.Any(t => card.tags.Contains(t))) continue;
+                }
+                pool.Add(kv.Value.internal_name ?? kv.Key);
             }
-            if (poolCards.Count == 0) return null;
+            if (pool.Count == 0) return null;
 
-            // 计算核心命中
-            var hits = new List<string>();
-            foreach (var card in poolCards)
-            {
-                if (missingCore.Contains(card)) hits.Add(card);
-            }
+            // 用 MatchBuilds 找最佳匹配阵容
+            var currentItems = GatherAllItemNames();
+            var matchResults = MatchBuilds(_detectedHero, currentItems);
+            if (matchResults.Count == 0) return null;
+            var bestBuild = matchResults[0].Template;
 
-            if (hits.Count == 0) return "不推荐";
-            float hitRate = (float)hits.Count / missingCore.Count;
-            if (hitRate >= 0.3f) return "推荐|命中:" + string.Join(",", hits.ToArray());
-            if (hitRate >= 0.1f) return "一般|命中:" + string.Join(",", hits.ToArray());
-            return "不推荐";
+            // 收集缺失物品
+            var ownedLower = new HashSet<string>();
+            foreach (var n in GatherAllItemNames()) ownedLower.Add(n.ToLower());
+            var missingCore = new HashSet<string>();
+            var missingFlex = new HashSet<string>();
+            foreach (var item in bestBuild.CoreItems)
+            { if (!ownedLower.Contains(item.ToLower())) missingCore.Add(item); }
+            foreach (var item in bestBuild.FlexItems)
+            { if (!ownedLower.Contains(item.ToLower())) missingFlex.Add(item); }
+            var poolLower = new HashSet<string>();
+            foreach (var p in pool) poolLower.Add(p.ToLower());
+
+            var coreHits = new List<string>();
+            var flexHits = new List<string>();
+            foreach (var item in missingCore)
+                if (poolLower.Contains(item.ToLower())) coreHits.Add(item);
+            foreach (var item in missingFlex)
+                if (poolLower.Contains(item.ToLower())) flexHits.Add(item);
+
+            if (coreHits.Count == 0 && flexHits.Count == 0) return null;
+
+            int score = coreHits.Count * 3 + flexHits.Count * 1;
+            string stars = score >= 9 ? "★★★" : score >= 6 ? "★★" : "★";
+            var lines = new List<string> { stars };
+            if (coreHits.Count > 0)
+                lines.Add(string.Join(",", TranslateEach(coreHits).Take(4).ToArray()));
+            if (flexHits.Count > 0)
+                lines.Add(string.Join(",", TranslateEach(flexHits).Take(4).ToArray()));
+            return string.Join("\n", lines.ToArray());
         }
 
         // ==================== 翻译 ====================
+
+        private List<string> TranslateEach(List<string> items) { var r = new List<string>(); foreach (var i in items) r.Add(Translate(i)); return r; }
 
         private string Translate(string english)
         {
@@ -1589,15 +1660,12 @@ namespace BazaarBoardReader
 
     internal class OverlayLabel { public string Text; public string Tier; public Vector3 ScreenPos; public string SubText; public string HoverData; }
 
-    public class TrackedCard { public string Name; public string Type; public bool IsPlayer; public float LastSeen; }
+    public class TrackedCard { public string Name; public string Type; public bool IsPlayer; public float LastSeen; public string Tier; }
 
     [Serializable]
-    public class EventShopPool { public List<string> reward_tags; public string match_mode; public string rarity_rule; public List<string> excluded_tags; public string hero_scope; }
-    [Serializable]
-    public class EventShopEntry { public string name; public string shop_type; public List<string> event_heroes; public EventShopPool shop_pool; }
-    [Serializable]
-    public class EventsData { public List<EventShopEntry> shops; }
-    public class CardDbEntry { public string internal_name; public string type; public string hero; public List<string> heroes; public List<string> tags; public string size; public string rarity; }
+    public class MerchantEntry { public string name; public string category; public List<string> heroes; public string tier; public List<string> tags; public List<string> exclude_tags; public string size; public bool cross_hero; }
+    public class CardDataEntry { public string internal_name; public string type; public List<string> heroes; public List<string> tags; public List<string> hidden_tags; public string size; }
+    public class CardsData { public Dictionary<string, CardDataEntry> cards; }
     public class CommunityBuild { public string hero; public string display_name; public List<string> core_cards; public List<string> transition_cards; public List<string> optional_cards; }
 
     [Serializable]

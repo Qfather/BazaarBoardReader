@@ -17,5 +17,9 @@
 Thumbs.db
 Desktop.ini
 
+# Python
+__pycache__/
+
 # 诊断脚本
 find_shops.ps1
+*.txt
