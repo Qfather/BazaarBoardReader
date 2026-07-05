@@ -46,7 +46,7 @@ namespace BazaarBoardReader
     {
         private const string PluginGuid = "com.bazaar.boardreader";
         private const string PluginName = "BazaarBoardReader";
-        private const string PluginVersion = "7.2.0";
+        private const string PluginVersion = "7.3.2";
 
         private ManualLogSource _logger;
         private float _lastExportTime;
@@ -64,6 +64,8 @@ namespace BazaarBoardReader
         private bool _showSliders;
         private bool _showRecommendations;
         private bool _showBuildManager;
+        private bool _recCollapsed;  // 推荐面板收起
+        private bool _mgrCollapsed;  // 管理面板收起
 
         private float _lastRefreshTime;
         private float _itemOffsetY = 30f;
@@ -103,6 +105,7 @@ namespace BazaarBoardReader
         private string _selectedBuildForEdit = "";
 
         private Dictionary<string, string> _translations = new Dictionary<string, string>();
+        private Dictionary<string, string> _reverseTranslations = new Dictionary<string, string>(); // 中文→英文
         private bool _useChinese = true;
         // 商店推荐
         private Dictionary<string, MerchantEntry> _merchants = new Dictionary<string, MerchantEntry>();
@@ -141,6 +144,7 @@ namespace BazaarBoardReader
         private const string CfgMgrX = "MgrPanelX";
         private const string CfgMgrY = "MgrPanelY";
         private const string CfgPanelAlpha = "PanelAlpha";
+        private const string CfgBuild = "SelectedBuild";
         private const string CfgSecGeneral = "General";
         private float _recPanelX, _recPanelY, _mgrPanelX, _mgrPanelY;
         private float _panelAlpha = 0.8f;
@@ -159,11 +163,12 @@ namespace BazaarBoardReader
             _mgrPanelX = Config.Bind(CfgSec, CfgMgrX, 50f).Value;
             _mgrPanelY = Config.Bind(CfgSec, CfgMgrY, 470f).Value;
             _panelAlpha = Config.Bind(CfgSec, CfgPanelAlpha, 0.8f).Value;
+            _selectedBuildName = Config.Bind(CfgSecGeneral, CfgBuild, "").Value;
             // 默认全部开启
             _showSliders = true;
             _showRecommendations = true;
             _showBuildManager = true;
-            _logger.LogInfo(string.Format("[BoardReader] v7.1 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
+            _logger.LogInfo(string.Format("[BoardReader] v7.3.2 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
                 (int)_itemOffsetY, (int)_skillOffsetY, (int)_shopOffsetY, _bgOpacity * 100f));
 
             _labelStyle = new GUIStyle { fontSize = 18, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter, wordWrap = false };
@@ -596,7 +601,8 @@ namespace BazaarBoardReader
 
         private void DrawRecommendationPanel()
         {
-            var px = _recPanelX; var py = _recPanelY; var pw = 350f; var ph = Mathf.Min(400f, Screen.height - py - 10f);
+            var px = _recPanelX; var py = _recPanelY; var pw = 350f;
+            var ph = _recCollapsed ? 28f : Mathf.Min(400f, Screen.height - py - 10f);
             DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
 
             var s = new GUIStyle(_labelStyle) { fontSize = 13, alignment = TextAnchor.UpperLeft };
@@ -605,6 +611,12 @@ namespace BazaarBoardReader
             var ts = new GUIStyle(s) { fontSize = 15, fontStyle = FontStyle.Bold };
             ts.normal.textColor = new Color(1f, 0.8f, 0.2f);
             GUI.Label(new Rect(px + 10, py + 5, pw - 50, 22), "阵容推荐 (F6)", ts);
+            // 折叠按钮
+            var foldBtn = new GUIStyle(GUI.skin.button) { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
+            if (GUI.Button(new Rect(px + pw - 30, py + 2, 24, 22), _recCollapsed ? "▼" : "▲", foldBtn))
+                _recCollapsed = !_recCollapsed;
+            if (_recCollapsed) return;
+
             // 英雄按钮（简写+颜色+换行）
             var heroes = CollectHeroNames();
             float hx = px + 10; float hy = py + 46;
@@ -659,6 +671,8 @@ namespace BazaarBoardReader
                 if (GUI.Button(selBtnRect, isSelected ? "✓" : "+", GUI.skin.button))
                 {
                     _selectedBuildName = isSelected ? "" : mr.Template.BuildName;
+                    Config[CfgSecGeneral, CfgBuild].BoxedValue = _selectedBuildName;
+                    Config.Save();
                 }
                 var barH = 16f;
                 DrawRect(new Rect(10, ry, barMaxW, barH), new Color(0.15f, 0.15f, 0.15f, 0.8f));
@@ -674,14 +688,14 @@ namespace BazaarBoardReader
                 GUI.Label(new Rect(10, ry, barMaxW - 4, barH), string.Format("{0:F0}%", score), ps2);
                 ry += barH + 4;
 
-                if (mr.CoreMissing.Count > 0)
-                    DrawMissingLine(15, ref ry, pw - 30, "缺核心: ", mr.CoreMissing, mr.ShopCoreMatches, new Color(1f, 0.3f, 0.3f), new Color(0.2f, 1f, 0.5f));
-                if (mr.FlexMissing.Count > 0)
-                    DrawMissingLine(15, ref ry, pw - 30, "缺灵活: ", mr.FlexMissing, mr.ShopFlexMatches, new Color(1f, 0.7f, 0.3f), new Color(0.5f, 1f, 0.5f));
-                if (mr.SkillCoreMissing.Count > 0)
-                    DrawMissingLine(15, ref ry, pw - 30, "缺技核: ", mr.SkillCoreMissing, new List<string>(), new Color(0.4f, 0.5f, 1f), new Color(0.5f, 1f, 0.5f));
-                if (mr.SkillFlexMissing.Count > 0)
-                    DrawMissingLine(15, ref ry, pw - 30, "缺技灵: ", mr.SkillFlexMissing, new List<string>(), new Color(0.5f, 0.6f, 1f), new Color(0.5f, 1f, 0.5f));
+                if (mr.CoreMissing.Count > 0 || mr.CoreOwned.Count > 0)
+                    DrawItemsLine(15, ref ry, pw - 30, "", mr.CoreOwned, mr.CoreMissing, mr.ShopCoreMatches, new Color(0.2f, 1f, 0.3f), new Color(0.2f, 1f, 0.5f));
+                if (mr.FlexMissing.Count > 0 || mr.FlexOwned.Count > 0)
+                    DrawItemsLine(15, ref ry, pw - 30, "", mr.FlexOwned, mr.FlexMissing, mr.ShopFlexMatches, new Color(1f, 0.7f, 0.3f), new Color(0.5f, 1f, 0.5f));
+                if (mr.SkillCoreMissing.Count > 0 || mr.SkillCoreOwned.Count > 0)
+                    DrawItemsLine(15, ref ry, pw - 30, "", mr.SkillCoreOwned, mr.SkillCoreMissing, new List<string>(), new Color(0.4f, 0.5f, 1f), new Color(0.5f, 1f, 0.5f));
+                if (mr.SkillFlexMissing.Count > 0 || mr.SkillFlexOwned.Count > 0)
+                    DrawItemsLine(15, ref ry, pw - 30, "", mr.SkillFlexOwned, mr.SkillFlexMissing, new List<string>(), new Color(0.3f, 1f, 0.5f), new Color(0.5f, 1f, 0.5f));
                 ry += 5;
             }
 
@@ -695,21 +709,33 @@ namespace BazaarBoardReader
             { try { ExportToJson(GatherBoardData()); } catch { } }
         }
 
-        private void DrawMissingLine(float x, ref float y, float maxW, string prefix,
-            List<string> missing, List<string> inShop, Color missingColor, Color shopColor)
+        private void DrawItemsLine(float x, ref float y, float maxW, string prefix,
+            List<string> owned, List<string> missing, List<string> inShop, Color lineColor, Color shopColor)
         {
             var ms = new GUIStyle(_labelStyle) { fontSize = 11, alignment = TextAnchor.UpperLeft };
-            ms.normal.textColor = missingColor;
-            GUI.Label(new Rect(x, y, 55, 16), prefix, ms);
-            float cx = x + 55;
+            float cx = x + 5;
+
+            // 先画已拥有的物品（30%透明度）
+            foreach (var item in owned)
+            {
+                var disp = Translate(item);
+                ms.normal.textColor = new Color(lineColor.r, lineColor.g, lineColor.b, 0.3f);
+                var itemText = disp + " ";
+                var sz = ms.CalcSize(new GUIContent(itemText));
+                GUI.Label(new Rect(cx, y, sz.x, 16), itemText, ms);
+                cx += sz.x;
+                if (cx > x + maxW - 10) { cx = x + 5; y += 16; }
+            }
+
+            // 再画缺失的物品（正常透明度，商店中有的闪烁+★）
             for (int i = 0; i < missing.Count; i++)
             {
                 var item = missing[i];
                 var disp = Translate(item);
                 var inStore = inShop.Contains(item);
                 if (inStore) ms.normal.textColor = new Color(shopColor.r, shopColor.g, shopColor.b, 0.6f + 0.4f * Mathf.Sin(Time.time * 5f));
-                else ms.normal.textColor = missingColor;
-                var itemText = (i < missing.Count - 1) ? disp + ", " : disp;
+                else ms.normal.textColor = lineColor;
+                var itemText = (i < missing.Count - 1) ? disp + " " : disp;
                 var sz = ms.CalcSize(new GUIContent(itemText));
                 GUI.Label(new Rect(cx, y, sz.x + 5, 16), itemText, ms);
                 if (inStore)
@@ -719,7 +745,7 @@ namespace BazaarBoardReader
                     GUI.Label(new Rect(cx + sz.x - 2, y - 2, 20, 16), "★", ss);
                 }
                 cx += sz.x + 2;
-                if (cx > x + maxW - 30) { cx = x + 55; y += 16; }
+                if (cx > x + maxW - 10) { cx = x + 5; y += 16; }
             }
             y += 16;
         }
@@ -728,7 +754,8 @@ namespace BazaarBoardReader
 
         private void DrawBuildManagerPanel()
         {
-            var px = _mgrPanelX; var py = _mgrPanelY; var pw = 380f; var ph = 400f;
+            var px = _mgrPanelX; var py = _mgrPanelY; var pw = 380f;
+            var ph = _mgrCollapsed ? 28f : 400f;
             if (py + ph > Screen.height) py = Screen.height - ph - 10;
             if (py < 10) py = 10;
             DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
@@ -739,7 +766,13 @@ namespace BazaarBoardReader
             ts.normal.textColor = new Color(0.3f, 0.8f, 1f);
 
             GUI.Label(new Rect(px + 10, py + 5, pw - 90, 22), "阵容管理 (F6)", ts);
-            if (GUI.Button(new Rect(px + pw - 80, py + 5, 70, 20), "导入社区"))
+            // 折叠按钮
+            var foldBtn = new GUIStyle(GUI.skin.button) { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
+            if (GUI.Button(new Rect(px + pw - 30, py + 2, 24, 22), _mgrCollapsed ? "▼" : "▲", foldBtn))
+                _mgrCollapsed = !_mgrCollapsed;
+            if (_mgrCollapsed) return;
+
+            if (GUI.Button(new Rect(px + pw - 84, py + 5, 50, 20), "导入"))
             {
                 ImportCommunityBuilds();
             }
@@ -803,9 +836,21 @@ namespace BazaarBoardReader
                     GUI.Label(new Rect(15, iy, 50, 18), "加物:", s);
                     _newItemInput = GUI.TextField(new Rect(55, iy, 140, 20), _newItemInput ?? "", 30);
                     if (GUI.Button(new Rect(198, iy, 35, 20), "核心"))
-                    { if (!string.IsNullOrEmpty(_newItemInput) && !build.CoreItems.Contains(_newItemInput)) { build.CoreItems.Add(_newItemInput); SaveBuildsAtomic(); _newItemInput = ""; } }
+                    {
+                        if (!string.IsNullOrEmpty(_newItemInput))
+                        {
+                            var eng = ReverseTranslate(_newItemInput);
+                            if (!build.CoreItems.Contains(eng)) { build.CoreItems.Add(eng); SaveBuildsAtomic(); _newItemInput = ""; }
+                        }
+                    }
                     if (GUI.Button(new Rect(236, iy, 35, 20), "灵活"))
-                    { if (!string.IsNullOrEmpty(_newItemInput) && !build.FlexItems.Contains(_newItemInput)) { build.FlexItems.Add(_newItemInput); SaveBuildsAtomic(); _newItemInput = ""; } }
+                    {
+                        if (!string.IsNullOrEmpty(_newItemInput))
+                        {
+                            var eng = ReverseTranslate(_newItemInput);
+                            if (!build.FlexItems.Contains(eng)) { build.FlexItems.Add(eng); SaveBuildsAtomic(); _newItemInput = ""; }
+                        }
+                    }
                     iy += 22;
 
                     ns.normal.textColor = new Color(0.4f, 0.5f, 1f);
@@ -820,9 +865,21 @@ namespace BazaarBoardReader
                     GUI.Label(new Rect(15, iy, 50, 18), "加技:", s);
                     _newItemInput = GUI.TextField(new Rect(55, iy, 140, 20), _newItemInput ?? "", 30);
                     if (GUI.Button(new Rect(198, iy, 35, 20), "核心"))
-                    { if (!string.IsNullOrEmpty(_newItemInput) && !build.CoreSkills.Contains(_newItemInput)) { build.CoreSkills.Add(_newItemInput); SaveBuildsAtomic(); _newItemInput = ""; } }
+                    {
+                        if (!string.IsNullOrEmpty(_newItemInput))
+                        {
+                            var eng = ReverseTranslate(_newItemInput);
+                            if (!build.CoreSkills.Contains(eng)) { build.CoreSkills.Add(eng); SaveBuildsAtomic(); _newItemInput = ""; }
+                        }
+                    }
                     if (GUI.Button(new Rect(236, iy, 35, 20), "灵活"))
-                    { if (!string.IsNullOrEmpty(_newItemInput) && !build.FlexSkills.Contains(_newItemInput)) { build.FlexSkills.Add(_newItemInput); SaveBuildsAtomic(); _newItemInput = ""; } }
+                    {
+                        if (!string.IsNullOrEmpty(_newItemInput))
+                        {
+                            var eng = ReverseTranslate(_newItemInput);
+                            if (!build.FlexSkills.Contains(eng)) { build.FlexSkills.Add(eng); SaveBuildsAtomic(); _newItemInput = ""; }
+                        }
+                    }
                 }
                 ry += expandH + 5;
             }
@@ -1316,7 +1373,7 @@ namespace BazaarBoardReader
                 {
                     Template = build, MatchScore = totalScore,
                     CoreOwned = co, CoreMissing = cm, FlexOwned = fo, FlexMissing = fm,
-                    SkillCoreMissing = scm, SkillFlexMissing = sfm
+                    SkillCoreOwned = sco, SkillCoreMissing = scm, SkillFlexOwned = sfo, SkillFlexMissing = sfm
                 });
             }
             results.Sort((a, b) => b.MatchScore.CompareTo(a.MatchScore));
@@ -1344,6 +1401,9 @@ namespace BazaarBoardReader
                                 {
                                     var r = obj as TheBazaar.SkillProxyRenderer;
                                     if (r == null || r.Card == null) continue;
+                                    // 过滤对手/商店技能：只保留玩家自己 BoardManager.Instance 下的技能
+                                    var bm = r.transform.GetComponentInParent<BoardManager>();
+                                    if (bm == null || bm != BoardManager.Instance) continue;
                                     var name = GetCardNameStatic(r.Card);
                                     if (!string.IsNullOrEmpty(name) && name != "???") result.Add(name);
                                 }
@@ -1374,7 +1434,17 @@ namespace BazaarBoardReader
                 {
                     var wrapper = JsonConvert.DeserializeObject<TranslationData>(File.ReadAllText(path, Encoding.UTF8));
                     if (wrapper != null && wrapper.by_name != null)
-                    { _translations = wrapper.by_name; _logger.LogInfo(string.Format("[BoardReader] 翻译加载: {0} 条", _translations.Count)); }
+                    {
+                        _translations = wrapper.by_name;
+                        // 构建反向翻译字典（中文→英文），用于阵容管理中用户输入中文时转回英文
+                        _reverseTranslations.Clear();
+                        foreach (var kv in _translations)
+                        {
+                            if (!string.IsNullOrEmpty(kv.Value) && !_reverseTranslations.ContainsKey(kv.Value))
+                                _reverseTranslations[kv.Value] = kv.Key;
+                        }
+                        _logger.LogInfo(string.Format("[BoardReader] 翻译加载: {0} 条, 反向: {1} 条", _translations.Count, _reverseTranslations.Count));
+                    }
                 }
                 else _logger.LogWarning("[BoardReader] translations_zh_cn.json 未找到");
             }
@@ -1528,6 +1598,24 @@ namespace BazaarBoardReader
         // ==================== 翻译 ====================
 
         private List<string> TranslateEach(List<string> items) { var r = new List<string>(); foreach (var i in items) r.Add(Translate(i)); return r; }
+
+        // 反向翻译：中文→英文，用于阵容管理中用户输入中文时自动转回英文原名
+        private string ReverseTranslate(string chinese)
+        {
+            if (string.IsNullOrEmpty(chinese)) return chinese;
+            // 如果不含中文，可能已经是英文原名，直接返回
+            if (!HasChinese(chinese)) return chinese;
+            string english;
+            if (_reverseTranslations.TryGetValue(chinese, out english)) return english;
+            // 尝试去掉括号后缀如 "燃烧 (黄金)"
+            var parenIdx = chinese.IndexOf('(');
+            if (parenIdx > 0)
+            {
+                var s2 = chinese.Substring(0, parenIdx).TrimEnd();
+                if (_reverseTranslations.TryGetValue(s2, out english)) return english;
+            }
+            return chinese; // 找不到翻译则原样返回
+        }
 
         private string Translate(string english)
         {
@@ -1705,7 +1793,9 @@ namespace BazaarBoardReader
         public List<string> CoreMissing = new List<string>();
         public List<string> FlexOwned = new List<string>();
         public List<string> FlexMissing = new List<string>();
+        public List<string> SkillCoreOwned = new List<string>();
         public List<string> SkillCoreMissing = new List<string>();
+        public List<string> SkillFlexOwned = new List<string>();
         public List<string> SkillFlexMissing = new List<string>();
         public List<string> ShopCoreMatches = new List<string>();
         public List<string> ShopFlexMatches = new List<string>();
