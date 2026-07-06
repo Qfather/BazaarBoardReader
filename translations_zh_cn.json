@@ -6591,6 +6591,7 @@
     "When you Slow, Regen equal to 10% of this item's Damage": "触发减速时，生命再生量提高，增幅等于此物品伤害的10%",
     "Proboscis": "口器",
     "When you Slow, deal {ability.0} Damage": "触发减速时，造成{ability.0}伤害",
-    "Firestarter": "引火者"
+    "Firestarter": "引火者",
+    "Walk-In Freezer": "步入式冷柜"
   }
 }

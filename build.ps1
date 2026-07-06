@@ -1,8 +1,18 @@
-$gameDir = "F:\SteamLibrary\steamapps\common\The Bazaar"
+# Auto-detect game root by searching upward for TheBazaar.exe
+$gameDir = $PSScriptRoot
+while ($gameDir -and !(Test-Path "$gameDir\TheBazaar.exe")) {
+    $gameDir = Split-Path -Parent $gameDir
+}
+if (!$gameDir) {
+    Write-Error "Cannot find game directory (TheBazaar.exe not found). Ensure this script is inside a subfolder of the game directory."
+    exit 1
+}
+Write-Host "Game directory: $gameDir"
+
 $managedDir = "$gameDir\TheBazaar_Data\Managed"
 $bepInExDir = "$gameDir\BepInEx\core"
 $pluginDir = "$gameDir\BepInEx\plugins"
-$projectDir = "$gameDir\BazaarBoardReader"
+$projectDir = $PSScriptRoot
 $outputDll = "$projectDir\BazaarBoardReader.dll"
 $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 

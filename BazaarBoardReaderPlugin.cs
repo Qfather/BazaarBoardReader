@@ -13,6 +13,62 @@ using UnityEngine;
 
 namespace BazaarBoardReader
 {
+    // 拦截所有 NetMessage 获取游戏状态
+    [HarmonyPatch]
+    public static class NetMessagePatch
+    {
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            var pt = AccessTools.TypeByName("TheBazaar.NetMessageProcessor");
+            if (pt == null) { try { BazaarBoardReaderPlugin._logger.LogInfo("[BoardReader] NetMessageProcessor type not found!"); } catch { } yield break; }
+            var methods = pt.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            int count = 0;
+            foreach (var m in methods)
+            {
+                var ps = m.GetParameters();
+                if (m.Name == "Handle" && ps.Length == 1 && (ps[0].ParameterType.FullName ?? "").IndexOf("NetMessage", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    count++;
+                    yield return m;
+                }
+            }
+            try { BazaarBoardReaderPlugin._logger.LogInfo(string.Format("[BoardReader] NetMessagePatch: found {0} Handle methods", count)); } catch { }
+        }
+
+        public static void Prefix(object __0)
+        {
+            if (__0 == null) return;
+            try {
+                var dataProp = __0.GetType().GetProperty("Data", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (dataProp != null) {
+                    var data = dataProp.GetValue(__0, null);
+                    if (data != null && StateProbeLooksLikeGameState(data)) {
+                        BazaarBoardReaderPlugin.LatestGameStateDto = data;
+                        BazaarBoardReaderPlugin.GameStateDirty = true;
+                        BazaarBoardReaderPlugin._logger.LogInfo("[BoardReader] Captured GameStateSync!");
+                    }
+                }
+            } catch { }
+        }
+
+        private static bool StateProbeLooksLikeGameState(object dto)
+        {
+            if (dto == null) return false;
+            var run = GetFieldRefl(dto, "Run");
+            var player = GetFieldRefl(dto, "Player");
+            if (run == null || player == null) return false;
+            var hero = GetFieldRefl(player, "Hero");
+            return hero != null && !string.IsNullOrEmpty(hero.ToString());
+        }
+
+        private static object GetFieldRefl(object target, string name)
+        {
+            if (target == null) return null;
+            var f = target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            return f == null ? null : f.GetValue(target);
+        }
+    }
+
     [HarmonyPatch(typeof(CardController), "SetCardData")]
     static class CardController_SetCardData_Patch
     {
@@ -48,7 +104,7 @@ namespace BazaarBoardReader
         private const string PluginName = "BazaarBoardReader";
         private const string PluginVersion = "7.3.2";
 
-        private ManualLogSource _logger;
+        internal static ManualLogSource _logger;
         private float _lastExportTime;
         private const float CooldownSeconds = 2f;
 
@@ -92,6 +148,14 @@ namespace BazaarBoardReader
         private List<BuildTemplate> _builds = new List<BuildTemplate>();
         private List<BuildMatchResult> _matchResults = new List<BuildMatchResult>();
         private string _detectedHero = "";
+        private int _currentDay = -1;
+        private int _currentGold = 0;
+        private int _currentIncome = 0;
+        private int _currentHealth = 0;
+        private int _currentPrestige = 0;
+        // 游戏状态 DTO（来自网络消息拦截）
+        internal static object LatestGameStateDto;
+        internal static bool GameStateDirty;
         private string _selectedBuildName = ""; // 用户手动选择的阵容名
         private string _buildsPath;
         private Vector2 _buildListScroll;
@@ -148,6 +212,10 @@ namespace BazaarBoardReader
         private const string CfgSecGeneral = "General";
         private float _recPanelX, _recPanelY, _mgrPanelX, _mgrPanelY;
         private float _panelAlpha = 0.8f;
+        // Ctrl+拖动窗口
+        private bool _draggingRec, _draggingMgr;
+        private float _dragStartMouseX, _dragStartMouseY;
+        private float _dragStartPanelX, _dragStartPanelY;
 
         private void Awake()
         {
@@ -253,6 +321,9 @@ namespace BazaarBoardReader
                 Config[CfgSecGeneral, CfgOverlay].BoxedValue = _overlayEnabled;
                 Config.Save();
             }
+
+            // 持续尝试读取游戏状态
+            if (GameStateDirty) ReadGameStateFromDto();
 
             if (IsKeyPressed("f5"))
             {
@@ -385,10 +456,15 @@ namespace BazaarBoardReader
                     var lsz = subStyle.CalcSize(new GUIContent(line));
                     if (line.StartsWith("★★") || line.StartsWith("★"))
                         subStyle.normal.textColor = new Color(1f, 0.85f, 0.2f);
+                    else if (line.StartsWith("~"))
+                    {
+                        subStyle.normal.textColor = new Color(0.6f, 0.6f, 0.6f, 0.35f); // 钻石=暗灰
+                        line = line.Substring(1);
+                    }
                     else if (i == 1)
-                        subStyle.normal.textColor = new Color(1f, 0.25f, 0.2f);  // 核心=红色
+                        subStyle.normal.textColor = new Color(1f, 0.25f, 0.2f);       // 核心=红色
                     else if (i == 2)
-                        subStyle.normal.textColor = new Color(1f, 0.85f, 0.1f);  // 灵活=黄色
+                        subStyle.normal.textColor = new Color(1f, 0.85f, 0.1f);       // 灵活=黄色
                     else
                         subStyle.normal.textColor = new Color(0.7f, 0.7f, 0.7f);
                     var lineRect = new Rect(r.x + 4, subY, w - 8, lsz.y + 1);
@@ -485,9 +561,66 @@ namespace BazaarBoardReader
             catch { return new Color(0, 0, 0, _panelAlpha); }
         }
 
+        // Ctrl+拖动标题栏移动窗口
+        private bool IsCtrlHeld()
+        {
+            if (_useNewInput)
+            {
+                try
+                {
+                    var kt = Type.GetType("UnityEngine.InputSystem.Keyboard, Unity.InputSystem");
+                    var kb = kt.GetProperty("current").GetValue(null, null);
+                    if (kb != null)
+                    {
+                        var lc = kt.GetProperty("leftCtrlKey").GetValue(kb, null);
+                        var rc = kt.GetProperty("rightCtrlKey").GetValue(kb, null);
+                        bool lp = lc != null && (bool)lc.GetType().GetProperty("isPressed").GetValue(lc, null);
+                        bool rp = rc != null && (bool)rc.GetType().GetProperty("isPressed").GetValue(rc, null);
+                        return lp || rp;
+                    }
+                }
+                catch { }
+            }
+            try { return Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl); }
+            catch { return false; }
+        }
+
+        private void HandleCtrlDrag(Rect bar, ref float px, ref float py, string cfgX, string cfgY, ref bool isDragging)
+        {
+            Event e = Event.current;
+            if (e == null) return;
+            if (!IsCtrlHeld())
+            {
+                isDragging = false;
+                return;
+            }
+            var mp = e.mousePosition;
+            if (e.type == EventType.MouseDown && bar.Contains(mp))
+            {
+                isDragging = true;
+                _dragStartMouseX = mp.x; _dragStartMouseY = mp.y;
+                _dragStartPanelX = px; _dragStartPanelY = py;
+                e.Use();
+            }
+            else if (e.type == EventType.MouseDrag && isDragging)
+            {
+                px = _dragStartPanelX + (mp.x - _dragStartMouseX);
+                py = _dragStartPanelY + (mp.y - _dragStartMouseY);
+                e.Use();
+            }
+            else if (e.type == EventType.MouseUp && isDragging)
+            {
+                isDragging = false;
+                Config[CfgSec, cfgX].BoxedValue = px;
+                Config[CfgSec, cfgY].BoxedValue = py;
+                Config.Save();
+                e.Use();
+            }
+        }
+
         private void DrawSlidersPanel()
         {
-            var pw = 270f; var ph = 330f;
+            var pw = 270f; var ph = 274f;
             var px = 50f;
             var py = Screen.height - ph - 50f;
             DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
@@ -508,15 +641,6 @@ namespace BazaarBoardReader
             GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("背景透明度: {0:F0}%", _bgOpacity * 100f), s);
             _bgOpacity = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _bgOpacity, 0.1f, 0.95f);
             ry += 30;
-            // 面板位置
-            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("推荐面板 X:{0} Y:{1}", (int)_recPanelX, (int)_recPanelY), s);
-            _recPanelX = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 110, 10), _recPanelX, 0f, Screen.width - 350f);
-            _recPanelY = GUI.HorizontalSlider(new Rect(px + 135, ry + 14, 110, 10), _recPanelY, 0f, Screen.height - 200f);
-            ry += 28;
-            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("管理面板 X:{0} Y:{1}", (int)_mgrPanelX, (int)_mgrPanelY), s);
-            _mgrPanelX = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 110, 10), _mgrPanelX, 0f, Screen.width - 380f);
-            _mgrPanelY = GUI.HorizontalSlider(new Rect(px + 135, ry + 14, 110, 10), _mgrPanelY, 0f, Screen.height - 200f);
-            ry += 28;
             GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("面板透明度: {0:F0}%", _panelAlpha * 100f), s);
             _panelAlpha = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _panelAlpha, 0.2f, 0.95f);
             ry += 30;
@@ -528,10 +652,6 @@ namespace BazaarBoardReader
                 Config[CfgSec, CfgSkill].BoxedValue = _skillOffsetY;
                 Config[CfgSec, CfgShop].BoxedValue = _shopOffsetY;
                 Config[CfgSec, CfgBg].BoxedValue = _bgOpacity;
-                Config[CfgSec, CfgRecX].BoxedValue = _recPanelX;
-                Config[CfgSec, CfgRecY].BoxedValue = _recPanelY;
-                Config[CfgSec, CfgMgrX].BoxedValue = _mgrPanelX;
-                Config[CfgSec, CfgMgrY].BoxedValue = _mgrPanelY;
                 Config[CfgSec, CfgPanelAlpha].BoxedValue = _panelAlpha;
                 Config.Save();
             }
@@ -542,7 +662,6 @@ namespace BazaarBoardReader
             if (GUI.Button(new Rect(px + 118, ry, 50, 24), "重置", bs))
             {
                 _itemOffsetY = 30f; _skillOffsetY = 20f; _shopOffsetY = 80f; _bgOpacity = 0.55f;
-                _recPanelX = 50f; _recPanelY = 50f; _mgrPanelX = 50f; _mgrPanelY = 470f;
             }
         }
 
@@ -604,6 +723,9 @@ namespace BazaarBoardReader
             var px = _recPanelX; var py = _recPanelY; var pw = 350f;
             var ph = _recCollapsed ? 28f : Mathf.Min(400f, Screen.height - py - 10f);
             DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
+            // Ctrl+拖动标题栏
+            HandleCtrlDrag(new Rect(px, py, pw, 28f), ref _recPanelX, ref _recPanelY, CfgRecX, CfgRecY, ref _draggingRec);
+            px = _recPanelX; py = _recPanelY;
 
             var s = new GUIStyle(_labelStyle) { fontSize = 13, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
@@ -756,9 +878,13 @@ namespace BazaarBoardReader
         {
             var px = _mgrPanelX; var py = _mgrPanelY; var pw = 380f;
             var ph = _mgrCollapsed ? 28f : 400f;
+            DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
+            // Ctrl+拖动标题栏
+            HandleCtrlDrag(new Rect(px, py, pw, 28f), ref _mgrPanelX, ref _mgrPanelY, CfgMgrX, CfgMgrY, ref _draggingMgr);
+            px = _mgrPanelX; py = _mgrPanelY;
+            // 边界修正
             if (py + ph > Screen.height) py = Screen.height - ph - 10;
             if (py < 10) py = 10;
-            DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
 
             var s = new GUIStyle(_labelStyle) { fontSize = 12, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
@@ -1098,11 +1224,109 @@ namespace BazaarBoardReader
             return list;
         }
 
+        // 从拦截的 GameStateSync DTO 读取天数/金币/收入等
+        private void ReadGameStateFromDto()
+        {
+            if (!GameStateDirty || LatestGameStateDto == null) return;
+            GameStateDirty = false;
+            try
+            {
+                var dto = LatestGameStateDto;
+                // Run.Day
+                var run = GetField(dto, "Run");
+                if (run != null) { var v = GetField(run, "Day"); if (v != null) _currentDay = Convert.ToInt32(v); }
+                // Player.Hero
+                var player = GetField(dto, "Player");
+                if (player != null) { var v = GetField(player, "Hero"); if (v != null && !string.IsNullOrEmpty(v.ToString())) _detectedHero = v.ToString(); }
+                // Player.Attributes → Gold/Health/Income/Prestige
+                if (player != null)
+                {
+                    var attrs = GetField(player, "Attributes") as System.Collections.IEnumerable;
+                    if (attrs != null)
+                    {
+                        foreach (var item in attrs)
+                        {
+                            if (item == null) continue;
+                            var key = GetProperty(item, "Key");
+                            var val = GetProperty(item, "Value");
+                            if (key == null || val == null) continue;
+                            var keyStr = key.ToString();
+                            int intVal;
+                            try { intVal = Convert.ToInt32(val); } catch { continue; }
+                            if (keyStr.IndexOf("Gold", StringComparison.OrdinalIgnoreCase) >= 0) _currentGold = intVal;
+                            else if (keyStr.IndexOf("Health", StringComparison.OrdinalIgnoreCase) >= 0) _currentHealth = intVal;
+                            else if (keyStr.IndexOf("Income", StringComparison.OrdinalIgnoreCase) >= 0) _currentIncome = intVal;
+                            else if (keyStr.IndexOf("Prestige", StringComparison.OrdinalIgnoreCase) >= 0) _currentPrestige = intVal;
+                        }
+                    }
+                }
+                _logger.LogInfo(string.Format("[BoardReader] GameState: Hero={0} Day={1} Gold={2} Health={3} Income={4}",
+                    _detectedHero, _currentDay, _currentGold, _currentHealth, _currentIncome));
+            }
+            catch (Exception ex) { _logger.LogInfo("[BoardReader] ReadGameState error: " + ex.Message); }
+        }
+
+        private static object GetField(object target, string name)
+        {
+            if (target == null) return null;
+            var f = target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            return f == null ? null : f.GetValue(target);
+        }
+
+        private static object GetProperty(object target, string name)
+        {
+            if (target == null) return null;
+            var p = target.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            return p == null ? null : p.GetValue(target, null);
+        }
+
+        private void DumpRunManagerProps()
+        {
+            try
+            {
+                var asm = typeof(BoardManager).Assembly;
+                var allTypes = asm.GetTypes();
+                // RunManager — 用 GetTypes().FirstOrDefault 因为 IL2CPP 可能剥离 GetType()
+                var rmType = allTypes.FirstOrDefault(t => t.Name == "RunManager");
+                if (rmType != null) {
+                    var rmIp = rmType.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    if (rmIp != null) {
+                        var rmInst = rmIp.GetValue(null, null);
+                        if (rmInst != null) {
+                            var props = rmType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            var sb = new System.Text.StringBuilder("[BoardReader] RunManager props: ");
+                            foreach (var p in props)
+                            { try { sb.Append(p.Name + "=" + (p.GetValue(rmInst, null) ?? "null") + ", "); } catch { } }
+                            _logger.LogInfo(sb.ToString());
+                        }
+                    }
+                }
+                // DayManager
+                var dmType = allTypes.FirstOrDefault(t => t.Name == "DayManager");
+                if (dmType != null) {
+                    var dmIp = dmType.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    if (dmIp != null) {
+                        var dmInst = dmIp.GetValue(null, null);
+                        if (dmInst != null) {
+                            var props = dmType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            var sb = new System.Text.StringBuilder("[BoardReader] DayManager props: ");
+                            foreach (var p in props)
+                            { try { sb.Append(p.Name + "=" + (p.GetValue(dmInst, null) ?? "null") + ", "); } catch { } }
+                            _logger.LogInfo(sb.ToString());
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { _logger.LogInfo("[BoardReader] DumpRunManager: " + ex.Message); }
+        }
+
         private string DetectHero()
         {
             try
             {
-                var rmType = typeof(BoardManager).Assembly.GetType("TheBazaar.RunManager");
+                var asm = typeof(BoardManager).Assembly;
+                var allTypes = asm.GetTypes();
+                var rmType = allTypes.FirstOrDefault(t => t.Name == "RunManager");
                 if (rmType != null)
                 {
                     var ip = rmType.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
@@ -1111,6 +1335,18 @@ namespace BazaarBoardReader
                         var inst = ip.GetValue(null, null);
                         if (inst != null)
                         {
+                            // 检测天数
+                            if (_currentDay < 0)
+                            {
+                                foreach (var pn in new[] { "Day", "CurrentDay", "DayNumber", "RunDay", "Round", "CurrentRound" })
+                                {
+                                    try {
+                                        var dp = rmType.GetProperty(pn, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                        if (dp != null) { var dv = dp.GetValue(inst, null); if (dv != null) { _currentDay = Convert.ToInt32(dv); break; } }
+                                    } catch { }
+                                }
+                            }
+                            // 检测英雄
                             foreach (var pn in new[] { "Hero", "HeroName", "SelectedHero", "CurrentHero" })
                             {
                                 var p = rmType.GetProperty(pn, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -1472,6 +1708,20 @@ namespace BazaarBoardReader
                             if (kv.Key.Contains("[DEBUG]") || kv.Key.Contains("[TEMPLATE]")) continue;
                             if (c.hidden_tags != null && c.hidden_tags.Contains("Package")) continue;
                             if (c.type == "Skill") continue;
+                            // 社区团队测试卡
+                            if (kv.Key.IndexOf("[Community Team]", StringComparison.OrdinalIgnoreCase) >= 0) continue;
+                            // 黑名单：初始Core/无效/抽奖物品
+                            string nameLower = (c.internal_name ?? "").ToLower();
+                            if (nameLower == "armored core" || nameLower == "companion core" || nameLower == "critical core"
+                                || nameLower == "focused core" || nameLower == "ignition core" || nameLower == "launcher core"
+                                || nameLower == "the core" || nameLower == "weaponized core" || nameLower == "oblivion core"
+                                || nameLower == "assembly line" || nameLower == "augment reagents" || nameLower == "unused card"
+                                || nameLower == "magician's top hat" || nameLower == "blue gumball" || nameLower == "green gumball"
+                                || nameLower == "red gumball" || nameLower == "yellow gumball") continue;
+                            // Loot 水晶（探险奖品）
+                            if (c.tags != null && c.tags.Contains("Loot") && c.internal_name != null && c.internal_name.Contains("Crystal")) continue;
+                            // Package 奖励包
+                            if (c.internal_name != null && c.internal_name.IndexOf("'s Package", StringComparison.OrdinalIgnoreCase) >= 0) continue;
                             _cardDb[kv.Key.ToLower()] = c;
                         }
                     }
@@ -1533,9 +1783,20 @@ namespace BazaarBoardReader
                 if (allCardTags.Any(ct => ct.Equals(mt, StringComparison.OrdinalIgnoreCase)))
                     return true;
 
-                // 2. Reference 变体（如 HealReference 匹配 merchant tag="Heal"）
-                if (allCardTags.Any(ct => ct.StartsWith(mt, StringComparison.OrdinalIgnoreCase)))
+                // 2. Reference 变体（如 HealReference 匹配 merchant tag="Heal"，Health 不匹配 Heal）
+                string refTag = mt + "Reference";
+                if (allCardTags.Any(ct => ct.Equals(refTag, StringComparison.OrdinalIgnoreCase)))
                     return true;
+
+                // 2b. 复数→单数 (Toys→Toy, Friends→Friend)
+                if (mt.EndsWith("s", StringComparison.OrdinalIgnoreCase))
+                {
+                    string singular = mt.Substring(0, mt.Length - 1);
+                    if (allCardTags.Any(ct => ct.Equals(singular, StringComparison.OrdinalIgnoreCase)))
+                        return true;
+                    if (allCardTags.Any(ct => ct.Equals(singular + "Reference", StringComparison.OrdinalIgnoreCase)))
+                        return true;
+                }
 
                 // 3. MaxHealth → Health 系列映射
                 if (mt.Equals("MaxHealth", StringComparison.OrdinalIgnoreCase))
@@ -1573,26 +1834,54 @@ namespace BazaarBoardReader
 
             // 动态构建该英雄在此商店的物品池
             var pool = new List<string>();
+            // 中立商店
+            bool isNeutralShop = merchant.tags != null && merchant.tags.Any(t => t.Equals("Neutral", StringComparison.OrdinalIgnoreCase));
+            // The Tester: 出售所有英雄的科技物品
+            bool isCrossHero = merchant.cross_hero || merchant.name.Equals("The Tester", StringComparison.OrdinalIgnoreCase);
             foreach (var kv in _cardDb)
             {
                 var card = kv.Value;
-                // 英雄过滤
+                // 所有商店不卖传说物品
+                if (card.tiers != null && card.tiers.Contains("Legendary")) continue;
+
                 var cardHeroes = card.heroes ?? new List<string>();
-                if (merchant.cross_hero)
+                bool cardIsNeutral = cardHeroes.Count == 1 && cardHeroes[0].Equals("Common", StringComparison.OrdinalIgnoreCase);
+
+                // 中立物品只在专门的中立商店或 cross_hero 商店出现
+                if (cardIsNeutral && !isNeutralShop && !isCrossHero) continue;
+                // 中立商店：仅卖中立物品
+                if (isNeutralShop && !cardIsNeutral) continue;
+
+                // The Antiquarian: 仅 VAN PYG DOO MAK KAR
+                if (merchant.name.Equals("The Antiquarian", StringComparison.OrdinalIgnoreCase))
                 {
-                    // ALL: 所有英雄物品
+                    string[] antiqAllowed = { "Vanessa", "Pygmalien", "Dooley", "Mak", "Karnok" };
+                    if (!antiqAllowed.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
                 }
-                else if (merchant.heroes != null && merchant.heroes.Count == 1 && merchant.heroes[0] == "Common")
+
+                // 英雄过滤（非中立、非中立商店）
+                if (!cardIsNeutral && !isNeutralShop)
                 {
-                    // 当前英雄
-                    if (!cardHeroes.Contains(_detectedHero)) continue;
+                    if (isCrossHero) { }
+                    else if (merchant.heroes != null && merchant.heroes.Count == 1 && merchant.heroes[0].Equals("Common", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!cardHeroes.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
+                    }
+                    else
+                    {
+                        if (!cardHeroes.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
+                        if (merchant.heroes == null || !merchant.heroes.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
+                    }
                 }
-                else
+
+                // 品质商店 (Silvia/Goldie/Luxe)
+                string shopLower = merchant.name.ToLower();
+                if (shopLower == "silvia" || shopLower == "goldie" || shopLower == "luxe")
                 {
-                    // 专属：玩家英雄在商人的英雄列表中
-                    if (merchant.heroes == null || !merchant.heroes.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
-                    if (!cardHeroes.Contains(_detectedHero)) continue;
+                    string allowedTier = shopLower == "silvia" ? "Silver" : shopLower == "goldie" ? "Gold" : "Diamond";
+                    if (card.tiers == null || !card.tiers.Any(t => t.Equals(allowedTier, StringComparison.OrdinalIgnoreCase))) continue;
                 }
+
                 // size过滤
                 if (!string.IsNullOrEmpty(merchant.size))
                 {
@@ -1631,34 +1920,58 @@ namespace BazaarBoardReader
             }
             if (bestBuild == null) return null;
 
-            // 收集缺失物品
-            var ownedLower = new HashSet<string>();
-            foreach (var n in GatherAllItemNames()) ownedLower.Add(n.ToLower());
-            var missingCore = new HashSet<string>();
-            var missingFlex = new HashSet<string>();
-            foreach (var item in bestBuild.CoreItems)
-            { if (!ownedLower.Contains(item.ToLower())) missingCore.Add(item); }
-            foreach (var item in bestBuild.FlexItems)
-            { if (!ownedLower.Contains(item.ToLower())) missingFlex.Add(item); }
+            // 构建小写物品池，统计阵容物品在该商店的占比
             var poolLower = new HashSet<string>();
             foreach (var p in pool) poolLower.Add(p.ToLower());
+            int buildItemsInPool = 0;
+            foreach (var item in bestBuild.CoreItems)
+                if (poolLower.Contains(item.ToLower())) buildItemsInPool++;
+            foreach (var item in bestBuild.FlexItems)
+                if (poolLower.Contains(item.ToLower())) buildItemsInPool++;
+            int hitPct = pool.Count > 0 ? (int)(buildItemsInPool * 100f / pool.Count) : 0;
 
+            // 收集已拥有物品及品质
+            var ownedTiers = new Dictionary<string, string>();
+            foreach (var kv in GatherAllItemsWithTier())
+                ownedTiers[kv.Key.ToLower()] = kv.Value ?? "Bronze";
+
+            // 分类：非钻石 → hits（需要），钻石 → diamond（已满变暗）
             var coreHits = new List<string>();
             var flexHits = new List<string>();
-            foreach (var item in missingCore)
-                if (poolLower.Contains(item.ToLower())) coreHits.Add(item);
-            foreach (var item in missingFlex)
-                if (poolLower.Contains(item.ToLower())) flexHits.Add(item);
+            var coreDiamond = new List<string>();
+            var flexDiamond = new List<string>();
+            foreach (var item in bestBuild.CoreItems)
+            {
+                if (!poolLower.Contains(item.ToLower())) continue;
+                string tier;
+                if (ownedTiers.TryGetValue(item.ToLower(), out tier) && tier == "Diamond")
+                    coreDiamond.Add(item);
+                else
+                    coreHits.Add(item);
+            }
+            foreach (var item in bestBuild.FlexItems)
+            {
+                if (!poolLower.Contains(item.ToLower())) continue;
+                string tier;
+                if (ownedTiers.TryGetValue(item.ToLower(), out tier) && tier == "Diamond")
+                    flexDiamond.Add(item);
+                else
+                    flexHits.Add(item);
+            }
 
-            if (coreHits.Count == 0 && flexHits.Count == 0) return null;
+            if (coreHits.Count == 0 && flexHits.Count == 0 && coreDiamond.Count == 0 && flexDiamond.Count == 0) return null;
 
             int score = coreHits.Count * 3 + flexHits.Count * 1;
-            string stars = score >= 9 ? "★★★" : score >= 6 ? "★★" : "★";
+            string stars = (score >= 9 ? "★★★" : score >= 6 ? "★★" : "★") + " " + hitPct + "%";
             var lines = new List<string> { stars };
             if (coreHits.Count > 0)
                 lines.Add(string.Join(",", TranslateEach(coreHits).Take(4).ToArray()));
             if (flexHits.Count > 0)
                 lines.Add(string.Join(",", TranslateEach(flexHits).Take(4).ToArray()));
+            if (coreDiamond.Count > 0)
+                lines.Add("~" + string.Join(",", TranslateEach(coreDiamond).Take(4).ToArray()));
+            if (flexDiamond.Count > 0)
+                lines.Add("~" + string.Join(",", TranslateEach(flexDiamond).Take(4).ToArray()));
             return string.Join("\n", lines.ToArray());
         }
 
@@ -1734,6 +2047,12 @@ namespace BazaarBoardReader
             var d = new BoardData
             {
                 Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                Day = _currentDay,
+                Hero = _detectedHero,
+                Gold = _currentGold,
+                Income = _currentIncome,
+                Health = _currentHealth,
+                Prestige = _currentPrestige,
                 BoardItems = new List<CardInfo>(), StorageItems = new List<CardInfo>(),
                 SkillCards = new List<CardInfo>(), Shops = new List<ShopInfo>()
             };
@@ -1837,9 +2156,9 @@ namespace BazaarBoardReader
 
     [Serializable]
     public class MerchantEntry { public string name; public string category; public List<string> heroes; public string tier; public List<string> tags; public List<string> exclude_tags; public string size; public bool cross_hero; }
-    public class CardDataEntry { public string internal_name; public string type; public List<string> heroes; public List<string> tags; public List<string> hidden_tags; public string size; public string description; }
+    public class CardDataEntry { public string internal_name; public string type; public List<string> heroes; public List<string> tags; public List<string> hidden_tags; public string size; public string description; public List<string> tiers; }
     public class CardsData { public Dictionary<string, CardDataEntry> cards; }
-    private class CardDescEntry { public string internal_name; public string description; }
+    public class CardDescEntry { public string internal_name; public string description; }
     public class CommunityBuild { public string hero; public string display_name; public List<string> core_cards; public List<string> transition_cards; public List<string> optional_cards; }
 
     [Serializable]
@@ -1873,6 +2192,12 @@ namespace BazaarBoardReader
     public class BoardData
     {
         public string Timestamp;
+        public int Day;
+        public string Hero;
+        public int Gold;
+        public int Income;
+        public int Health;
+        public int Prestige;
         public List<CardInfo> BoardItems;
         public List<CardInfo> StorageItems;
         public List<CardInfo> SkillCards;
