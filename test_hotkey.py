@@ -36,10 +36,24 @@ except ImportError:
     print("[INFO] Done!")
 
 # ======================== 配置 ========================
-GAME_DIR = Path(r"G:\SteamLibrary\steamapps\common\The Bazaar")
+# 自动检测游戏根目录（从脚本位置向上查找 TheBazaar.exe）
+_script_dir = Path(__file__).resolve().parent
+GAME_DIR = _script_dir
+while GAME_DIR != GAME_DIR.parent and not (GAME_DIR / "TheBazaar.exe").exists():
+    GAME_DIR = GAME_DIR.parent
+
+if not (GAME_DIR / "TheBazaar.exe").exists():
+    print(f"[ERROR] 找不到游戏根目录（未找到 TheBazaar.exe）")
+    print(f"       脚本位置: {_script_dir}")
+    sys.exit(1)
+
+# 主数据源：我们自己的 StateExporter 实时数据
 STATE_JSON = GAME_DIR / "BoardData" / "game_state.json"
+# 名称映射源：BazaarBoardReader 导出的中文名
 BOARD_JSON = GAME_DIR / "BoardData" / "board_latest.json"
 HOTKEY = "F8"
+print(f"[INFO] 游戏目录: {GAME_DIR}")
+print(f"[INFO] 数据源: {STATE_JSON}")
 # =====================================================
 
 OK = "[OK]"
