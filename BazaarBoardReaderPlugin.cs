@@ -102,7 +102,7 @@ namespace BazaarBoardReader
     {
         private const string PluginGuid = "com.bazaar.boardreader";
         private const string PluginName = "BazaarBoardReader";
-        private const string PluginVersion = "7.3.3";
+        private const string PluginVersion = "7.4.0";
 
         internal static ManualLogSource _logger;
         private float _lastExportTime;
@@ -236,7 +236,7 @@ namespace BazaarBoardReader
             _showSliders = true;
             _showRecommendations = true;
             _showBuildManager = true;
-            _logger.LogInfo(string.Format("[BoardReader] v7.3.3 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
+            _logger.LogInfo(string.Format("[BoardReader] v7.4.0 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
                 (int)_itemOffsetY, (int)_skillOffsetY, (int)_shopOffsetY, _bgOpacity * 100f));
 
             _labelStyle = new GUIStyle { fontSize = 18, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter, wordWrap = false };
@@ -2057,7 +2057,7 @@ namespace BazaarBoardReader
             return english;
         }
 
-        // ==================== JSON 导出 (v7.3.3 增强版) ====================
+        // ==================== JSON 导出 (v7.4.0 增强版) ====================
 
         /// <summary>通过 template_id 查卡牌数据库获取英文内部名</summary>
         private string ResolveCardNameByTemplateId(string templateId, BazaarGameClient.Domain.Models.Cards.Card cd)
