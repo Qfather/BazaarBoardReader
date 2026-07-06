@@ -102,7 +102,7 @@ namespace BazaarBoardReader
     {
         private const string PluginGuid = "com.bazaar.boardreader";
         private const string PluginName = "BazaarBoardReader";
-        private const string PluginVersion = "7.3.2";
+        private const string PluginVersion = "7.3.3";
 
         internal static ManualLogSource _logger;
         private float _lastExportTime;
@@ -236,7 +236,7 @@ namespace BazaarBoardReader
             _showSliders = true;
             _showRecommendations = true;
             _showBuildManager = true;
-            _logger.LogInfo(string.Format("[BoardReader] v7.3.2 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
+            _logger.LogInfo(string.Format("[BoardReader] v7.3.3 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
                 (int)_itemOffsetY, (int)_skillOffsetY, (int)_shopOffsetY, _bgOpacity * 100f));
 
             _labelStyle = new GUIStyle { fontSize = 18, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter, wordWrap = false };
@@ -1238,30 +1238,47 @@ namespace BazaarBoardReader
                 // Player.Hero
                 var player = GetField(dto, "Player");
                 if (player != null) { var v = GetField(player, "Hero"); if (v != null && !string.IsNullOrEmpty(v.ToString())) _detectedHero = v.ToString(); }
-                // Player.Attributes → Gold/Health/Income/Prestige
+                // Player.Attributes → 两遍法：先精确匹配，再模糊匹配回退
                 if (player != null)
                 {
                     var attrs = GetField(player, "Attributes") as System.Collections.IEnumerable;
                     if (attrs != null)
                     {
+                        // 第一遍：精确匹配（避免 MaxHealth/MaxGold 干扰）
                         foreach (var item in attrs)
                         {
                             if (item == null) continue;
                             var key = GetProperty(item, "Key");
                             var val = GetProperty(item, "Value");
                             if (key == null || val == null) continue;
-                            var keyStr = key.ToString();
-                            int intVal;
-                            try { intVal = Convert.ToInt32(val); } catch { continue; }
-                            if (keyStr.IndexOf("Gold", StringComparison.OrdinalIgnoreCase) >= 0) _currentGold = intVal;
-                            else if (keyStr.IndexOf("Health", StringComparison.OrdinalIgnoreCase) >= 0) _currentHealth = intVal;
-                            else if (keyStr.IndexOf("Income", StringComparison.OrdinalIgnoreCase) >= 0) _currentIncome = intVal;
-                            else if (keyStr.IndexOf("Prestige", StringComparison.OrdinalIgnoreCase) >= 0) _currentPrestige = intVal;
+                            var ks = key.ToString();
+                            int iv; try { iv = Convert.ToInt32(val); } catch { continue; }
+                            if (ks.Equals("Gold", StringComparison.OrdinalIgnoreCase)) _currentGold = iv;
+                            else if (ks.Equals("Health", StringComparison.OrdinalIgnoreCase)) _currentHealth = iv;
+                            else if (ks.Equals("Income", StringComparison.OrdinalIgnoreCase)) _currentIncome = iv;
+                            else if (ks.Equals("Prestige", StringComparison.OrdinalIgnoreCase)) _currentPrestige = iv;
+                        }
+                        // 第二遍：模糊匹配回退（精确未匹配到时）
+                        if (_currentGold <= 0 || _currentHealth <= 0 || _currentIncome < 0 || _currentPrestige <= 0)
+                        {
+                            foreach (var item in attrs)
+                            {
+                                if (item == null) continue;
+                                var key = GetProperty(item, "Key");
+                                var val = GetProperty(item, "Value");
+                                if (key == null || val == null) continue;
+                                var ks = key.ToString();
+                                int iv; try { iv = Convert.ToInt32(val); } catch { continue; }
+                                if (_currentGold <= 0 && ks.IndexOf("Gold", StringComparison.OrdinalIgnoreCase) >= 0 && ks.IndexOf("Max", StringComparison.OrdinalIgnoreCase) < 0) _currentGold = iv;
+                                if (_currentHealth <= 0 && ks.IndexOf("Health", StringComparison.OrdinalIgnoreCase) >= 0 && ks.IndexOf("Max", StringComparison.OrdinalIgnoreCase) < 0 && ks.IndexOf("Regen", StringComparison.OrdinalIgnoreCase) < 0) _currentHealth = iv;
+                                if (_currentIncome < 0 && ks.IndexOf("Income", StringComparison.OrdinalIgnoreCase) >= 0) _currentIncome = iv;
+                                if (_currentPrestige <= 0 && ks.IndexOf("Prestige", StringComparison.OrdinalIgnoreCase) >= 0 && ks.IndexOf("Max", StringComparison.OrdinalIgnoreCase) < 0) _currentPrestige = iv;
+                            }
                         }
                     }
                 }
-                _logger.LogInfo(string.Format("[BoardReader] GameState: Hero={0} Day={1} Gold={2} Health={3} Income={4}",
-                    _detectedHero, _currentDay, _currentGold, _currentHealth, _currentIncome));
+                _logger.LogInfo(string.Format("[BoardReader] GameState: Hero={0} Day={1} Gold={2} Health={3} Income={4} Prestige={5}",
+                    _detectedHero, _currentDay, _currentGold, _currentHealth, _currentIncome, _currentPrestige));
             }
             catch (Exception ex) { _logger.LogInfo("[BoardReader] ReadGameState error: " + ex.Message); }
         }
@@ -2040,24 +2057,386 @@ namespace BazaarBoardReader
             return english;
         }
 
-        // ==================== JSON 导出 ====================
+        // ==================== JSON 导出 (v7.3.3 增强版) ====================
+
+        /// <summary>通过 template_id 查卡牌数据库获取英文内部名</summary>
+        private string ResolveCardNameByTemplateId(string templateId, BazaarGameClient.Domain.Models.Cards.Card cd)
+        {
+            // 优先从 CardData 直接读取名称
+            if (cd != null)
+            {
+                try
+                {
+                    if (cd.Template != null && !string.IsNullOrEmpty(cd.Template.InternalName))
+                        return cd.Template.InternalName;
+                    if (!string.IsNullOrEmpty(cd.Name)) return cd.Name;
+                }
+                catch { }
+            }
+            // 回退：通过 template_id 在 _cardDb 中查找
+            return LookupCardNameByTemplateId(templateId);
+        }
+
+        /// <summary>仅在 _cardDb 中通过 template_id (GUID) 查找英文内部名</summary>
+        private string LookupCardNameByTemplateId(string templateId)
+        {
+            if (string.IsNullOrEmpty(templateId) || _cardDb == null || _cardDb.Count == 0) return null;
+            foreach (var kv in _cardDb)
+            {
+                if (kv.Value == null || string.IsNullOrEmpty(kv.Value.internal_name)) continue;
+                if (kv.Key.Equals(templateId, StringComparison.OrdinalIgnoreCase)
+                    || (kv.Value.internal_name ?? "").Equals(templateId, StringComparison.OrdinalIgnoreCase))
+                    return kv.Value.internal_name;
+            }
+            return null;
+        }
+
+        /// <summary>从游戏运行时模板缓存构建 template_id (GUID) → internal_name 映射</summary>
+        private static void BuildTemplateNameMapFromCache(Dictionary<string, string> map)
+        {
+            try
+            {
+                // 方法1: TheBazaar.ClientCache.RunConfig → CardMap
+                var asm = typeof(BoardManager).Assembly;
+                var allTypes = asm.GetTypes();
+                var cacheType = allTypes.FirstOrDefault(t => t.Name == "ClientCache" || t.FullName == "TheBazaar.ClientCache");
+                if (cacheType != null)
+                {
+                    object runConfig = null;
+                    TryGetStaticMemberValue(cacheType, "RunConfig", out runConfig);
+                    if (runConfig == null) TryGetStaticMemberValue(cacheType, "runConfig", out runConfig);
+                    if (runConfig != null)
+                    {
+                        // 尝试 .Value 解包
+                        object nestedValue;
+                        if (TryGetMemberValue(runConfig, "Value", out nestedValue) && nestedValue != null)
+                            runConfig = nestedValue;
+
+                        // 尝试 CardMap / GetCardMap()
+                        object cardMap = null;
+                        if (!TryGetMemberValue(runConfig, "CardMap", out cardMap) || cardMap == null)
+                            cardMap = TryInvokeParameterlessMethod(runConfig, "GetCardMap");
+
+                        if (cardMap != null)
+                        {
+                            EnumerateCardTemplates(cardMap, map);
+                            if (map.Count > 0) return;
+                        }
+                    }
+                }
+
+                // 方法2: 全局搜索 BazaarPlusPlus.StaticCards.BppStaticDataAccess
+                var bppType = allTypes.FirstOrDefault(t => t.FullName != null && t.FullName.Contains("BppStaticDataAccess"));
+                if (bppType != null)
+                {
+                    object manager;
+                    if (TryInvokeParameterlessStaticMethod(bppType, "TryGetReadyManagerObject", out manager) && manager != null)
+                    {
+                        object cardMap;
+                        if (TryInvokeStaticMethod(bppType, "LoadCardMap", new[] { manager }, out cardMap) && cardMap != null)
+                        {
+                            EnumerateCardTemplates(cardMap, map);
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private static void EnumerateCardTemplates(object cardMap, Dictionary<string, string> map)
+        {
+            if (cardMap == null || map == null) return;
+            try
+            {
+                var dict = cardMap as System.Collections.IDictionary;
+                if (dict != null)
+                {
+                    foreach (System.Collections.DictionaryEntry entry in dict)
+                    {
+                        if (entry.Value == null) continue;
+                        string templateId = null, internalName = null;
+                        TryGetMemberValue(entry.Value, "TemplateId", out var tid);
+                        TryGetMemberValue(entry.Value, "InternalName", out var iname);
+                        templateId = tid?.ToString();
+                        internalName = iname?.ToString();
+                        if (!string.IsNullOrEmpty(templateId) && !string.IsNullOrEmpty(internalName) && !map.ContainsKey(templateId))
+                            map[templateId] = internalName;
+                        // 也尝试 entry.Key 作为 template_id
+                        if (entry.Key != null)
+                        {
+                            var keyStr = entry.Key.ToString();
+                            if (!string.IsNullOrEmpty(keyStr) && !string.IsNullOrEmpty(internalName) && !map.ContainsKey(keyStr))
+                                map[keyStr] = internalName;
+                        }
+                    }
+                    return;
+                }
+                var enu = cardMap as System.Collections.IEnumerable;
+                if (enu != null && !(cardMap is string))
+                {
+                    foreach (var item in enu)
+                    {
+                        if (item == null) continue;
+                        string templateId = null, internalName = null;
+                        TryGetMemberValue(item, "TemplateId", out var tid);
+                        TryGetMemberValue(item, "InternalName", out var iname);
+                        templateId = tid?.ToString();
+                        internalName = iname?.ToString();
+                        if (!string.IsNullOrEmpty(templateId) && !string.IsNullOrEmpty(internalName) && !map.ContainsKey(templateId))
+                            map[templateId] = internalName;
+                        // 也尝试递归 .Value
+                        object nestedValue;
+                        if (TryGetMemberValue(item, "Value", out nestedValue) && nestedValue != null)
+                            EnumerateCardTemplates(nestedValue, map);
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private static bool TryGetStaticMemberValue(Type type, string name, out object value)
+        {
+            value = null;
+            try
+            {
+                var f = type.GetField(name, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                if (f != null) { value = f.GetValue(null); return true; }
+                var p = type.GetProperty(name, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                if (p != null) { value = p.GetValue(null, null); return true; }
+            }
+            catch { }
+            return false;
+        }
+
+        private static bool TryGetMemberValue(object target, string name, out object value)
+        {
+            value = null;
+            if (target == null) return false;
+            try
+            {
+                var t = target.GetType();
+                var f = t.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (f != null) { value = f.GetValue(target); return true; }
+                var p = t.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (p != null && p.GetIndexParameters().Length == 0) { value = p.GetValue(target, null); return true; }
+            }
+            catch { }
+            return false;
+        }
+
+        private static object TryInvokeParameterlessMethod(object target, string name)
+        {
+            if (target == null) return null;
+            try
+            {
+                var m = target.GetType().GetMethod(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (m != null && m.GetParameters().Length == 0) return m.Invoke(target, null);
+            }
+            catch { }
+            return null;
+        }
+
+        private static bool TryInvokeParameterlessStaticMethod(Type type, string name, out object value)
+        {
+            value = null;
+            try
+            {
+                var m = type.GetMethod(name, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                if (m != null && m.GetParameters().Length == 0) { value = m.Invoke(null, null); return true; }
+            }
+            catch { }
+            return false;
+        }
+
+        private static bool TryInvokeStaticMethod(Type type, string name, object[] args, out object value)
+        {
+            value = null;
+            try
+            {
+                foreach (var m in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+                {
+                    if (m.Name == name && m.GetParameters().Length == (args?.Length ?? 0))
+                    {
+                        value = m.Invoke(null, args);
+                        return true;
+                    }
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        private static string NormalizeTierStr(string tier)
+        {
+            if (string.IsNullOrEmpty(tier)) return "bronze";
+            var lower = tier.ToLowerInvariant();
+            if (lower.Contains("bronze")) return "Bronze";
+            if (lower.Contains("silver")) return "Silver";
+            if (lower.Contains("gold")) return "Gold";
+            if (lower.Contains("diamond")) return "Diamond";
+            if (lower.Contains("legendary")) return "Legendary";
+            return tier;
+        }
 
         private BoardData GatherBoardData()
         {
+            int day = _currentDay;
+            if (day < 1) { var ui = TryReadUiDay(); if (ui.HasValue) { day = ui.Value; _currentDay = day; } }
+            int gold = _currentGold;
+            if (gold <= 0) { var ui = TryReadUiGold(); if (ui.HasValue) { gold = ui.Value; _currentGold = gold; } }
+            int health = _currentHealth;
+            if (health <= 0) { var ui = TryReadUiHealth(); if (ui.HasValue) { health = ui.Value; _currentHealth = health; } }
+
+            // 从 DTO 读取 Level / XP
+            int level = 0, xp = 0;
+            try
+            {
+                if (LatestGameStateDto != null)
+                {
+                    var player = GetField(LatestGameStateDto, "Player");
+                    if (player != null)
+                    {
+                        var attrs = GetField(player, "Attributes") as System.Collections.IEnumerable;
+                        if (attrs != null)
+                        {
+                            foreach (var item in attrs)
+                            {
+                                if (item == null) continue;
+                                var key = GetProperty(item, "Key");
+                                var val = GetProperty(item, "Value");
+                                if (key == null || val == null) continue;
+                                var ks = key.ToString();
+                                int iv; try { iv = Convert.ToInt32(val); } catch { continue; }
+                                if (ks.Equals("Level", StringComparison.OrdinalIgnoreCase)) level = iv;
+                                else if (ks.Equals("XP", StringComparison.OrdinalIgnoreCase) || ks.Equals("Experience", StringComparison.OrdinalIgnoreCase)) xp = iv;
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
             var d = new BoardData
             {
                 Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                Day = _currentDay,
-                Hero = _detectedHero,
-                Gold = _currentGold,
-                Income = _currentIncome,
-                Health = _currentHealth,
-                Prestige = _currentPrestige,
+                Day = day, Hero = _detectedHero, Gold = gold, Income = _currentIncome,
+                Health = health, Prestige = _currentPrestige, Level = level, XP = xp,
+                InventorySlotsUsed = 0, InventorySlotsTotal = 10,
                 BoardItems = new List<CardInfo>(), StorageItems = new List<CardInfo>(),
-                SkillCards = new List<CardInfo>(), Shops = new List<ShopInfo>()
+                OpponentItems = new List<CardInfo>(), SkillCards = new List<CardInfo>(),
+                Shops = new List<ShopInfo>(), EventOptions = new List<string>(),
+                EventOptionsDetailed = new List<EventOptionInfo>()
             };
 
-            if (_playerCardsOnBoardField != null)
+            var shopCards = new List<CardInfo>();
+            string bestShopName = "";
+            var seenIds = new HashSet<string>();
+            var templateIdToName = new Dictionary<string, string>(); // 运行时 template_id → internal_name 映射
+
+            // 从游戏运行时模板缓存构建 template_id → internal_name 映射
+            BuildTemplateNameMapFromCache(templateIdToName);
+
+            // === 扫描所有 CardController（类似 BazaarStateExporter 的 UiCardCapture） ===
+            try
+            {
+#pragma warning disable 0618
+                var allCC = UnityEngine.Object.FindObjectsOfType<CardController>();
+#pragma warning restore 0618
+                if (allCC != null)
+                {
+                    foreach (var cc in allCC)
+                    {
+                        try
+                        {
+                            var cd = cc.CardData;
+                            if (cd == null) continue;
+                            var typeStr = cd.Type.ToString();
+                            var iid = cd.InstanceId != null ? cd.InstanceId.ToString() : "";
+                            var templateId = cd.TemplateId != null ? cd.TemplateId.ToString() : "";
+
+                            // 解析名称：CardData.Template.InternalName → Translate → fallback _cardDb
+                            string internalName = ResolveCardNameByTemplateId(templateId, cd);
+                            string displayName = string.IsNullOrEmpty(internalName) ? "???" : Translate(internalName);
+                            // 建立运行时 template_id → internal_name 映射（供 DTO 回退使用）
+                            if (!string.IsNullOrEmpty(templateId) && !string.IsNullOrEmpty(internalName) && internalName != "???")
+                                templateIdToName[templateId] = internalName;
+
+                            if (typeStr == "Skill")
+                            {
+                                if (!string.IsNullOrEmpty(iid) && seenIds.Contains(iid)) continue;
+                                if (!string.IsNullOrEmpty(iid)) seenIds.Add(iid);
+                                var skillCi = BuildCardInfo(cd, internalName ?? displayName, templateId, iid, "Skill");
+                                d.SkillCards.Add(skillCi);
+                                continue;
+                            }
+                            if (typeStr != "Item") continue;
+                            if (string.IsNullOrEmpty(internalName) || internalName == "???") continue;
+                            if (!string.IsNullOrEmpty(iid) && seenIds.Contains(iid)) continue;
+                            if (!string.IsNullOrEmpty(iid)) seenIds.Add(iid);
+
+                            bool isPlayer = false;
+                            try { isPlayer = IsPlayerBoardFor(cc); }
+                            catch { try { isPlayer = IsPlayerItem(cc.transform); } catch { } }
+
+                            var section = GetCardSection(cd);
+                            var uiCtx = GetUiContext(cc);
+                            int? price = GetCardPrice(cc);
+
+                            var ci = BuildCardInfo(cd, internalName, templateId, iid, section);
+                            if (price.HasValue) ci.Attributes["Price"] = price.Value;
+
+                            bool isShop = section.IndexOf("Shop", StringComparison.OrdinalIgnoreCase) >= 0
+                                || section.IndexOf("Selection", StringComparison.OrdinalIgnoreCase) >= 0
+                                || uiCtx.IndexOf("Shop", StringComparison.OrdinalIgnoreCase) >= 0
+                                || uiCtx.IndexOf("Merchant", StringComparison.OrdinalIgnoreCase) >= 0;
+                            bool isOpp = !isPlayer && uiCtx.IndexOf("OpponentItemSocket_", StringComparison.OrdinalIgnoreCase) >= 0;
+                            bool isReward = section.IndexOf("Reward", StringComparison.OrdinalIgnoreCase) >= 0;
+
+                            if (isShop && !isPlayer && !isReward)
+                            {
+                                shopCards.Add(ci);
+                                if (string.IsNullOrEmpty(bestShopName))
+                                {
+                                    foreach (var part in uiCtx.Split('/'))
+                                    {
+                                        if ((part.IndexOf("Merchant", StringComparison.OrdinalIgnoreCase) >= 0
+                                            || part.IndexOf("Shop", StringComparison.OrdinalIgnoreCase) >= 0
+                                            || part.IndexOf("Encounter", StringComparison.OrdinalIgnoreCase) >= 0)
+                                            && !part.Contains("Socket") && !part.Contains("Portrait"))
+                                        { bestShopName = part; break; }
+                                    }
+                                }
+                            }
+                            else if (isOpp)
+                            {
+                                d.OpponentItems.Add(ci);
+                            }
+                            else if (isPlayer)
+                            {
+                                if (section.IndexOf("Hand", StringComparison.OrdinalIgnoreCase) >= 0)
+                                    d.BoardItems.Add(ci);
+                                else if (section.IndexOf("Stash", StringComparison.OrdinalIgnoreCase) >= 0)
+                                    d.StorageItems.Add(ci);
+                                else
+                                {
+                                    try
+                                    {
+                                        if (_isPlayerBoardProp != null && ((bool)_isPlayerBoardProp.GetValue(cc, null)))
+                                            d.BoardItems.Add(ci);
+                                        else d.StorageItems.Add(ci);
+                                    }
+                                    catch { d.BoardItems.Add(ci); }
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+
+            // 回退: 旧 BoardManager 方式（补充 Stash / Board）
+            if (d.StorageItems.Count == 0 && _playerCardsOnBoardField != null)
             {
                 try
                 {
@@ -2074,10 +2453,13 @@ namespace BazaarBoardReader
                                 if (ctrl == null) continue;
                                 var cd = ctrl.CardData;
                                 if (cd == null) continue;
+                                var section = GetCardSection(cd);
                                 var loc = "Board";
-                                try { if (_isPlayerBoardProp != null) loc = ((bool)_isPlayerBoardProp.GetValue(ctrl, null)) ? "Board" : "Storage"; } catch { }
-                                var ci = new CardInfo { Name = GetCardName(cd), InstanceId = cd.InstanceId != null ? cd.InstanceId.ToString() : "", CardType = cd.Type.ToString(), CardSize = cd.Size.ToString(), Tier = cd.Tier.ToString(), Location = loc, Attributes = new Dictionary<string, int>() };
-                                if (cd.Attributes != null) foreach (var kv in cd.Attributes) if (kv.Value != 0) ci.Attributes[kv.Key.ToString()] = kv.Value;
+                                if (section.IndexOf("Stash", StringComparison.OrdinalIgnoreCase) >= 0) loc = "Storage";
+                                else if (_isPlayerBoardProp != null) { try { loc = ((bool)_isPlayerBoardProp.GetValue(ctrl, null)) ? "Board" : "Storage"; } catch { } }
+                                var templateId = cd.TemplateId != null ? cd.TemplateId.ToString() : "";
+                                string internalName = ResolveCardNameByTemplateId(templateId, cd);
+                                var ci = BuildCardInfo(cd, internalName ?? "???", templateId, cd.InstanceId != null ? cd.InstanceId.ToString() : "", loc);
                                 if (loc == "Board") d.BoardItems.Add(ci); else d.StorageItems.Add(ci);
                             }
                         }
@@ -2086,7 +2468,82 @@ namespace BazaarBoardReader
                 catch { }
             }
 
-            if (_skillListField != null)
+            // DTO 回退: 从 LatestGameStateDto.Cards 补充 Stash/Skills（未被 CardController 扫描到的）
+            if (d.StorageItems.Count == 0 || d.BoardItems.Count == 0 || d.SkillCards.Count == 0)
+            {
+                try
+                {
+                    if (LatestGameStateDto != null)
+                    {
+                        var cardsEnum = GetField(LatestGameStateDto, "Cards") as System.Collections.IEnumerable;
+                        if (cardsEnum != null)
+                        {
+                            foreach (var cardObj in cardsEnum)
+                            {
+                                if (cardObj == null) continue;
+                                var iid = GetField(cardObj, "InstanceId");
+                                var tid = GetField(cardObj, "TemplateId");
+                                var sec = GetField(cardObj, "Section");
+                                var typ = GetField(cardObj, "Type");
+                                var tier = GetField(cardObj, "Tier");
+                                var instanceIdStr = iid != null ? iid.ToString() : "";
+                                var templateIdStr = tid != null ? tid.ToString() : "";
+                                var sectionStr = sec != null ? sec.ToString() : "";
+                                var typeStr = typ != null ? typ.ToString() : "";
+                                var tierStr = tier != null ? tier.ToString() : "";
+                                if (string.IsNullOrEmpty(instanceIdStr)) continue;
+                                if (seenIds.Contains(instanceIdStr)) continue;
+                                seenIds.Add(instanceIdStr);
+
+                                // 通过 template_id 查找名称：优先运行时映射表 → _cardDb 回退
+                                string name = null;
+                                if (!string.IsNullOrEmpty(templateIdStr))
+                                {
+                                    templateIdToName.TryGetValue(templateIdStr, out name);
+                                    if (string.IsNullOrEmpty(name))
+                                        name = LookupCardNameByTemplateId(templateIdStr);
+                                }
+                                if (string.IsNullOrEmpty(name)) name = "???";
+
+                                var ci = new CardInfo
+                                {
+                                    Name = string.IsNullOrEmpty(name) ? "???" : Translate(name),
+                                    TemplateId = templateIdStr,
+                                    InstanceId = instanceIdStr,
+                                    CardType = typeStr,
+                                    Tier = NormalizeTierStr(tierStr),
+                                    Location = sectionStr,
+                                    Attributes = new Dictionary<string, int>()
+                                };
+                                // 读取附魔
+                                try
+                                {
+                                    var ench = GetProperty(cardObj, "Enchantment");
+                                    if (ench != null && !string.IsNullOrEmpty(ench.ToString()))
+                                        ci.Enchantment = ench.ToString();
+                                }
+                                catch { }
+
+                                if (typeStr.Equals("Skill", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    if (d.SkillCards.Count == 0) d.SkillCards.Add(ci);
+                                }
+                                else if (typeStr.Equals("Item", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    if (sectionStr.Equals("Hand", StringComparison.OrdinalIgnoreCase) && d.BoardItems.Count == 0)
+                                        d.BoardItems.Add(ci);
+                                    else if (sectionStr.Equals("Stash", StringComparison.OrdinalIgnoreCase))
+                                        d.StorageItems.Add(ci);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
+
+            // 技能 (SkillPresentationManager)
+            if (_skillListField != null && d.SkillCards.Count == 0)
             {
                 try
                 {
@@ -2105,8 +2562,11 @@ namespace BazaarBoardReader
                                     var r = o as TheBazaar.SkillProxyRenderer;
                                     if (r != null && r.Card != null)
                                     {
-                                        var ci = new CardInfo { Name = GetCardName(r.Card), InstanceId = r.Card.InstanceId != null ? r.Card.InstanceId.ToString() : "", CardType = r.Card.Type.ToString(), CardSize = r.Card.Size.ToString(), Tier = r.Card.Tier.ToString(), Location = "Skill", Attributes = new Dictionary<string, int>() };
-                                        if (r.Card.Attributes != null) foreach (var kv in r.Card.Attributes) if (kv.Value != 0) ci.Attributes[kv.Key.ToString()] = kv.Value;
+                                        var bm = r.transform.GetComponentInParent<BoardManager>();
+                                        if (bm == null || bm != BoardManager.Instance) continue;
+                                        var templateId = r.Card.TemplateId != null ? r.Card.TemplateId.ToString() : "";
+                                        string internalName = ResolveCardNameByTemplateId(templateId, r.Card);
+                                        var ci = BuildCardInfo(r.Card, internalName ?? "???", templateId, r.Card.InstanceId != null ? r.Card.InstanceId.ToString() : "", "Skill");
                                         d.SkillCards.Add(ci);
                                     }
                                 }
@@ -2118,33 +2578,332 @@ namespace BazaarBoardReader
                 catch { }
             }
 
+            // 商店 EncounterController
             try
             {
 #pragma warning disable 0618
-                var encounters = UnityEngine.Object.FindObjectsOfType<EncounterController>();
+                var encs = UnityEngine.Object.FindObjectsOfType<EncounterController>();
 #pragma warning restore 0618
-                if (encounters != null)
+                if (encs != null)
                 {
-                    foreach (var ec in encounters)
+                    foreach (var ec in encs)
                     {
                         if (ec == null) continue;
                         var t = ec.transform;
-                        d.Shops.Add(new ShopInfo { GameObjectName = t.name, DisplayName = Translate(t.name), Position = string.Format("{0:F1},{1:F1},{2:F1}", t.position.x, t.position.y, t.position.z) });
+                        if (t.name.Contains("_Frame_") || t.name.Contains("_PV")) continue;
+                        var shopName = t.name;
+                        if (shopName.EndsWith("(Clone)")) shopName = shopName.Substring(0, shopName.Length - 7);
+                        d.Shops.Add(new ShopInfo { GameObjectName = shopName, DisplayName = Translate(shopName), Position = string.Format("{0:F1},{1:F1},{2:F1}", t.position.x, t.position.y, t.position.z) });
                     }
                 }
             }
             catch { }
+
+            // 当前商店详情
+            if (shopCards.Count > 0)
+            {
+                if (bestShopName.EndsWith("(Clone)")) bestShopName = bestShopName.Substring(0, bestShopName.Length - 7);
+                d.CurrentShop = new ShopDetail { ShopName = bestShopName, DisplayName = string.IsNullOrEmpty(bestShopName) ? "" : Translate(bestShopName), Items = shopCards };
+            }
+
+            // 事件选项（从 DTO 读取 SelectionSet）
+            try
+            {
+                if (LatestGameStateDto != null)
+                {
+                    var currentState = GetField(LatestGameStateDto, "CurrentState");
+                    if (currentState != null)
+                    {
+                        var selSet = GetField(currentState, "SelectionSet") as System.Collections.IEnumerable;
+                        if (selSet != null)
+                        {
+                            foreach (var id in selSet)
+                            {
+                                if (id != null)
+                                {
+                                    var idStr = id.ToString();
+                                    if (!string.IsNullOrEmpty(idStr))
+                                    {
+                                        d.EventOptions.Add(idStr);
+                                        string kind = "unknown";
+                                        if (idStr.StartsWith("enc_")) kind = "encounter";
+                                        else if (idStr.StartsWith("ste_")) kind = "step";
+                                        else if (idStr.StartsWith("com_")) kind = "combat";
+                                        else if (idStr.StartsWith("pvp_")) kind = "pvp";
+                                        d.EventOptionsDetailed.Add(new EventOptionInfo { Id = idStr, Kind = kind });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            // 统计物品槽位
+            d.InventorySlotsUsed = d.BoardItems.Count + d.StorageItems.Count;
+            if (d.BoardItems.Count == 0 && d.StorageItems.Count == 0 && d.SkillCards.Count == 0)
+                d.StatusMessage = "No items found. Enter a run first.";
+            else
+                d.StatusMessage = string.Format("Board={0} Stash={1} Skills={2} Shop={3}",
+                    d.BoardItems.Count, d.StorageItems.Count, d.SkillCards.Count,
+                    d.CurrentShop != null ? d.CurrentShop.Items.Count : 0);
+
             return d;
+        }
+
+        /// <summary>构建 CardInfo（含名称映射）</summary>
+        private CardInfo BuildCardInfo(BazaarGameClient.Domain.Models.Cards.Card cd, string internalName, string templateId, string instanceId, string location)
+        {
+            var ci = new CardInfo
+            {
+                Name = string.IsNullOrEmpty(internalName) ? "???" : Translate(internalName),
+                TemplateId = templateId ?? "",
+                InstanceId = instanceId ?? "",
+                CardType = cd.Type.ToString(),
+                CardSize = cd.Size.ToString(),
+                Tier = cd.Tier.ToString(),
+                Location = location,
+                Attributes = new Dictionary<string, int>()
+            };
+            // 附魔（通过反射获取 Enchantment 属性）
+            try
+            {
+                var enchProp = cd.GetType().GetProperty("Enchantment", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (enchProp != null)
+                {
+                    var ench = enchProp.GetValue(cd, null);
+                    if (ench != null && !string.IsNullOrEmpty(ench.ToString()))
+                        ci.Enchantment = ench.ToString();
+                }
+            }
+            catch { }
+            // 属性
+            try
+            {
+                if (cd.Attributes != null)
+                {
+                    foreach (var kv in cd.Attributes)
+                    {
+                        if (kv.Value != 0) ci.Attributes[kv.Key.ToString()] = kv.Value;
+                    }
+                }
+            }
+            catch { }
+            return ci;
+        }
+
+        private static string GetCardSection(BazaarGameClient.Domain.Models.Cards.Card cd)
+        {
+            try { var sp = cd.GetType().GetProperty("Section", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic); if (sp != null) { var v = sp.GetValue(cd, null); return v != null ? v.ToString() : ""; } } catch { }
+            return "";
+        }
+
+        private static string GetUiContext(CardController cc)
+        {
+            try
+            {
+                var names = new List<string>();
+                Transform cur = cc.transform;
+                for (int d = 0; cur != null && d < 12; d++) { names.Add(cur.name ?? ""); cur = cur.parent; }
+                return string.Join("/", names.ToArray());
+            }
+            catch { return ""; }
+        }
+
+        private static int? GetCardPrice(CardController cc)
+        {
+            try
+            {
+                var pp = cc.GetType().GetProperty("ActivePriceContainer", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (pp == null) return null;
+                var pc = pp.GetValue(cc, null);
+                if (pc == null) return null;
+                var cpf = pc.GetType().GetField("currentPrice", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (cpf == null) return null;
+                var txc = cpf.GetValue(pc);
+                if (txc == null) return null;
+                var tp = txc.GetType().GetProperty("text", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (tp == null) return null;
+                var raw = tp.GetValue(txc, null) as string;
+                if (string.IsNullOrEmpty(raw)) return null;
+                var digits = new string(raw.Where(char.IsDigit).ToArray());
+                int val;
+                return int.TryParse(digits, out val) ? (int?)val : null;
+            }
+            catch { return null; }
+        }
+
+        // === UI 数值扫描（借鉴 bazaar-helper） ===
+
+        private static int? TryReadUiInt(string namePattern)
+        {
+            try
+            {
+                int bestScore = int.MinValue;
+                int? bestValue = null;
+#pragma warning disable 0618
+                var allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+#pragma warning restore 0618
+                foreach (var go in allObjects)
+                {
+                    if (go == null) continue;
+                    if ((go.name ?? "").IndexOf(namePattern, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                    foreach (var comp in go.GetComponents<Component>())
+                    {
+                        if (comp == null) continue;
+                        string t = TryGetComponentText(comp);
+                        if (string.IsNullOrEmpty(t)) continue;
+                        int parsed;
+                        if (TryParseFirstInt(t, out parsed))
+                        {
+                            int score = ScoreGameObject(go);
+                            if (score > bestScore) { bestScore = score; bestValue = parsed; }
+                            break;
+                        }
+                    }
+                }
+                if (bestScore < 1000) return null;
+                return bestValue;
+            }
+            catch { return null; }
+        }
+
+        private int? TryReadUiGold()
+        {
+            var v = TryReadUiInt("Gold_Number"); if (v.HasValue) return v;
+            v = TryReadUiInt("GoldNumber"); if (v.HasValue) return v;
+            return TryReadUiResourceByHierarchy("gold", new[] { "tooltip", "monster", "reward", "enemy", "opponent" });
+        }
+
+        private int? TryReadUiHealth()
+        {
+            int? v;
+            foreach (var p in new[] { "HP_Number", "Health_Value", "HealthNumber", "HPNumber" })
+            { v = TryReadUiInt(p); if (v.HasValue) return v; }
+            return TryReadUiResourceByHierarchy("health", new[] { "tooltip", "monster", "reward", "enemy", "opponent", "regen", "maxhealth", "max_health" });
+        }
+
+        private int? TryReadUiDay()
+        {
+            try
+            {
+                int bestScore = int.MinValue;
+                int? bestValue = null;
+#pragma warning disable 0618
+                var all = Resources.FindObjectsOfTypeAll<MonoBehaviour>();
+#pragma warning restore 0618
+                foreach (var mb in all)
+                {
+                    if (mb == null || mb.gameObject == null || !mb.gameObject.activeInHierarchy) continue;
+                    if ((mb.GetType().FullName ?? mb.GetType().Name).IndexOf("Text", StringComparison.OrdinalIgnoreCase) < 0) continue;
+                    string objName = (mb.gameObject.name ?? "").ToLowerInvariant();
+                    string hierarchy = GetHierarchyPath(mb.transform).ToLowerInvariant();
+                    if (!objName.Contains("day") && !hierarchy.Contains("day")) continue;
+                    if (hierarchy.Contains("tooltip") || hierarchy.Contains("reward") || hierarchy.Contains("card") || hierarchy.Contains("history")) continue;
+                    string t = TryGetComponentText(mb);
+                    if (string.IsNullOrEmpty(t)) continue;
+                    int parsed;
+                    if (!TryParseFirstInt(t, out parsed) || parsed < 1 || parsed > 20) continue;
+                    int score = ScoreGameObject(mb.gameObject);
+                    if (objName.Contains("daynumber") || objName.Contains("day_number") || objName.Contains("dayvalue") || objName.Contains("day_value") || objName.Contains("currentday")) score += 500;
+                    else if (objName.Contains("day")) score += 300;
+                    if (score > bestScore) { bestScore = score; bestValue = parsed; }
+                }
+                if (bestScore < 1400) return null;
+                return bestValue;
+            }
+            catch { return null; }
+        }
+
+        private int? TryReadUiResourceByHierarchy(string keyword, string[] excludeKeywords)
+        {
+            try
+            {
+                int bestScore = int.MinValue;
+                int? bestValue = null;
+#pragma warning disable 0618
+                var all = Resources.FindObjectsOfTypeAll<MonoBehaviour>();
+#pragma warning restore 0618
+                foreach (var mb in all)
+                {
+                    if (mb == null || mb.gameObject == null || !mb.gameObject.activeInHierarchy) continue;
+                    if ((mb.GetType().FullName ?? mb.GetType().Name).IndexOf("Text", StringComparison.OrdinalIgnoreCase) < 0) continue;
+                    string hierarchy = GetHierarchyPath(mb.transform).ToLowerInvariant();
+                    if (hierarchy.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                    if (excludeKeywords != null)
+                    {
+                        bool excluded = false;
+                        foreach (var ex in excludeKeywords) { if (hierarchy.IndexOf(ex, StringComparison.OrdinalIgnoreCase) >= 0) { excluded = true; break; } }
+                        if (excluded) continue;
+                    }
+                    string t = TryGetComponentText(mb);
+                    if (string.IsNullOrEmpty(t)) continue;
+                    int parsed;
+                    if (!TryParseFirstInt(t, out parsed)) continue;
+                    int score = ScoreGameObject(mb.gameObject);
+                    if (score > bestScore) { bestScore = score; bestValue = parsed; }
+                }
+                if (bestScore < 1000) return null;
+                return bestValue;
+            }
+            catch { return null; }
+        }
+
+        private static string GetHierarchyPath(Transform t)
+        {
+            var names = new List<string>();
+            Transform cur = t;
+            while (cur != null && names.Count < 16) { names.Add(cur.name); cur = cur.parent; }
+            names.Reverse();
+            return string.Join("/", names.ToArray());
+        }
+
+        private static string TryGetComponentText(Component comp)
+        {
+            if (comp == null) return null;
+            var type = comp.GetType();
+            foreach (var name in new[] { "text", "Text", "m_text" })
+            {
+                try { var prop = type.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic); if (prop != null && prop.GetIndexParameters().Length == 0) { var v = prop.GetValue(comp, null); if (v != null) return v.ToString(); } } catch { }
+                try { var field = type.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic); if (field != null) { var v = field.GetValue(comp); if (v != null) return v.ToString(); } } catch { }
+            }
+            return null;
+        }
+
+        private static bool TryParseFirstInt(string text, out int value)
+        {
+            value = 0;
+            if (string.IsNullOrEmpty(text)) return false;
+            var m = System.Text.RegularExpressions.Regex.Match(text, @"[-+]?\d[\d,]*");
+            if (!m.Success) return false;
+            return int.TryParse(m.Value.Replace(",", ""), out value);
+        }
+
+        private static int ScoreGameObject(GameObject go)
+        {
+            int s = 0;
+            if (go.activeInHierarchy) s += 1000;
+            if (go.activeSelf) s += 100;
+            if (go.scene.IsValid()) s += 50;
+            if (go.scene.isLoaded) s += 50;
+            return s;
         }
 
         private void ExportToJson(BoardData d)
         {
             var dir = Path.Combine(Paths.GameRootPath, "BoardData");
             Directory.CreateDirectory(dir);
+            var json = JsonConvert.SerializeObject(d, Formatting.Indented);
+            // 带时间戳的历史文件
             var p = Path.Combine(dir, string.Format("board_{0}.json", DateTime.Now.ToString("yyyyMMdd_HHmmss")));
-            WriteJsonAtomic(p, JsonConvert.SerializeObject(d, Formatting.Indented));
-            _logger.LogInfo(string.Format("[BoardReader] 导出: 物品={0} 仓库={1} 技能={2} 商店={3}",
-                d.BoardItems.Count, d.StorageItems.Count, d.SkillCards.Count, d.Shops.Count));
+            WriteJsonAtomic(p, json);
+            // 最新快照（供外部脚本读取）
+            var latest = Path.Combine(dir, "board_latest.json");
+            WriteJsonAtomic(latest, json);
+            _logger.LogInfo(string.Format("[BoardReader] Export: Board={0} Stash={1} Opp={2} Skills={3} Shops={4} ShopItems={5}",
+                d.BoardItems.Count, d.StorageItems.Count, d.OpponentItems.Count, d.SkillCards.Count,
+                d.Shops.Count, d.CurrentShop != null ? d.CurrentShop.Items.Count : 0));
         }
     }
 
@@ -2198,10 +2957,19 @@ namespace BazaarBoardReader
         public int Income;
         public int Health;
         public int Prestige;
+        public int Level;
+        public int XP;
+        public int InventorySlotsUsed;
+        public int InventorySlotsTotal;
         public List<CardInfo> BoardItems;
         public List<CardInfo> StorageItems;
+        public List<CardInfo> OpponentItems;
         public List<CardInfo> SkillCards;
         public List<ShopInfo> Shops;
+        public ShopDetail CurrentShop;
+        public List<string> EventOptions;
+        public List<EventOptionInfo> EventOptionsDetailed;
+        public string StatusMessage;
     }
 
     [Serializable]
@@ -2210,6 +2978,28 @@ namespace BazaarBoardReader
         public string GameObjectName;
         public string DisplayName;
         public string Position;
+        public List<CardInfo> Items;
+    }
+
+    [Serializable]
+    public class ShopDetail
+    {
+        public string ShopName;
+        public string DisplayName;
+        public List<CardInfo> Items;
+        public int? RefreshCost;
+        public int? RefreshesRemaining;
+        public bool? RefreshAvailable;
+    }
+
+    [Serializable]
+    public class EventOptionInfo
+    {
+        public string Id;
+        public string TemplateId;
+        public string Name;
+        public string Kind;
+        public string CardType;
     }
 
     [Serializable]
@@ -2222,6 +3012,7 @@ namespace BazaarBoardReader
     public class CardInfo
     {
         public string Name = "未知";
+        public string TemplateId;
         public string InstanceId;
         public string CardType;
         public string CardSize;
