@@ -264,6 +264,8 @@ namespace BazaarBoardReader
             CleanBuilds();
             LoadTranslations();
             LoadShopRecommendationData();
+            LoadEventData();
+            LoadEventNotes();
 
             try
             {
@@ -454,7 +456,7 @@ namespace BazaarBoardReader
 
             // 多行副文字
             float subY = r.y + 3 + sz.y + 1;
-            bool isShopRating = subLines.Length > 0 && (subLines[0].StartsWith("★") || subLines[0].StartsWith("☆"));
+            bool isShopRating = subLines.Length > 0 && (subLines[0].StartsWith("★") || subLines[0].StartsWith("☆") || subLines[0].StartsWith("◆"));
             if (!isShopRating && subLines.Length == 1)
             {
                 // 暴击文本：根据数值动态颜色(白→红)和大小(50%→150%)
@@ -481,6 +483,8 @@ namespace BazaarBoardReader
                     var line = subLines[i];
                     if (line.StartsWith("★★") || line.StartsWith("★"))
                         subStyle.normal.textColor = new Color(1f, 0.85f, 0.2f);
+                    else if (line.StartsWith("◆"))
+                        subStyle.normal.textColor = new Color(1f, 0.85f, 0.2f); // 推荐文本=金色
                     else if (i == 1)
                         subStyle.normal.textColor = new Color(1f, 0.25f, 0.2f);       // 核心=红色
                     else if (i == 2)
@@ -1225,6 +1229,51 @@ namespace BazaarBoardReader
             ScanShops(cam);
         }
 
+        private void ScanEventRecommendations(Camera cam)
+        {
+            try
+            {
+                if (_eventNotes.Count == 0) return;
+                var gsPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "game_state.json");
+                if (!File.Exists(gsPath)) return;
+                var json = File.ReadAllText(gsPath, Encoding.UTF8);
+                var gs = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                if (gs == null) return;
+
+                var options = gs.ContainsKey("event_options_detailed")
+                    ? gs["event_options_detailed"] as Newtonsoft.Json.Linq.JArray : null;
+                if (options == null) return;
+
+                // 收集所有推荐
+                var recs = new List<string>();
+                foreach (var opt in options)
+                {
+                    var tid = opt.Value<string>("template_id");
+                    var eid = opt.Value<string>("id");
+                    var rec = GetEventRecommendation(eid, tid);
+                    if (rec != null) recs.Add(rec);
+                }
+                if (recs.Count == 0) return;
+
+                // 把推荐文本附加到现有商店标签上（按顺序匹配）
+                int recIdx = 0;
+                for (int i = 0; i < _shopLabels.Count && recIdx < recs.Count; i++)
+                {
+                    var lbl = _shopLabels[i];
+                    if (string.IsNullOrEmpty(lbl.SubText)) continue; // 无评分的跳过
+                    // 在现有标签下方追加推荐
+                    if (string.IsNullOrEmpty(lbl.HoverData))
+                        lbl.HoverData = recs[recIdx];
+                    else
+                        lbl.HoverData += "\n" + recs[recIdx];
+                    // 也追加到SubText
+                    lbl.SubText += "\n" + recs[recIdx];
+                    recIdx++;
+                }
+            }
+            catch { }
+        }
+
         private void ScanShops(Camera cam)
         {
             try
@@ -1244,6 +1293,18 @@ namespace BazaarBoardReader
                     var shopName = t.name;
                     if (shopName.EndsWith("(Clone)")) shopName = shopName.Substring(0, shopName.Length - 7);
                     var rating = RateShop(shopName);
+                    if (rating == null) rating = RateEvent(shopName);
+                    // 事件推荐文本（金色，与核心/灵活同大小）
+                    var rec = GetEventRecommendation(shopName);
+                    if (string.IsNullOrEmpty(rec) && _eventNotes.Count > 0)
+                        _logger.LogInfo(string.Format("[BoardReader] 推荐未匹配: {0}", shopName));
+                    if (!string.IsNullOrEmpty(rec))
+                    {
+                        if (string.IsNullOrEmpty(rating))
+                            rating = "◆ " + rec;
+                        else
+                            rating += "\n◆ " + rec;
+                    }
                     if (rating == null) _logger.LogInfo(string.Format("[BoardReader] 无匹配: {0}", shopName));
                     _shopLabels.Add(new OverlayLabel { Text = Translate(shopName), Tier = "Invalid", ScreenPos = sp, SubText = rating ?? "", HoverData = "" });
                 }
@@ -2283,7 +2344,251 @@ namespace BazaarBoardReader
             flexLine.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
             if (flexLine.Count > 0)
                 lines.Add(string.Join(",", flexLine.Take(4).ToArray()) + (flexLine.Count > 4 ? "……" : ""));
+            // 商店推荐文本
+            var rec = GetEventRecommendation(shopName);
+            if (!string.IsNullOrEmpty(rec))
+                lines.Add("◆ " + rec);
             return string.Join("\n", lines.ToArray());
+        }
+
+        // 事件评分（item_reward 等）
+        private Dictionary<string, object> _eventLookup = null;
+        private void LoadEventData()
+        {
+            try
+            {
+                var path = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "events.json");
+                if (!File.Exists(path)) return;
+                var json = File.ReadAllText(path, Encoding.UTF8);
+                var raw = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, object>>>>(json);
+                _eventLookup = new Dictionary<string, object>();
+                if (raw != null)
+                {
+                    foreach (var kv in raw)
+                        foreach (var evt in kv.Value)
+                        {
+                            var name = evt.ContainsKey("name") ? evt["name"].ToString() : "";
+                            if (!string.IsNullOrEmpty(name))
+                                _eventLookup[name.ToLower()] = evt;
+                        }
+                }
+                _logger.LogInfo(string.Format("[BoardReader] 事件数据: {0} 条", _eventLookup.Count));
+            }
+            catch (Exception ex) { _logger.LogWarning("[BoardReader] 事件加载: " + ex.Message); }
+        }
+
+        private string RateEvent(string shopName)
+        {
+            if (_eventLookup == null) LoadEventData();
+            if (_eventLookup == null || _eventLookup.Count == 0) return null;
+            if (_cardDb.Count == 0 || string.IsNullOrEmpty(_detectedHero)) return null;
+
+            var key = shopName.ToLower();
+            var parenIdx = key.IndexOf('(');
+            if (parenIdx > 0) key = key.Substring(0, parenIdx).Trim();
+            object evtObj = null;
+            // 先按名查，再按 template_id 查
+            if (!_eventLookup.TryGetValue(key, out evtObj))
+            {
+                string mappedName;
+                if (_tidToName.TryGetValue(shopName, out mappedName))
+                    _eventLookup.TryGetValue(mappedName.ToLower(), out evtObj);
+                if (evtObj == null && _tidToName.TryGetValue(key, out mappedName))
+                    _eventLookup.TryGetValue(mappedName.ToLower(), out evtObj);
+            }
+            if (evtObj == null) return null;
+            var evt = evtObj as Dictionary<string, object>;
+            if (evt == null) return null;
+
+            // 只评分 item_reward
+            var etype = evt.ContainsKey("event_type") ? evt["event_type"].ToString() : "";
+            if (etype != "item_reward") return null;
+
+            // 获取 reward_tags
+            var tags = new List<string>();
+            if (evt.ContainsKey("reward_tags"))
+            {
+                var tagList = evt["reward_tags"] as Newtonsoft.Json.Linq.JArray;
+                if (tagList != null)
+                    foreach (var t in tagList) tags.Add(t.ToString());
+            }
+
+            // 构建物品池（按英雄过滤）
+            var pool = new List<string>();
+            foreach (var kv in _cardDb)
+            {
+                var card = kv.Value;
+                if (card.tiers != null && card.tiers.Contains("Legendary")) continue;
+                var ch = card.heroes ?? new List<string>();
+                if (!ch.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase)) && !ch.Contains("Common")) continue;
+                if (!CardCanAppearOnDay(card, _currentDay)) continue;
+
+                if (tags.Count > 0)
+                {
+                    var allTags = new List<string>();
+                    if (card.tags != null) allTags.AddRange(card.tags);
+                    if (card.hidden_tags != null) allTags.AddRange(card.hidden_tags);
+                    var allLower = allTags.Select(t => t.ToLower()).ToList();
+                    if (!tags.Any(t => allLower.Contains(t.ToLower()))) continue;
+                }
+                pool.Add(card.internal_name ?? kv.Key);
+            }
+            if (pool.Count == 0) return null;
+
+            // 选阵容
+            BuildTemplate bestBuild = null;
+            if (!string.IsNullOrEmpty(_selectedBuildName))
+                bestBuild = _builds.Find(b => b.BuildName == _selectedBuildName);
+            if (bestBuild == null)
+            {
+                var matchResults = MatchBuilds(_detectedHero, GatherAllItemNames());
+                if (matchResults.Count > 0) bestBuild = matchResults[0].Template;
+            }
+            if (bestBuild == null) return null;
+
+            var poolLower = new HashSet<string>();
+            foreach (var p in pool) poolLower.Add(p.ToLower());
+            int hits = 0;
+            var hitNames = new List<string>();
+            foreach (var item in bestBuild.CoreItems)
+                if (poolLower.Contains(item.ToLower())) { hits++; hitNames.Add(item); }
+            foreach (var item in bestBuild.FlexItems)
+                if (poolLower.Contains(item.ToLower())) { hits++; hitNames.Add(item); }
+            var rec = GetEventRecommendation(shopName);
+            if (hits == 0 && string.IsNullOrEmpty(rec)) return null;
+
+            int hitPct = pool.Count > 0 ? (int)(hits * 100f / pool.Count) : 0;
+            int score = hits * 3;
+            string stars = "";
+            if (hits > 0)
+                stars = (score >= 9 ? "★★★" : score >= 6 ? "★★" : "★") + " " + hitPct + "%"
+                    + "\n" + string.Join(",", TranslateEach(hitNames).Take(4).ToArray());
+            if (!string.IsNullOrEmpty(rec))
+            {
+                if (!string.IsNullOrEmpty(stars)) stars += "\n";
+                stars += rec;
+            }
+            return stars;
+        }
+
+        // ── 事件推荐文本 ──
+        private Dictionary<string, string> _eventNotes = new Dictionary<string, string>();
+        private Dictionary<string, string> _tidToName = new Dictionary<string, string>(); // template_id → event name
+
+        private void LoadEventNotes()
+        {
+            try
+            {
+                var baseDir = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data");
+                // 加载备注
+                var np = Path.Combine(baseDir, "event_notes.json");
+                if (File.Exists(np))
+                {
+                    var raw = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(np, Encoding.UTF8));
+                    _eventNotes = new Dictionary<string, string>();
+                    if (raw != null)
+                        foreach (var kv in raw)
+                        {
+                            var k = kv.Key.ToLower();
+                            _eventNotes[k] = kv.Value;
+                            // 同时去掉后缀存储（Day 1-2, Bronze, etc）
+                            var pi = k.IndexOf('(');
+                            if (pi > 0)
+                            {
+                                var basek = k.Substring(0, pi).Trim();
+                                if (!_eventNotes.ContainsKey(basek))
+                                    _eventNotes[basek] = kv.Value;
+                            }
+                        }
+                }
+                // 加载 template_id → name 映射
+                var tp = Path.Combine(baseDir, "cards_generated.json");
+                if (File.Exists(tp))
+                {
+                    var gen = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(tp, Encoding.UTF8));
+                    if (gen != null)
+                        foreach (var kv in gen)
+                        {
+                            var d = kv.Value as Newtonsoft.Json.Linq.JObject;
+                            if (d == null) continue;
+                            var tid = d["template_id"]?.ToString();
+                            var iname = d["internal_name"]?.ToString();
+                            if (!string.IsNullOrEmpty(tid) && !string.IsNullOrEmpty(iname) && !_tidToName.ContainsKey(tid))
+                                _tidToName[tid] = iname;
+                        }
+                }
+                _logger.LogInfo(string.Format("[BoardReader] 备注:{0} tid映射:{1}", _eventNotes.Count, _tidToName.Count));
+            }
+            catch (Exception ex) { _logger.LogWarning("[BoardReader] 事件备注加载: " + ex.Message); }
+        }
+
+        private string GetEventRecommendation(string eventName, string templateId = null)
+        {
+            if (_eventNotes.Count == 0) return null;
+            string lookupName = eventName;
+            if (!string.IsNullOrEmpty(templateId) && _tidToName.TryGetValue(templateId, out var mapped))
+                lookupName = mapped;
+
+            // 去后缀: "Invest in Yourself (Day 1-2)" → "invest in yourself"
+            var key = lookupName.ToLower();
+            var parenIdx = key.IndexOf('(');
+            if (parenIdx > 0) key = key.Substring(0, parenIdx).Trim();
+
+            string note = null;
+            // 1. 直接小写匹配
+            if (!_eventNotes.TryGetValue(key, out note))
+            {
+                // 2. 翻译名小写匹配
+                var zh = Translate(lookupName);
+                if (!string.IsNullOrEmpty(zh) && zh != lookupName)
+                    _eventNotes.TryGetValue(zh.ToLower(), out note);
+            }
+            if (string.IsNullOrEmpty(note)) return null;
+
+            var lines = note.Split('\n');
+            var matches = new List<string>();
+            foreach (var line in lines)
+            {
+                var ci = line.IndexOf(':');
+                if (ci < 0) ci = line.IndexOf('：'); // 中文冒号
+                if (ci < 0) continue;
+                var cond = line.Substring(0, ci).Trim().TrimStart('[').TrimEnd(']');
+                var text = line.Substring(ci + 1).Trim();
+                if (string.IsNullOrEmpty(text)) continue;
+                if (EvalCondition(cond)) matches.Add(text);
+            }
+            return matches.Count > 0 ? string.Join(", ", matches) : null;
+        }
+
+        private bool EvalCondition(string cond)
+        {
+            if (string.IsNullOrEmpty(cond)) return true;
+            // 金币<10 / 金币>20 / 金币<=5 / 金币>=30
+            var m = System.Text.RegularExpressions.Regex.Match(cond, @"金币\s*([<>=]+)\s*(\d+)");
+            if (m.Success) return CmpNum(_currentGold, m.Groups[1].Value, int.Parse(m.Groups[2].Value));
+            // 生命<500
+            m = System.Text.RegularExpressions.Regex.Match(cond, @"生命\s*([<>=]+)\s*(\d+)");
+            if (m.Success) return CmpNum(_currentHealth, m.Groups[1].Value, int.Parse(m.Groups[2].Value));
+            // 收入<5
+            m = System.Text.RegularExpressions.Regex.Match(cond, @"收入\s*([<>=]+)\s*(\d+)");
+            if (m.Success) return CmpNum(_currentIncome, m.Groups[1].Value, int.Parse(m.Groups[2].Value));
+            // 天数<5
+            m = System.Text.RegularExpressions.Regex.Match(cond, @"天数\s*([<>=]+)\s*(\d+)");
+            if (m.Success) return CmpNum(_currentDay, m.Groups[1].Value, int.Parse(m.Groups[2].Value));
+            // 声望<10
+            m = System.Text.RegularExpressions.Regex.Match(cond, @"声望\s*([<>=]+)\s*(\d+)");
+            if (m.Success) return CmpNum(_currentPrestige, m.Groups[1].Value, int.Parse(m.Groups[2].Value));
+            return false;
+        }
+
+        private bool CmpNum(int actual, string op, int target)
+        {
+            if (op == "<") return actual < target;
+            if (op == ">") return actual > target;
+            if (op == "<=") return actual <= target;
+            if (op == ">=") return actual >= target;
+            if (op == "==" || op == "=") return actual == target;
+            return false;
         }
 
         // ==================== 翻译 ====================

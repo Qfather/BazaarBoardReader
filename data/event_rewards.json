@@ -168,35 +168,5 @@
       "hero": "狼筅",
       "reward": "2经验未携带战斗攻击力"
     }
-  ],
-  "失落宝箱": [
-    {
-      "hero": "VAN",
-      "reward": "专属中型物品"
-    },
-    {
-      "hero": "PYG",
-      "reward": "专属中型物品"
-    },
-    {
-      "hero": "DOO",
-      "reward": "专属中型物品"
-    },
-    {
-      "hero": "MAK",
-      "reward": "专属中型物品"
-    },
-    {
-      "hero": "STE",
-      "reward": "专属中型物品"
-    },
-    {
-      "hero": "JUL",
-      "reward": "专属中型物品"
-    },
-    {
-      "hero": "KAR",
-      "reward": "专属中型物品"
-    }
   ]
 }

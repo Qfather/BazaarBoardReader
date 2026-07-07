@@ -81,7 +81,7 @@ for table in ["cards", "monsters", "challenges", "collectibles", "game_modes", "
             by_name[iname] = zh
             by_id[tid] = zh
             # 同时用去掉等级后缀的基础名索引（方便事件查找）
-            base = re.sub(r'\s*\((?:Bronze|Silver|Gold|Diamond|Legendary|Level Up|Day\s+\d+\s*(?:to\s+\d+)?|Start Run|Encounter|Tutorial)\)\s*$', '', iname).strip()
+            base = re.sub(r'\s*\((?:Bronze|Silver|Gold|Diamond|Legendary|Level Up|Day\s+\d+[\s\-–]+\d+|Day\s+\d+\s*(?:to\s+\d+)?|Start Run|Encounter|Tutorial)\)\s*$', '', iname).strip()
             if base != iname and base not in by_name:
                 by_name[base] = zh
 

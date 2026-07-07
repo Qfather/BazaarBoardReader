@@ -613,15 +613,18 @@ class App:
             tiers = ["Silver", "Gold", "Diamond"]
 
         result = []
+        seen = set()
         TIER_ZH = {"Bronze":"铜","Silver":"银","Gold":"金","Diamond":"钻"}
         for sc, items in self.events_data.items():
-            if sc in ("shops",): continue  # 商店不放事件里
+            if sc in ("shops",): continue
             for evt in items:
                 zh = tr(evt.get("name",""), self.translations)
                 en = evt.get("name","")
-                # 用中文名或英文名匹配CSV
                 if zh not in target_names and en not in target_names:
                     continue
+                # 去重：同中文名只保留第一个
+                if zh in seen: continue
+                seen.add(zh)
                 if tiers:
                     for t in tiers:
                         variant = dict(evt)
@@ -656,22 +659,29 @@ class App:
             elif sel_type == "monster":
                 self.desc_label.configure(text=f"怪物 - 英雄: {', '.join(data.get('heroes',[]))}")
             self._render_items((sel_type, data))
-            # 加载事件备注（含专属奖励，所有英雄通用）
+            # 加载事件备注（用中文基础名，所有英雄通用）
             if sel_type == "event":
-                note_key = data.get("name","")
-                base_name = re.sub(r'\s*\((?:铜|银|金|钻|Bronze|Silver|Gold|Diamond)\)\s*$', '', note_key).strip()
-                zh_name = tr(base_name, self.translations) if base_name else ""
+                note_key = tr(data.get("name",""), self.translations)
+                # 去品质/天数后缀
+                note_key = re.sub(r'\s*\((?:铜|银|金|钻|Bronze|Silver|Gold|Diamond|Day[^)]+)\)\s*$', '', note_key).strip()
                 saved = self._notes_data.get(note_key, "")
                 self.note_text.delete("1.0", tk.END)
                 if saved:
                     self.note_text.insert("1.0", saved)
                 else:
-                    rewards_config = (self.event_rewards.get(note_key) or self.event_rewards.get(base_name)
-                                      or self.event_rewards.get(zh_name))
+                    rewards_config = self.event_rewards.get(note_key)
                     if rewards_config:
                         lines = []
                         for r in rewards_config:
-                            lines.append(f"{r['hero']}: {r['reward']}")
+                            cond = r['hero']
+                            reward = r['reward']
+                            # 标注条件类型
+                            if ' ' in cond and not any(c.isdigit() for c in cond):
+                                lines.append(f"[英雄] {cond}: {reward}")
+                            elif any(c.isdigit() for c in cond):
+                                lines.append(f"[计数] {cond}: {reward}")
+                            elif cond:
+                                lines.append(f"[拥有] {cond}: {reward}")
                         self.note_text.insert("1.0", '\n'.join(lines))
             else:
                 self.note_text.delete("1.0", tk.END)
@@ -825,7 +835,8 @@ class App:
         if display not in self._sel_lookup: return
         sel_type, data = self._sel_lookup[display]
         if sel_type != "event": return
-        note_key = data.get("name", "")
+        note_key = tr(data.get("name", ""), self.translations)
+        note_key = re.sub(r'\s*\((?:铜|银|金|钻|Bronze|Silver|Gold|Diamond|Day[^)]+)\)\s*$', '', note_key).strip()
         text = self.note_text.get("1.0", "end-1c")
         if text.strip():
             self._notes_data[note_key] = text

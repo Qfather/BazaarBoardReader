@@ -1,65 +1,1982 @@
 {
-  "shops": [
+  "item_rewards": [
     {
       "name": "The Travel Agent",
-      "source_id": "002d8f6d-0e36-4921-89ed-3f0f28682d7b",
-      "source_ids": [
-        "002d8f6d-0e36-4921-89ed-3f0f28682d7b"
-      ],
+      "event_type": "item_reward",
       "event_heroes": [
         "Common"
       ],
-      "shop_type": "ticket",
-      "hero_filter": null,
-      "shop_pool": {
-        "reward_tags": [
-          "ticket"
-        ],
-        "match_mode": "any",
-        "rarity_filter": {
-          "min": "bronze",
-          "max": "legendary"
-        },
-        "rarity_rule": null,
-        "excluded_tags": [
-          "legendary"
-        ],
-        "hero_scope": "any"
-      },
-      "notes": "Sells Expedition Tickets"
-    }
-  ],
-  "skill_shops": [
+      "reward_tags": []
+    },
+    {
+      "name": "Workshop (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Security Center (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Mag Storage (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Finn's Big Bite",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[Crash Site Expedition] Cargo Hold",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "House Party (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Workshop (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Furnace (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Bounty Hunters",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cabin Fishing (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Truffle Farming (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Alchemy Lab (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Medicine Cabinet (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Mak",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[Karnok Unique] Hidden Lake",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Pyre (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "The Docks",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Recycling Center (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
     {
       "name": "Grandmaster",
-      "source_id": "12fb92f0-b76c-4493-85eb-47a6d18bdf5f",
-      "source_ids": [
-        "12fb92f0-b76c-4493-85eb-47a6d18bdf5f"
-      ],
+      "event_type": "item_reward",
       "event_heroes": [
         "Common"
       ],
-      "event_type": "skill_event",
-      "skill_tags": [],
-      "shop_pool": {
-        "reward_tags": [],
-        "match_mode": "any",
-        "rarity_filter": null,
-        "rarity_rule": "normal_shop_by_day",
-        "excluded_tags": [
-          "legendary"
-        ],
-        "hero_scope": "current"
-      },
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Sells Skill upgrades"
-    }
-  ],
-  "item_rewards": [
+      "reward_tags": []
+    },
+    {
+      "name": "Cupboard (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cinder Chase (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Mag Storage (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cinder Chase (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Jules' Cafe",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Bountiful Harvest (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Freezer (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Jules",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Botanical Gardens (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Scrap Salvage (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Stelle",
+        "Dooley",
+        "Karnok",
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Jungle Ruins",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Mag Storage (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Freezer (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Jules",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Procure Medkit (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Mad Maddie",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Mak",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Treasure Chest (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Freezer (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Jules",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Treasure Chest (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Underground Resistance",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "House Party (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Mandala",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Deep Sea Fishing (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Excavation (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[Crash Site Expedition] Crystal Growth Chamber",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "House Party (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Laurel's Night Terrors",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Dooley's Crib",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Street Festival",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Alchemy Lab (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Extract Extract (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak",
+        "Dooley",
+        "Vanessa",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Alchemy Lab (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tutorial Day 4 Hour 2 - Free Item",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Wishing Fountain",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Bex",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Deep Sea Fishing (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cabin Fishing (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tomb of the Ancients (Encounter)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Freezer (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Jules",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Obstacle Course (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Moonlit Meadow (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak",
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Scrap Salvage (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Stelle",
+        "Dooley",
+        "Karnok",
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Wink",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cinder Chase (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Furnace (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Racetrack (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Recycling Center (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Utility Box (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Botul",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Mak",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Eating Contest",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Battlefield (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "DEFUNCT - Street Festival (Dooley)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Mag Storage (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Pyre (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Chef Brolin",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Moonlit Meadow (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak",
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Recycling Center (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Reagent Harvesting (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Dino Trapping (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Lost and Found (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "House Party (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Alchemy Lab (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Reagent Harvesting (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Abandoned Property (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[Crash Site Expedition] Command Nexus",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tiny Furry Creature",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Block Party (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[Jungle Expedition] Temple Reliquary",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Lost and Found (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Treasure Chest (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tech Salvage (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Dabora",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Abandoned Property (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Dooley's Crib (Start Run 2)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Scrap Salvage (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Stelle",
+        "Dooley",
+        "Karnok",
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Furnace (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Dooley's Crib (Start Run)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Advanced Training",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Deep Sea Fishing (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cupboard (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Obstacle Course (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "BazaarCON",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tutorial Day 4 Hour 4 - Free Item",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Block Party (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Treasure Chest (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Pyre (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tutorial Day 5 Hour 2 - Free Item",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cupboard (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Aurora Dome (Encounter)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Medicine Cabinet (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Mak",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Truffle Farming (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Reflecting Pool",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Aldric",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Mak",
+        "Jules",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Sharpening Kit (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Workshop (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Chef Brolin (Level Up)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[Jungle Expedition] Temple Vault (Obsidian)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Obstacle Course (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Armory (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[Jungle Expedition] Temple Vault (Toxic)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Shrouded Figure",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Botanical Gardens (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Investment Pitch",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Security Center (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Robotics Factory (Encounter)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley",
+        "Stelle"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "The Lost Crate",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Dino Trapping (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tech Salvage (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Furnace (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Moonlit Meadow (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak",
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Battlefield (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Invest in Yourself (Day 3-4)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Excavation (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Battlefield (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Pyre (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[Jungle Expedition] Temple Expedition",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Moonlit Meadow (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak",
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tutorial Day 5 Hour 5 - Free Item",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Lost and Found (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Guard Locker (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cabin Fishing (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Battlefield (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cinder Chase (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "The Financial District - Economic Seminar",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Bountiful Harvest (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Deep Sea Fishing (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Extract Extract (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak",
+        "Dooley",
+        "Vanessa",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Procure Medkit (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[Jungle Expedition] Temple Vault (Fiery)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Medicine Cabinet (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Mak",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Artisan Dunes",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Form",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Salvage Yard (Encounter)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Hospital (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Mak",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Mimic DEBUG",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tech Salvage (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Racetrack (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Extract Extract (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak",
+        "Dooley",
+        "Vanessa",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Armory (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Racetrack (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Dino Trapping (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Excavation (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Gumball Machine (Event)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Botanical Gardens (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Sharpening Kit (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Invest in Yourself (Day 5-6)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Botanical Gardens (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Security Center (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Guard Locker (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Reagent Harvesting (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "D'flek",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley",
+        "Pygmalien",
+        "Stelle",
+        "Jules",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "The Cult",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Armory (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Racetrack (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Hospital (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Mak",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Truffle Farming (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Haddy",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Likit",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Truffle Farming (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Excavation (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "A Strange Mushroom",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tutorial Day 3 Hour 4 - Free Item",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Procure Medkit (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tech Salvage (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Family Reunion",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Stelle"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Sharpening Kit (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Scrap Salvage (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Stelle",
+        "Dooley",
+        "Karnok",
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Security Center (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Obstacle Course (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Medicine Cabinet (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Mak",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Armory (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Hospital (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Mak",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Reagent Harvesting (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Utility Box (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Workshop (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Extract Extract (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Mak",
+        "Dooley",
+        "Vanessa",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Block Party (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Abandoned Property (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Pearl's Dig Site",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Launch Tower (Encounter)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Stelle"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Utility Box (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Procure Medkit (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Thieves Guild",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Tutorial Day 3 Hour 5 - Free Item",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Recycling Center (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[Crash Site Expedition] Crash Site Expedition",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Bountiful Harvest (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Block Party (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cupboard (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Cabin Fishing (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Vanessa"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Aerodrome",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Farmer's Market (Encounter)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Flambe",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Utility Box (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Invest in Yourself (Day 1-2)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Guard Locker (Silver)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Dino Trapping (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Hospital (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Mak",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Sharpening Kit (Gold)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Bountiful Harvest (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Jules"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Guard Locker (Diamond)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Vanessa",
+        "Dooley",
+        "Jules",
+        "Stelle",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "[DEBUG] Sequential Prerequisites Test",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Regenerative Tincture",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Abandoned Property (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Karnok"
+      ],
+      "reward_tags": []
+    },
+    {
+      "name": "Lost and Found (Bronze)",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
     {
       "name": "Abandoned Property",
       "source_id": "fed8adb8-8fc6-49be-88da-a6fa8496ad2f",
@@ -392,41 +2309,6 @@
         "health": 0
       },
       "notes": "Get an Aquatic item"
-    },
-    {
-      "name": "Eating Contest",
-      "source_id": "47704642-ae7a-4775-a26a-e5e5a8cff7bf",
-      "source_ids": [
-        "47704642-ae7a-4775-a26a-e5e5a8cff7bf"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "item_reward",
-      "exact_names": [
-        "Chocolate Bar"
-      ],
-      "reward_tags": [],
-      "card_reward": {
-        "enabled": true,
-        "exact_names": [
-          "Chocolate Bar"
-        ],
-        "reward_tags": [],
-        "match_mode": "any",
-        "rarity_filter": null,
-        "rarity_rule": "normal_shop_by_day",
-        "excluded_tags": [
-          "legendary"
-        ],
-        "hero_scope": "any"
-      },
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Get some Chocolate Bars"
     },
     {
       "name": "Extract Extract",
@@ -865,37 +2747,6 @@
       "notes": "Get a Slow item"
     },
     {
-      "name": "Pearl's Dig Site",
-      "source_id": "dbdf69f8-9bea-40e7-9098-209c8c475971",
-      "source_ids": [
-        "dbdf69f8-9bea-40e7-9098-209c8c475971"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "item_reward",
-      "exact_names": [],
-      "reward_tags": [],
-      "card_reward": {
-        "enabled": true,
-        "exact_names": [],
-        "reward_tags": [],
-        "match_mode": "any",
-        "rarity_filter": null,
-        "rarity_rule": "normal_shop_by_day",
-        "excluded_tags": [
-          "legendary"
-        ],
-        "hero_scope": "current"
-      },
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Dig for a free item. It could be anything, but you can only keep one!"
-    },
-    {
       "name": "Procure Medkit",
       "source_id": "9f7cbbaf-aeed-4170-9400-e1da445fe101",
       "source_ids": [
@@ -1248,93 +3099,6 @@
       "notes": "Get a Small Tech item"
     },
     {
-      "name": "The Lost Crate",
-      "source_id": "87c6a586-fea5-4bbd-9296-2b2883bcac24",
-      "source_ids": [
-        "87c6a586-fea5-4bbd-9296-2b2883bcac24"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "item_reward",
-      "exact_names": [],
-      "reward_tags": [],
-      "card_reward": {
-        "enabled": true,
-        "exact_names": [],
-        "reward_tags": [],
-        "match_mode": "any",
-        "rarity_filter": null,
-        "rarity_rule": "normal_shop_by_day",
-        "excluded_tags": [
-          "legendary"
-        ],
-        "hero_scope": "current"
-      },
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "You find an abandoned chest",
-      "followup_options": [
-        {
-          "name": "Return It",
-          "source_id": "579bc301-c860-4c05-83a2-b248f762f237",
-          "source_ids": [
-            "579bc301-c860-4c05-83a2-b248f762f237"
-          ],
-          "event_heroes": [
-            "Common"
-          ],
-          "event_type": "skill_event",
-          "skill_tags": [],
-          "shop_pool": {
-            "reward_tags": [],
-            "match_mode": "any",
-            "rarity_filter": null,
-            "rarity_rule": "normal_shop_by_day",
-            "excluded_tags": [
-              "legendary"
-            ],
-            "hero_scope": "current"
-          },
-          "resource_rewards": {
-            "gold": 0,
-            "exp": 0,
-            "health": 0
-          },
-          "notes": "Get a Skill",
-          "event_category": "skill_shops",
-          "parent_event": "The Lost Crate",
-          "source_internal_name": "The Lost Crate (Return It)"
-        },
-        {
-          "name": "Return the Crate to Its Owner",
-          "source_id": "927d1586-f2aa-4da8-83d1-7afd5c0a68cc",
-          "source_ids": [
-            "927d1586-f2aa-4da8-83d1-7afd5c0a68cc"
-          ],
-          "event_heroes": [
-            "Common"
-          ],
-          "event_type": "resource_event",
-          "resource_types": [
-            "gold",
-            "exp"
-          ],
-          "resource_rewards": {
-            "gold": 1,
-            "exp": 1
-          },
-          "notes": "Gain Gold and XP",
-          "event_category": "resource_events",
-          "parent_event": "The Lost Crate",
-          "source_internal_name": "The Lost Crate (Return It)"
-        }
-      ]
-    },
-    {
       "name": "Treasure Chest",
       "source_id": "71e387b6-bcb5-4c39-aa65-957ee5f6fbec",
       "source_ids": [
@@ -1441,378 +3205,15 @@
       "notes": "Get a Tool"
     }
   ],
-  "item_events": [
-    {
-      "name": "Advanced Training",
-      "source_id": "6a5e82cf-969c-432a-863a-1df6e7f56513",
-      "source_ids": [
-        "6a5e82cf-969c-432a-863a-1df6e7f56513"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "item_event",
-      "effect": "improve_items",
-      "target_tags": [],
-      "match_mode": "any",
-      "rarity_filter": null,
-      "rarity_rule": null,
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Be all that you can be with Sergeant Suds (Give Types to your items)"
-    },
-    {
-      "name": "Aldric",
-      "source_id": "78cf8b25-5812-4b9a-a9ff-9694c86e7a90",
-      "source_ids": [
-        "78cf8b25-5812-4b9a-a9ff-9694c86e7a90"
-      ],
-      "event_heroes": [
-        "Pygmalien",
-        "Mak",
-        "Jules",
-        "Karnok"
-      ],
-      "event_type": "item_event",
-      "effect": "improve_items",
-      "target_tags": [
-        "heal",
-        "regen"
-      ],
-      "match_mode": "any",
-      "rarity_filter": null,
-      "rarity_rule": null,
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Improve your Heal and Regen items"
-    },
-    {
-      "name": "Artisan Dunes",
-      "source_id": "a5b983cb-ee95-48bf-b84a-d25a74b9c1df",
-      "source_ids": [
-        "a5b983cb-ee95-48bf-b84a-d25a74b9c1df"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "item_event",
-      "effect": "enhance_offensive_items",
-      "target_tags": [],
-      "match_mode": "any",
-      "rarity_filter": null,
-      "rarity_rule": null,
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "The craftsman at the Artisan Dunes offers a variety of ways to enchance your offensive items"
-    },
-    {
-      "name": "Botul",
-      "source_id": "4751d02e-876e-47e3-bb23-d7675e4ee5c6",
-      "source_ids": [
-        "4751d02e-876e-47e3-bb23-d7675e4ee5c6"
-      ],
-      "event_heroes": [
-        "Vanessa",
-        "Dooley",
-        "Mak",
-        "Karnok"
-      ],
-      "event_type": "item_event",
-      "effect": "improve_items",
-      "target_tags": [
-        "poison"
-      ],
-      "match_mode": "any",
-      "rarity_filter": null,
-      "rarity_rule": null,
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Improve your Poison items"
-    },
-    {
-      "name": "D'flek",
-      "source_id": "bea81fd6-ae81-49b2-b733-40246d8e825f",
-      "source_ids": [
-        "bea81fd6-ae81-49b2-b733-40246d8e825f"
-      ],
-      "event_heroes": [
-        "Dooley",
-        "Pygmalien",
-        "Stelle",
-        "Jules",
-        "Karnok"
-      ],
-      "event_type": "item_event",
-      "effect": "improve_items",
-      "target_tags": [
-        "shield"
-      ],
-      "match_mode": "any",
-      "rarity_filter": null,
-      "rarity_rule": null,
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Improve your Shield items"
-    },
-    {
-      "name": "Flambe",
-      "source_id": "f4347956-4eaf-4665-aa1b-addf8423588b",
-      "source_ids": [
-        "f4347956-4eaf-4665-aa1b-addf8423588b"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "item_event",
-      "effect": "improve_items",
-      "target_tags": [
-        "burn"
-      ],
-      "match_mode": "any",
-      "rarity_filter": null,
-      "rarity_rule": null,
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Improve your Burn items"
-    },
-    {
-      "name": "Form",
-      "source_id": "a72c9135-0869-4243-a689-cde06ad97dd0",
-      "source_ids": [
-        "a72c9135-0869-4243-a689-cde06ad97dd0"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "item_event",
-      "effect": "improve_items",
-      "target_tags": [
-        "weapon"
-      ],
-      "match_mode": "any",
-      "rarity_filter": null,
-      "rarity_rule": null,
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Improve your Weapons",
-      "followup_options": [
-        {
-          "name": "Enchant Shiny",
-          "source_id": "e6b460b3-d058-4bf8-8990-02b0fdd55e59",
-          "source_ids": [
-            "e6b460b3-d058-4bf8-8990-02b0fdd55e59"
-          ],
-          "event_heroes": [
-            "Common"
-          ],
-          "event_type": "enchant_event",
-          "effect": "enchant_items",
-          "target_tags": [
-            "weapon"
-          ],
-          "enchantment_tags": [
-            "value"
-          ],
-          "match_mode": "any",
-          "resource_rewards": {
-            "gold": 0,
-            "exp": 0,
-            "health": 0
-          },
-          "notes": "Enchant your leftmost Weapon with Shiny",
-          "event_category": "enchant_events",
-          "parent_event": "Form",
-          "source_internal_name": "Form - Enchant Shiny"
-        }
-      ]
-    },
-    {
-      "name": "Mad Maddie",
-      "source_id": "1ff8a6be-5087-45f6-8e72-9e94dbfa0c2b",
-      "source_ids": [
-        "1ff8a6be-5087-45f6-8e72-9e94dbfa0c2b"
-      ],
-      "event_heroes": [
-        "Vanessa",
-        "Mak",
-        "Karnok"
-      ],
-      "event_type": "item_event",
-      "effect": "improve_items",
-      "target_tags": [
-        "ammo"
-      ],
-      "match_mode": "any",
-      "rarity_filter": null,
-      "rarity_rule": null,
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Improve your Ammo items"
-    },
-    {
-      "name": "Mandala",
-      "source_id": "255ae0fa-f203-4e9f-855d-e090e6937b5b",
-      "source_ids": [
-        "255ae0fa-f203-4e9f-855d-e090e6937b5b"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "item_event",
-      "effect": "transform_items",
-      "target_tags": [],
-      "match_mode": "any",
-      "rarity_filter": null,
-      "rarity_rule": null,
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Transform your items into something new"
-    },
-    {
-      "name": "Wink",
-      "source_id": "3e4c4f1a-fe5d-4e38-887a-08666ce36e71",
-      "source_ids": [
-        "3e4c4f1a-fe5d-4e38-887a-08666ce36e71"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "item_event",
-      "effect": "improve_items",
-      "target_tags": [],
-      "match_mode": "any",
-      "rarity_filter": null,
-      "rarity_rule": null,
-      "resource_rewards": {
-        "gold": 0,
-        "exp": 0,
-        "health": 0
-      },
-      "notes": "Randomizes and upgrade all your items"
-    }
-  ],
-  "resource_events": [
-    {
-      "name": "Finn's Big Bite",
-      "source_id": "0623cedd-f24b-4117-a6b8-5fc41064a00d",
-      "source_ids": [
-        "0623cedd-f24b-4117-a6b8-5fc41064a00d"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "resource_event",
-      "resource_types": [
-        "health"
-      ],
-      "resource_rewards": {
-        "health": 1
-      },
-      "notes": "Eat at Finn's to get Max Health"
-    },
-    {
-      "name": "Investment Pitch",
-      "source_id": "8375c937-5542-4d89-9a87-37c01673c611",
-      "source_ids": [
-        "8375c937-5542-4d89-9a87-37c01673c611"
-      ],
-      "event_heroes": [
-        "Pygmalien"
-      ],
-      "event_type": "resource_event",
-      "resource_types": [
-        "income"
-      ],
-      "resource_rewards": {
-        "income": 1
-      },
-      "notes": "Make a pitch for a financial boost"
-    },
-    {
-      "name": "Likit",
-      "source_id": "c28b6e9c-dd6d-4bb7-97e7-14aee53e528b",
-      "source_ids": [
-        "c28b6e9c-dd6d-4bb7-97e7-14aee53e528b"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "resource_event",
-      "resource_types": [
-        "health"
-      ],
-      "resource_rewards": {
-        "health": 1
-      },
-      "notes": "Boost your stats with tasty treats"
-    },
-    {
-      "name": "Moonlit Meadow",
-      "source_id": "8d1dda63-1fb9-44e5-9ed6-e8050d4d65d7",
-      "source_ids": [
-        "8d1dda63-1fb9-44e5-9ed6-e8050d4d65d7"
-      ],
-      "event_heroes": [
-        "Mak",
-        "Jules"
-      ],
-      "event_type": "resource_event",
-      "resource_types": [
-        "regen"
-      ],
-      "resource_rewards": {
-        "regen": 1
-      },
-      "notes": "Get a Moon Lily (+Regen)"
-    },
-    {
-      "name": "The Docks",
-      "source_id": "11287697-dd45-4edc-9539-780a26001043",
-      "source_ids": [
-        "11287697-dd45-4edc-9539-780a26001043",
-        "fc00c3ca-3231-4c8e-ac0e-19bff8cd5f65"
-      ],
-      "event_heroes": [
-        "Common"
-      ],
-      "event_type": "resource_event",
-      "resource_types": [
-        "gold"
-      ],
-      "resource_rewards": {
-        "gold": 1
-      },
-      "notes": "Work at the Docks to earn some coin"
-    }
-  ],
   "combat_events": [
+    {
+      "name": "Bounty Hunter Fight",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": []
+    },
     {
       "name": "Bounty Hunters",
       "source_id": "0a46b7df-e0a2-4211-8529-0bfe91974a71",
@@ -1832,6 +3233,15 @@
     }
   ],
   "utility_events": [
+    {
+      "name": "[DEFUNCT]",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Pygmalien",
+        "Dooley"
+      ],
+      "reward_tags": []
+    },
     {
       "name": "A Strange Mushroom",
       "source_id": "c5326dd7-3e82-45c5-9a6c-81965a78bf89",
@@ -2334,6 +3744,437 @@
       "event_type": "utility_event",
       "resource_rewards": {},
       "notes": "Enter the Thieves Guild"
+    }
+  ],
+  "shops": [
+    {
+      "name": "The Travel Agent",
+      "source_id": "002d8f6d-0e36-4921-89ed-3f0f28682d7b",
+      "source_ids": [
+        "002d8f6d-0e36-4921-89ed-3f0f28682d7b"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "shop_type": "ticket",
+      "hero_filter": null,
+      "shop_pool": {
+        "reward_tags": [
+          "ticket"
+        ],
+        "match_mode": "any",
+        "rarity_filter": {
+          "min": "bronze",
+          "max": "legendary"
+        },
+        "rarity_rule": null,
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Sells Expedition Tickets"
+    }
+  ],
+  "skill_shops": [
+    {
+      "name": "Grandmaster",
+      "source_id": "12fb92f0-b76c-4493-85eb-47a6d18bdf5f",
+      "source_ids": [
+        "12fb92f0-b76c-4493-85eb-47a6d18bdf5f"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "event_type": "skill_event",
+      "skill_tags": [],
+      "shop_pool": {
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "Sells Skill upgrades"
+    }
+  ],
+  "item_events": [
+    {
+      "name": "Advanced Training",
+      "source_id": "6a5e82cf-969c-432a-863a-1df6e7f56513",
+      "source_ids": [
+        "6a5e82cf-969c-432a-863a-1df6e7f56513"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "event_type": "item_event",
+      "effect": "improve_items",
+      "target_tags": [],
+      "match_mode": "any",
+      "rarity_filter": null,
+      "rarity_rule": null,
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "Be all that you can be with Sergeant Suds (Give Types to your items)"
+    },
+    {
+      "name": "Aldric",
+      "source_id": "78cf8b25-5812-4b9a-a9ff-9694c86e7a90",
+      "source_ids": [
+        "78cf8b25-5812-4b9a-a9ff-9694c86e7a90"
+      ],
+      "event_heroes": [
+        "Pygmalien",
+        "Mak",
+        "Jules",
+        "Karnok"
+      ],
+      "event_type": "item_event",
+      "effect": "improve_items",
+      "target_tags": [
+        "heal",
+        "regen"
+      ],
+      "match_mode": "any",
+      "rarity_filter": null,
+      "rarity_rule": null,
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "Improve your Heal and Regen items"
+    },
+    {
+      "name": "Artisan Dunes",
+      "source_id": "a5b983cb-ee95-48bf-b84a-d25a74b9c1df",
+      "source_ids": [
+        "a5b983cb-ee95-48bf-b84a-d25a74b9c1df"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "event_type": "item_event",
+      "effect": "enhance_offensive_items",
+      "target_tags": [],
+      "match_mode": "any",
+      "rarity_filter": null,
+      "rarity_rule": null,
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "The craftsman at the Artisan Dunes offers a variety of ways to enchance your offensive items"
+    },
+    {
+      "name": "Botul",
+      "source_id": "4751d02e-876e-47e3-bb23-d7675e4ee5c6",
+      "source_ids": [
+        "4751d02e-876e-47e3-bb23-d7675e4ee5c6"
+      ],
+      "event_heroes": [
+        "Vanessa",
+        "Dooley",
+        "Mak",
+        "Karnok"
+      ],
+      "event_type": "item_event",
+      "effect": "improve_items",
+      "target_tags": [
+        "poison"
+      ],
+      "match_mode": "any",
+      "rarity_filter": null,
+      "rarity_rule": null,
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "Improve your Poison items"
+    },
+    {
+      "name": "D'flek",
+      "source_id": "bea81fd6-ae81-49b2-b733-40246d8e825f",
+      "source_ids": [
+        "bea81fd6-ae81-49b2-b733-40246d8e825f"
+      ],
+      "event_heroes": [
+        "Dooley",
+        "Pygmalien",
+        "Stelle",
+        "Jules",
+        "Karnok"
+      ],
+      "event_type": "item_event",
+      "effect": "improve_items",
+      "target_tags": [
+        "shield"
+      ],
+      "match_mode": "any",
+      "rarity_filter": null,
+      "rarity_rule": null,
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "Improve your Shield items"
+    },
+    {
+      "name": "Flambe",
+      "source_id": "f4347956-4eaf-4665-aa1b-addf8423588b",
+      "source_ids": [
+        "f4347956-4eaf-4665-aa1b-addf8423588b"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "event_type": "item_event",
+      "effect": "improve_items",
+      "target_tags": [
+        "burn"
+      ],
+      "match_mode": "any",
+      "rarity_filter": null,
+      "rarity_rule": null,
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "Improve your Burn items"
+    },
+    {
+      "name": "Form",
+      "source_id": "a72c9135-0869-4243-a689-cde06ad97dd0",
+      "source_ids": [
+        "a72c9135-0869-4243-a689-cde06ad97dd0"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "event_type": "item_event",
+      "effect": "improve_items",
+      "target_tags": [
+        "weapon"
+      ],
+      "match_mode": "any",
+      "rarity_filter": null,
+      "rarity_rule": null,
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "Improve your Weapons",
+      "followup_options": [
+        {
+          "name": "Enchant Shiny",
+          "source_id": "e6b460b3-d058-4bf8-8990-02b0fdd55e59",
+          "source_ids": [
+            "e6b460b3-d058-4bf8-8990-02b0fdd55e59"
+          ],
+          "event_heroes": [
+            "Common"
+          ],
+          "event_type": "enchant_event",
+          "effect": "enchant_items",
+          "target_tags": [
+            "weapon"
+          ],
+          "enchantment_tags": [
+            "value"
+          ],
+          "match_mode": "any",
+          "resource_rewards": {
+            "gold": 0,
+            "exp": 0,
+            "health": 0
+          },
+          "notes": "Enchant your leftmost Weapon with Shiny",
+          "event_category": "enchant_events",
+          "parent_event": "Form",
+          "source_internal_name": "Form - Enchant Shiny"
+        }
+      ]
+    },
+    {
+      "name": "Mad Maddie",
+      "source_id": "1ff8a6be-5087-45f6-8e72-9e94dbfa0c2b",
+      "source_ids": [
+        "1ff8a6be-5087-45f6-8e72-9e94dbfa0c2b"
+      ],
+      "event_heroes": [
+        "Vanessa",
+        "Mak",
+        "Karnok"
+      ],
+      "event_type": "item_event",
+      "effect": "improve_items",
+      "target_tags": [
+        "ammo"
+      ],
+      "match_mode": "any",
+      "rarity_filter": null,
+      "rarity_rule": null,
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "Improve your Ammo items"
+    },
+    {
+      "name": "Mandala",
+      "source_id": "255ae0fa-f203-4e9f-855d-e090e6937b5b",
+      "source_ids": [
+        "255ae0fa-f203-4e9f-855d-e090e6937b5b"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "event_type": "item_event",
+      "effect": "transform_items",
+      "target_tags": [],
+      "match_mode": "any",
+      "rarity_filter": null,
+      "rarity_rule": null,
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "Transform your items into something new"
+    },
+    {
+      "name": "Wink",
+      "source_id": "3e4c4f1a-fe5d-4e38-887a-08666ce36e71",
+      "source_ids": [
+        "3e4c4f1a-fe5d-4e38-887a-08666ce36e71"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "event_type": "item_event",
+      "effect": "improve_items",
+      "target_tags": [],
+      "match_mode": "any",
+      "rarity_filter": null,
+      "rarity_rule": null,
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      },
+      "notes": "Randomizes and upgrade all your items"
+    }
+  ],
+  "resource_events": [
+    {
+      "name": "Finn's Big Bite",
+      "source_id": "0623cedd-f24b-4117-a6b8-5fc41064a00d",
+      "source_ids": [
+        "0623cedd-f24b-4117-a6b8-5fc41064a00d"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "event_type": "resource_event",
+      "resource_types": [
+        "health"
+      ],
+      "resource_rewards": {
+        "health": 1
+      },
+      "notes": "Eat at Finn's to get Max Health"
+    },
+    {
+      "name": "Investment Pitch",
+      "source_id": "8375c937-5542-4d89-9a87-37c01673c611",
+      "source_ids": [
+        "8375c937-5542-4d89-9a87-37c01673c611"
+      ],
+      "event_heroes": [
+        "Pygmalien"
+      ],
+      "event_type": "resource_event",
+      "resource_types": [
+        "income"
+      ],
+      "resource_rewards": {
+        "income": 1
+      },
+      "notes": "Make a pitch for a financial boost"
+    },
+    {
+      "name": "Likit",
+      "source_id": "c28b6e9c-dd6d-4bb7-97e7-14aee53e528b",
+      "source_ids": [
+        "c28b6e9c-dd6d-4bb7-97e7-14aee53e528b"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "event_type": "resource_event",
+      "resource_types": [
+        "health"
+      ],
+      "resource_rewards": {
+        "health": 1
+      },
+      "notes": "Boost your stats with tasty treats"
+    },
+    {
+      "name": "Moonlit Meadow",
+      "source_id": "8d1dda63-1fb9-44e5-9ed6-e8050d4d65d7",
+      "source_ids": [
+        "8d1dda63-1fb9-44e5-9ed6-e8050d4d65d7"
+      ],
+      "event_heroes": [
+        "Mak",
+        "Jules"
+      ],
+      "event_type": "resource_event",
+      "resource_types": [
+        "regen"
+      ],
+      "resource_rewards": {
+        "regen": 1
+      },
+      "notes": "Get a Moon Lily (+Regen)"
+    },
+    {
+      "name": "The Docks",
+      "source_id": "11287697-dd45-4edc-9539-780a26001043",
+      "source_ids": [
+        "11287697-dd45-4edc-9539-780a26001043",
+        "fc00c3ca-3231-4c8e-ac0e-19bff8cd5f65"
+      ],
+      "event_heroes": [
+        "Common"
+      ],
+      "event_type": "resource_event",
+      "resource_types": [
+        "gold"
+      ],
+      "resource_rewards": {
+        "gold": 1
+      },
+      "notes": "Work at the Docks to earn some coin"
     }
   ],
   "unknown_events": [
