@@ -388,8 +388,8 @@ namespace BazaarBoardReader
 
         private void OnGUI()
         {
-            // 每5秒尝试刷新天数（从 game_state.json 或 UI）
-            if (_currentDay < 1 && Time.frameCount % 300 == 0)
+            // 每5秒刷新天数（从 game_state.json 或 UI）
+            if (Time.frameCount % 300 == 0)
                 RefreshDayFromFile();
             // 天数未知时隐藏所有面板与标签（数据不完整）
             bool dayKnown = _currentDay >= 1;
