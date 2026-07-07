@@ -158,36 +158,40 @@ Common, Dooley, Jules, Karnok, Mak, Pygmalien, Stelle, Vanessa
 
 Karnok, Mak, Dooley, Vanessa, Pygmalien, Jules, Stelle — 各自的英雄商人出售该英雄主题物品给其他英雄。
 
-## 项目脚本说明
+## 目录结构
 
-| 脚本 | 功能 |
-|---|---|
-| `export_game_data.py` | 从 GameData.db 导出 cards.json 和 shops.json |
-| `export_merchants.py` | 导出商人数据 merchants.json |
-| `export_zh.py` | 导出中文翻译 |
-| `extract_translations.py` | 提取翻译文本 |
-| `import_game_data.py` | 导入游戏数据 |
-| `rebuild.py` | 重建数据 |
-| `shop_browser.py` | 商店浏览器 |
-| `list_shops.py` | 列出商店 |
-| `test_hotkey.py` | 热键测试 |
-| `update_translations.ps1` | 更新翻译 |
+```
+BazaarBoardReader/
+├── BazaarBoardReader.csproj   # C# 插件项目
+├── BazaarBoardReaderPlugin.cs # 主插件代码
+├── build.ps1                  # 编译脚本
+├── StateExporter/             # BepInEx 子插件（游戏状态导出）
+├── scripts/                   # Python 工具
+│   ├── export_raw_db.py       # 从 GameData.db 生成 data/ 下全部数据文件
+│   ├── shop_browser.py        # 商店浏览器 (tkinter GUI)
+│   ├── export_zh.py           # 中文游戏状态导出
+│   ├── export_merchants.py    # 导出商人数据
+│   └── rebuild.py             # 重建 C# 插件（从 .bak）
+├── data/
+│   ├── cards.json             # 卡牌数据（C# 插件+shop_browser 用）
+│   ├── cards_generated.json   # 卡牌+template_id
+│   ├── translations_zh_cn.json
+│   ├── merchants.json
+│   ├── events.json
+│   ├── shops.json
+│   ├── community_builds.json
+│   └── game_data_analysis.json
+├── BoardData/                 # 运行时生成（游戏运行后自动产生）
+└── bin/, obj/                 # 编译输出
+```
 
-## 数据文件
+## 数据更新
 
-| 文件 | 大小 | 说明 |
-|---|---|---|
-| `data/cards.json` | 761KB | 物品/技能卡数据 |
-| `data/cards_generated.json` | 1.6MB | 生成的卡牌数据 |
-| `data/shops.json` | 15KB | 商店数据 |
-| `data/merchants.json` | 13KB | 商人数据 |
-| `data/events.json` | 224KB | 事件数据 |
-| `data/encounters_generated.json` | 415KB | 生成的遭遇数据 |
-| `data/skills_generated.json` | 154KB | 生成的技能数据 |
-| `data/community_builds.json` | 53KB | 社区构建数据 |
-| `data/all_shops.json` | 24KB | 所有商店汇总 |
-| `game_data_analysis.json` | 285KB | 完整分析数据（详见下方） |
-| `translations_zh_cn.json` | - | 简体中文翻译 |
+游戏更新后只需运行一次：
+```bash
+python scripts/export_raw_db.py
+```
+直接从 GameData.db 生成 `data/cards.json`、`data/cards_generated.json`、`data/translations_zh_cn.json`。
 
 ## 详细分析数据
 

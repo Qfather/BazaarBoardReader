@@ -6,46 +6,80 @@ The Bazaar 游戏的 BepInEx 辅助插件，提供实时棋盘数据导出、阵
 
 ---
 
+## 版本历史
+
+### v7.5.0 (2026-07-07)
+
+**目录结构重组**
+- 删除 `temp_data/`、`BoardData/`，统一为 `data/` 和 `scripts/`
+- `data/` — 所有数据文件（卡牌、翻译、运行时导出）
+- `scripts/` — 所有 Python 工具
+- 根目录仅保留源码、编译脚本和文档
+
+**数据管线重写**
+- 新建 `scripts/export_raw_db.py`，从 `GameData.db` 一步生成 `cards.json`、`cards_generated.json`、`translations_zh_cn.json`
+- 修复 monster 表空数据覆盖物品数据的问题（Unibou/Wolverine/Wild Boar/Worry Wart 四张 Karnok 伙伴卡恢复）
+- 删除旧的 `import_game_data.py`、`export_game_data.py`、`extract_translations.py` 等冗余脚本
+
+**商店推荐增强**
+- 结合实时游戏天数与物品/技能等级随天数变化，过滤商店物品和计算获取率
+- 商店 Overlay 文本：核心/灵活物品中已拥有的以 `*` 前缀 + 50% 透明度显示，钻石物品不显示
+- 构筑推荐面板：当前天数不可用的物品以 30% 灰色显示，保持阵容预设顺序不变
+- 商店文本居中，最多 4 个物品超出加 `……`，显示 `(需求/总数)` 测试信息
+- 天数未知时隐藏所有面板与标签
+
+**拥有物品检测修复**
+- `GatherAllItemsWithTier()` 始终从 `game_state.json` 合并背包物品
+- 添加 `_ownedItemsCache` 内存缓存，关背包不丢失
+- `MatchBuilds` 改为大小写不敏感比较
+
+**BoardData 合并到 data/**
+- 所有运行时生成文件（`game_state.json`、`board_latest.json`、`game_state_zh.json`）统一写入 `data/`
+- StateExporter 输出路径、BepInEx 配置同步更新
+
+### v7.4.0 (2026-07-06)
+- 集成 StateExporter，数据从游戏缓存生成
+- 新增 `cards_generated.json` 含 template_id 映射
+- 新增 `translations_zh_cn.json`
+- 清理旧数据文件
+
+### v7.3.3 (2026-07-06)
+- F5 导出增强：完整游戏数据 + 中文名称映射
+
+### v7.3.2 (2026-07-05)
+- 商店逻辑优化、F5 导出增强、独立 GUI 面板、NetMessagePatch 诊断
+
+---
+
 ## 功能概览
 
 ### 📊 游戏状态实时导出（StateExporter）
-
 - 拦截 `NetMessageGameStateSync` 网络消息，实时读取完整游戏状态
-- 自动写入 `BoardData/game_state.json`（每秒更新）
+- 自动写入 `data/game_state.json`（每秒更新）
 - 包含：英雄、天数、金币、血量、收入、声望、等级
 - 包含：面板物品、背包物品、技能（带 template_id、rarity、enchantments）
 - 包含：当前事件选项、商店状态
 
-### 📄 中文数据导出（export_zh.py）
+### 📄 中文数据导出
+- `scripts/export_zh.py` — `game_state.json` → `game_state_zh.json`（全中文）
 
-- 读取 `game_state.json` → 输出 `game_state_zh.json`
-- 所有物品、技能、事件自动翻译为中文名
-- 格式化为易读的结构化 JSON
-
-### 🔄 数据刷新（import_game_data.py）
-
-- 从游戏本地缓存 `GameData.db` + `zh-CN.bytes` 直接提取最新数据
-- 生成 `cards_generated.json`（卡牌数据库）
-- 生成 `cards.json`（shop_browser 兼容格式）
-- 生成 `translations_zh_cn.json`（中文翻译映射）
+### 🔄 数据刷新
+- `scripts/export_raw_db.py` — 从 `GameData.db` 一步生成全部数据文件
 - 游戏版本更新后运行一次即可
 
 ### 📺 实时叠加层（OnGUI）
-
-- **物品标签** — 场上+背包物品，按品质着色（铜/银/金/钻石/传说）
+- **物品标签** — 场上+背包物品，按品质着色
 - **技能标签** — 战斗技能+技能选择，品质着色
-- **商店标签** — 基于 `EncounterController` 识别商店名称，中文翻译
+- **商店标签** — 商店名称中文翻译，显示构筑物品命中率及可升级物品
 - **悬停提示** — 鼠标悬停显示完整名称
 
 ### 🎯 阵容推荐（F9 面板）
-
-- 基于社区阵容（`community_builds.json`）匹配当前棋盘
-- 70% 物品权重 + 30% 技能权重计算匹配百分比
-- 分核心/灵活物品与技能
-- 按英雄筛选，英雄按钮颜色编码
+- 基于社区阵容匹配当前棋盘，计算匹配百分比
+- 按构筑原始顺序显示核心/灵活物品与技能
+- 已拥有=30%透明，可刷=100%，不可刷=30%灰色
+- 自动检测当前英雄，支持手动切换
 
 ### 🏗️ 阵容管理（F10 面板）
-
 - F8 捕获当前棋盘阵容
 - 新建/编辑/删除阵容模板
 - 一键导入社区阵容
@@ -69,36 +103,43 @@ The Bazaar 游戏的 BepInEx 辅助插件，提供实时棋盘数据导出、阵
 
 ```
 BazaarBoardReader/
-├── BazaarBoardReaderPlugin.cs   # 主插件源码（实时叠加层+阵容推荐）
-├── BazaarBoardReader.csproj     # 主插件项目文件
-├── build.ps1                    # 编译脚本（csc.exe 回退方案）
+├── BazaarBoardReaderPlugin.cs   # 主插件源码
+├── BazaarBoardReader.csproj     # 项目文件
+├── build.ps1                    # 编译脚本
+├── README.md
+├── CLAUDE.md
 │
-├── StateExporter/               # 游戏状态实时导出插件
-│   ├── Plugin.cs                # 入口，配置输出路径和轮询
-│   ├── StateProbe.cs            # 核心：从 DTO 读取 Hero/Day/Gold...
-│   ├── StateSnapshot.cs         # 数据模型（GameStateSnapshot）
-│   ├── NetMessagePatches.cs     # Harmony 补丁拦截 NetMessageGameStateSync
-│   ├── JsonStateWriter.cs       # 原子 JSON 写入
-│   ├── RuntimeCardExporter.cs   # 卡牌运行时扫描
+├── StateExporter/               # 游戏状态导出子插件
+│   ├── Plugin.cs
+│   ├── StateProbe.cs
+│   ├── StateSnapshot.cs
+│   ├── NetMessagePatches.cs
+│   ├── JsonStateWriter.cs
+│   ├── RuntimeCardExporter.cs
 │   └── BazaarStateExporter.csproj
 │
-├── import_game_data.py          # 从 GameData.db 刷新全部数据文件
-├── export_zh.py                 # game_state.json → game_state_zh.json
-├── test_hotkey.py               # F8 热键实时显示游戏状态
+├── scripts/                     # Python 工具
+│   ├── export_raw_db.py         # 从 GameData.db 生成全部数据
+│   ├── shop_browser.py          # 商店浏览器 (tkinter GUI)
+│   ├── export_zh.py             # 中文状态导出
+│   ├── export_merchants.py      # 商人数据导出
+│   └── rebuild.py               # 重建 C# 插件源码
 │
-├── data/                        # 数据文件（import_game_data.py 生成）
-│   ├── cards_generated.json     # 卡牌数据库（~3000 张）
-│   ├── cards.json               # shop_browser 兼容格式
-│   ├── translations_zh_cn.json  # 中文翻译（by_name + by_id）
-│   ├── events.json              # 事件/商店规则配置
-│   ├── community_builds.json    # 社区阵容配置
-│   ├── merchants.json           # 商人数据
-│   └── shops.json               # 商店数据
+├── data/                        # 数据文件 + 运行时输出
+│   ├── cards.json               # 卡牌数据（2958张）
+│   ├── cards_generated.json     # 卡牌数据 + template_id
+│   ├── translations_zh_cn.json  # 中文翻译（2593条）
+│   ├── merchants.json           # 商人配置
+│   ├── events.json              # 事件/商店规则
+│   ├── shops.json               # 商店数据
+│   ├── community_builds.json    # 社区阵容
+│   ├── game_data_analysis.json  # 游戏机制分析
+│   ├── game_state.json          # 运行时生成（StateExporter）
+│   ├── game_state_zh.json       # 运行时生成（export_zh.py）
+│   └── board_latest.json        # 运行时生成（F5导出）
 │
-└── BoardData/                   # 运行时生成（游戏运行后自动产生）
-    ├── game_state.json          # StateExporter 实时导出
-    ├── game_state_zh.json       # export_zh.py 中文版
-    └── board_latest.json        # F5 手动导出（BazaarBoardReader）
+├── bin/                         # 编译输出（.gitignore）
+└── obj/                         # 编译缓存（.gitignore）
 ```
 
 ---
@@ -107,13 +148,13 @@ BazaarBoardReader/
 
 ```
 游戏运行
-  ├── StateExporter 拦截网络消息 → BoardData/game_state.json（实时，每秒更新）
-  │     └── export_zh.py → BoardData/game_state_zh.json（全中文）
+  ├── StateExporter 拦截网络消息 → data/game_state.json（每秒更新）
+  │     └── scripts/export_zh.py → data/game_state_zh.json（全中文）
   │
   └── 游戏缓存 GameData.db + zh-CN.bytes
-        └── import_game_data.py → data/cards_generated.json
-                                   data/cards.json
-                                   data/translations_zh_cn.json
+        └── scripts/export_raw_db.py → data/cards.json
+                                        data/cards_generated.json
+                                        data/translations_zh_cn.json
 ```
 
 ---
@@ -122,31 +163,19 @@ BazaarBoardReader/
 
 - **游戏**: The Bazaar
 - **BepInEx**: 5.4.23+
-- **编译器**: .NET SDK 8.0+（`dotnet build`）
-- **Python**: 3.10+（运行数据脚本）
+- **编译器**: .NET SDK 8.0+
+- **Python**: 3.10+
 
-## 编译
+## 编译 & 安装
 
 ```powershell
-# StateExporter（游戏状态导出）
-dotnet build StateExporter/BazaarStateExporter.csproj -p:GameRoot="F:\SteamLibrary\steamapps\common\The Bazaar"
-
-# 主插件（可选，功能面板）
+# 编译
 dotnet build BazaarBoardReader.csproj
+# DLL 自动生成到 bin/Debug/net472/，复制到 BepInEx/plugins/
 
-# 或使用旧版 csc.exe
-.\build.ps1
+# 游戏更新后刷新数据
+python scripts/export_raw_db.py
 ```
-
-编译产物复制到 `BepInEx/plugins/`。
-
-## 安装
-
-1. 确保已安装 BepInEx
-2. 编译 `StateExporter`，DLL 放入 `BepInEx/plugins/BazaarStateExporter/`
-3. 首次运行后检查配置 `BepInEx/config/local.bazaar.stateexporter.cfg`
-4. 运行 `py import_game_data.py` 生成数据文件
-5. 启动游戏，进入对局即可看到 `BoardData/game_state.json`
 
 ## 免责声明
 

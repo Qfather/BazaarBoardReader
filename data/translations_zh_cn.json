@@ -1,6 +1,4 @@
 {
-  "source_game_db": "C:\\Users\\Administrator\\AppData\\LocalLow\\Tempo Storm\\The Bazaar\\prod\\cache\\GameData.db",
-  "source_translation_db": "C:\\Users\\Administrator\\AppData\\LocalLow\\Tempo Storm\\The Bazaar\\prod\\cache\\translations\\zh-CN.bytes",
   "locale": "zh-CN",
   "by_name": {
     "28 Hour Fitness": "28小时健身",
@@ -4831,6 +4829,7 @@
     "d3727a3a-3dd2-4ea7-a396-515e2c41c1b0": "奥利恩",
     "d3a045b3-e858-427a-b83b-32e20937b085": "火力掩护",
     "d3a78867-fd60-4a67-b03a-4200ba58674c": "弗提斯",
+    "d408ef96-41e4-420b-b520-e5aab40703bf": "爱伊拉的包裹",
     "d4471fb1-a60b-4f64-9c60-ae0e8c930306": "和平主义者",
     "d458042a-bbfa-4ac9-86cf-5a709ac814ae": "巨型投石索",
     "d459061d-e76b-4b00-91de-528679eee0e0": "打蛋器",

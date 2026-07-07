@@ -671,13 +671,15 @@
     ]
   },
   "Haunted Kimono": {
-    "template_id": "3e334eda-0f62-4852-bf50-dcab11d4e967",
+    "template_id": "035ace94-61e5-4343-8383-83044ea4e08e",
     "internal_name": "Haunted Kimono",
     "name": "Haunted Kimono",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -1053,13 +1055,15 @@
     ]
   },
   "Tempest Bravo": {
-    "template_id": "0a70a9ab-4508-4ff4-984e-9a20f0b3d517",
+    "template_id": "04b60df4-91d9-4065-94e0-f9f462a3b104",
     "internal_name": "Tempest Bravo",
     "name": "Tempest Bravo",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -1382,13 +1386,15 @@
     ]
   },
   "Training Dummy": {
-    "template_id": "29549218-4198-44f1-8ebc-e118dd693ddb",
+    "template_id": "068d7ed2-3716-4bab-9240-9d7ff63c6fa3",
     "internal_name": "Training Dummy",
     "name": "Training Dummy",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -1641,13 +1647,15 @@
     "tags": []
   },
   "Happy Camper": {
-    "template_id": "4be43701-6e7d-4e38-84e1-2a01a23fa982",
+    "template_id": "f6962ffe-efdf-4da2-9803-6671f42d9811",
     "internal_name": "Happy Camper",
     "name": "Happy Camper",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -2034,13 +2042,15 @@
     "tags": []
   },
   "Bounty Hunters": {
-    "template_id": "622b8e58-b073-4c75-9d57-322d0f16435d",
+    "template_id": "0a46b7df-e0a2-4211-8529-0bfe91974a71",
     "internal_name": "Bounty Hunters",
     "name": "Bounty Hunters",
-    "type": "",
-    "size": "",
+    "type": "EventEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Vanessa"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -3276,13 +3286,15 @@
     "tags": []
   },
   "[Crash Site Expedition] Augmented Hellbilly": {
-    "template_id": "e3890eb1-031b-496a-933b-8c05df87f114",
+    "template_id": "10504dc3-99cf-46be-b8ac-ea0be24c7b0b",
     "internal_name": "[Crash Site Expedition] Augmented Hellbilly",
     "name": "[Crash Site Expedition] Augmented Hellbilly",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -4209,13 +4221,15 @@
     "tags": []
   },
   "[Jungle Expedition] Blowguns Monster (Fiery)": {
-    "template_id": "c6e87ee0-dfd5-47e1-9723-cca076fce2d1",
+    "template_id": "14854ca0-bd1f-4f63-951b-97c1afb3af3b",
     "internal_name": "[Jungle Expedition] Blowguns Monster (Fiery)",
     "name": "[Jungle Expedition] Blowguns Monster (Fiery)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -4549,13 +4563,15 @@
     "tags": []
   },
   "[Jungle Expedition] Caltrops Monster (Fiery)": {
-    "template_id": "fba40a98-b149-4ce0-a672-1352c8a0cc84",
+    "template_id": "16a97acb-0b8c-4d04-b30a-c861a52a82e2",
     "internal_name": "[Jungle Expedition] Caltrops Monster (Fiery)",
     "name": "[Jungle Expedition] Caltrops Monster (Fiery)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -5062,13 +5078,15 @@
     "tags": []
   },
   "Mimic (Diamond)": {
-    "template_id": "abf6df44-a342-4791-a48e-6b99c2700eba",
+    "template_id": "193c4970-1f8e-4c52-8b58-42d11eb8ee03",
     "internal_name": "Mimic (Diamond)",
     "name": "Mimic (Diamond)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -5848,13 +5866,15 @@
     ]
   },
   "Banannibal": {
-    "template_id": "7e8b7521-af5e-4c81-93c1-694e823bc5de",
+    "template_id": "1d24717f-7bfb-48e9-9320-6a69d72e233e",
     "internal_name": "Banannibal",
     "name": "Banannibal",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -6088,13 +6108,15 @@
     "tags": []
   },
   "Trash Titan": {
-    "template_id": "ea63dae1-1d9c-4422-8c2a-96260b787dd1",
+    "template_id": "1e1f7b6d-746b-44d5-9906-fff137c75ef1",
     "internal_name": "Trash Titan",
     "name": "Trash Titan",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -6657,13 +6679,15 @@
     ]
   },
   "Morguloth": {
-    "template_id": "223c4256-fb15-4f55-be84-d5cef63b938d",
+    "template_id": "20863550-960f-4713-99eb-2ff2e4cfb3ef",
     "internal_name": "Morguloth",
     "name": "Morguloth",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -6957,13 +6981,15 @@
     "tags": []
   },
   "Viper Tyrant": {
-    "template_id": "53c31151-ad92-4181-9720-d0825eea866b",
+    "template_id": "224ba8a9-3781-4403-8bfc-527b4e64b8aa",
     "internal_name": "Viper Tyrant",
     "name": "Viper Tyrant",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -7206,13 +7232,15 @@
     "tags": []
   },
   "Chilly Charles": {
-    "template_id": "05c7cd54-75a3-4eae-9a1a-798c90b0db2d",
+    "template_id": "23a21c0f-e163-4817-ba15-0e899d19d387",
     "internal_name": "Chilly Charles",
     "name": "Chilly Charles",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -7496,13 +7524,15 @@
     "tags": []
   },
   "Roaming Isle": {
-    "template_id": "b40ae00e-f6df-4920-90a4-a49ea53fbdb5",
+    "template_id": "254b6aca-26a9-4014-86c3-0da827519c73",
     "internal_name": "Roaming Isle",
     "name": "Roaming Isle",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -7592,13 +7622,15 @@
     "tags": []
   },
   "Joyful Jack": {
-    "template_id": "6d946fe1-13cc-4141-bc89-84981c4ef77f",
+    "template_id": "25a7a800-1c64-4728-a4fe-eb5a3f3394a0",
     "internal_name": "Joyful Jack",
     "name": "Joyful Jack",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -7648,13 +7680,15 @@
     ]
   },
   "Dooltron (Monster)": {
-    "template_id": "7b6ab1c8-40ca-454a-a162-d6392e208fe2",
+    "template_id": "25f54463-2cca-419a-b0e8-8f5297896992",
     "internal_name": "Dooltron (Monster)",
     "name": "Dooltron (Monster)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -7710,13 +7744,15 @@
     "tags": []
   },
   "Property Baron": {
-    "template_id": "c084c86f-7908-41d7-9c2b-13ab7dfef4b3",
+    "template_id": "265d1068-e90d-49c4-8013-ed2e856ead8f",
     "internal_name": "Property Baron",
     "name": "Property Baron",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -8073,13 +8109,15 @@
     ]
   },
   "Rex Spex (Monster)": {
-    "template_id": "d780a822-b6b8-4be6-bce9-5b861cbdcadf",
+    "template_id": "27f9cc4c-3f9e-494a-a13d-99797114c53c",
     "internal_name": "Rex Spex (Monster)",
     "name": "Rex Spex (Monster)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -8645,13 +8683,15 @@
     "tags": []
   },
   "Thug": {
-    "template_id": "67f30669-0e12-4d59-82fc-6b033fa064c3",
+    "template_id": "2b0437f4-6977-4f84-aeb6-6545cbf5632d",
     "internal_name": "Thug",
     "name": "Thug",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -8728,13 +8768,15 @@
     "tags": []
   },
   "Tortuga (Monster)": {
-    "template_id": "a97fb7f3-f879-4013-bf31-c82ca685c30c",
+    "template_id": "2b68a81d-ea7e-401b-a374-77529470383f",
     "internal_name": "Tortuga (Monster)",
     "name": "Tortuga (Monster)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -8778,13 +8820,15 @@
     "tags": []
   },
   "Surly Mechanic": {
-    "template_id": "d5e1eb8e-2cd0-4f56-a980-fe4b4fee58a9",
+    "template_id": "2c059647-c6ca-49ae-ac76-80eadad3fb77",
     "internal_name": "Surly Mechanic",
     "name": "Surly Mechanic",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -10248,13 +10292,15 @@
     ]
   },
   "Elite Duelist": {
-    "template_id": "f57b2a63-e4a2-4d9a-88b3-b1c3a3cf36d7",
+    "template_id": "338f3c4b-9238-41d2-a0e0-0d825cded307",
     "internal_name": "Elite Duelist",
     "name": "Elite Duelist",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -10668,13 +10714,15 @@
     "tags": []
   },
   "Product Demonstrator": {
-    "template_id": "b616842e-b4dc-4678-8ca4-337229f6e046",
+    "template_id": "35d68424-87ba-4d8a-8776-8d8302a425f9",
     "internal_name": "Product Demonstrator",
     "name": "Product Demonstrator",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -10996,13 +11044,15 @@
     "tags": []
   },
   "[Jungle Expedition] Boulder Monster (Toxic)": {
-    "template_id": "64d84f7d-68b4-481b-ad9a-de1e5e3e3d08",
+    "template_id": "374416cd-89ed-451d-a131-e3839400432e",
     "internal_name": "[Jungle Expedition] Boulder Monster (Toxic)",
     "name": "[Jungle Expedition] Boulder Monster (Toxic)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -11183,13 +11233,15 @@
     "tags": []
   },
   "Burninator Bot": {
-    "template_id": "1ed6f8c6-13a9-48a2-995f-c61af0602777",
+    "template_id": "3836d71e-c6ea-4ef7-a9c7-ce698001e991",
     "internal_name": "Burninator Bot",
     "name": "Burninator Bot",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -11406,13 +11458,15 @@
     ]
   },
   "Hoverbike Hooligan": {
-    "template_id": "336e5dad-8ca4-4263-817c-2141136e5e71",
+    "template_id": "38936647-a688-49d1-8e5c-9c2c79f18a18",
     "internal_name": "Hoverbike Hooligan",
     "name": "Hoverbike Hooligan",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -11771,13 +11825,15 @@
     "tags": []
   },
   "[Jungle Expedition] Boulder Monster (Fiery)": {
-    "template_id": "7d995810-111c-44dd-8473-7e5bd2b2fc74",
+    "template_id": "3b0b8b93-75bd-4a2d-8001-1cb8171e71bb",
     "internal_name": "[Jungle Expedition] Boulder Monster (Fiery)",
     "name": "[Jungle Expedition] Boulder Monster (Fiery)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -12061,13 +12117,15 @@
     "tags": []
   },
   "Infernal Dreadnought": {
-    "template_id": "21bef21d-d95e-446b-8f89-01893e0d0365",
+    "template_id": "3c433f32-5070-4f57-82d3-9b4347da7aa3",
     "internal_name": "Infernal Dreadnought",
     "name": "Infernal Dreadnought",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -12163,13 +12221,15 @@
     ]
   },
   "PVE_Stelle_D6_001": {
-    "template_id": "8f2c7d19-4a6b-4f3e-9c21-73d5e0a94b68",
+    "template_id": "3c9f4f62-2c8b-4f91-a7e6-5d1b8e72c4af",
     "internal_name": "PVE_Stelle_D6_001",
     "name": "PVE_Stelle_D6_001",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -12616,13 +12676,15 @@
     "tags": []
   },
   "Terrorform": {
-    "template_id": "5625c11a-ad2d-4fcb-b915-644dc776e25a",
+    "template_id": "3e80e4e9-13e6-441c-b770-a82a0297ad47",
     "internal_name": "Terrorform",
     "name": "Terrorform",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -13051,13 +13113,15 @@
     ]
   },
   "Street Gamer": {
-    "template_id": "daf6f97b-8653-4dfa-90d2-e5003bdade21",
+    "template_id": "4101117c-9cb0-480e-bfac-814da069ec80",
     "internal_name": "Street Gamer",
     "name": "Street Gamer",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -13209,13 +13273,15 @@
     ]
   },
   "Ventriloquist": {
-    "template_id": "50ebc26b-1c8c-4a6c-8656-442c30018325",
+    "template_id": "41c5f103-2d76-4a51-ae28-ee294490b071",
     "internal_name": "Ventriloquist",
     "name": "Ventriloquist",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -13977,24 +14043,28 @@
     ]
   },
   "Pyro": {
-    "template_id": "b712a602-1843-4fc3-85ad-b8e3b7bca489",
+    "template_id": "45c473f5-25bd-4c1c-8357-cfe460c58f69",
     "internal_name": "Pyro",
     "name": "Pyro",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
   "Frost Street Champion": {
-    "template_id": "e873dbd7-86aa-4fec-9206-28591346939a",
+    "template_id": "45de3316-8847-4321-ba1c-83a808bad369",
     "internal_name": "Frost Street Champion",
     "name": "Frost Street Champion",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -14389,13 +14459,15 @@
     ]
   },
   "Sabretooth": {
-    "template_id": "ee37ea07-e024-447c-b89f-88b9940c19af",
+    "template_id": "47c042ba-707a-4e00-aea2-c1ed2ed880e5",
     "internal_name": "Sabretooth",
     "name": "Sabretooth",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -14689,13 +14761,15 @@
     ]
   },
   "Hulking Experiment": {
-    "template_id": "616ce451-b85d-478a-82a8-8a28105994f5",
+    "template_id": "492c7f84-3cb2-40bb-8a55-29355143bee2",
     "internal_name": "Hulking Experiment",
     "name": "Hulking Experiment",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -14919,13 +14993,15 @@
     ]
   },
   "Boilerroom Brawler": {
-    "template_id": "7719b6d8-7977-4d49-88a2-da29a19ad235",
+    "template_id": "4a4542cd-91d8-4463-84fc-c111fc7535ee",
     "internal_name": "Boilerroom Brawler",
     "name": "Boilerroom Brawler",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -14976,13 +15052,15 @@
     "tags": []
   },
   "Not a Spy": {
-    "template_id": "4985f23f-5054-4477-abbc-a9a52471b46e",
+    "template_id": "4a6fcebd-0957-448a-8903-fe4a370a9f38",
     "internal_name": "Not a Spy",
     "name": "Not a Spy",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -15146,13 +15224,15 @@
     "tags": []
   },
   "Stew": {
-    "template_id": "ea736d32-738c-4cca-902c-1b3a5dc67205",
+    "template_id": "4b69c9fd-cf2d-4197-9b06-0327a5849041",
     "internal_name": "Stew",
     "name": "Stew",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -15527,13 +15607,15 @@
     ]
   },
   "Boss Harrow": {
-    "template_id": "518bd4b2-97f4-44f9-8b74-933962339751",
+    "template_id": "4ccdd72f-cfce-4ea6-9bda-caabd5b0fbf8",
     "internal_name": "Boss Harrow",
     "name": "Boss Harrow",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -15551,24 +15633,28 @@
     "tags": []
   },
   "[Jungle Expedition] Mythkeeper": {
-    "template_id": "7481bc29-8de9-4661-a51c-49dd27ca5044",
+    "template_id": "4ce6d441-4aed-455b-b83f-0b057b462515",
     "internal_name": "[Jungle Expedition] Mythkeeper",
     "name": "[Jungle Expedition] Mythkeeper",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
   "Lost Hero": {
-    "template_id": "ca2455dd-9f11-40d1-82aa-289f808b7da0",
+    "template_id": "4cebbbdc-db0c-4159-b651-1bb79c264bc9",
     "internal_name": "Lost Hero",
     "name": "Lost Hero",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -15889,13 +15975,15 @@
     ]
   },
   "[Crash Site Expedition] The Vessel": {
-    "template_id": "5b538be9-1427-4c1b-aebf-0daa7582dbaf",
+    "template_id": "4ef60802-3b84-482a-8ba5-640534a94c64",
     "internal_name": "[Crash Site Expedition] The Vessel",
     "name": "[Crash Site Expedition] The Vessel",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -16453,13 +16541,15 @@
     "tags": []
   },
   "Prince Marianas": {
-    "template_id": "2b157e1b-3340-44b2-934e-4fc84a2b9beb",
+    "template_id": "5253c1ef-af51-43ac-a307-4e707e5747a6",
     "internal_name": "Prince Marianas",
     "name": "Prince Marianas",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -16991,13 +17081,15 @@
     "tags": []
   },
   "Kyver Commander": {
-    "template_id": "6d576bad-7b30-499a-9c67-ec5f9a0a96d7",
+    "template_id": "54bd46ca-2dec-4fbf-bae9-4cfff1c80043",
     "internal_name": "Kyver Commander",
     "name": "Kyver Commander",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -17455,13 +17547,15 @@
     ]
   },
   "Void Golem": {
-    "template_id": "e9ea36fe-dfcf-459a-b57f-0cf6e4fe62a5",
+    "template_id": "568d3090-6703-4c42-bd65-ba50f883e869",
     "internal_name": "Void Golem",
     "name": "Void Golem",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -17871,13 +17965,15 @@
     "tags": []
   },
   "Volkas Enforcer": {
-    "template_id": "b54dbad3-bc06-481a-ba99-a2421c047665",
+    "template_id": "58477f3f-70f1-4000-9ad0-9e0f44b42349",
     "internal_name": "Volkas Enforcer",
     "name": "Volkas Enforcer",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -18129,13 +18225,15 @@
     "tags": []
   },
   "Harkuvian Rocket Trooper": {
-    "template_id": "aa372e93-c5b0-42e9-8b0c-cd4746d0382c",
+    "template_id": "59917a2d-3253-44f4-aaa4-ca30b512eb59",
     "internal_name": "Harkuvian Rocket Trooper",
     "name": "Harkuvian Rocket Trooper",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -19111,13 +19209,15 @@
     "tags": []
   },
   "[Community Team] Training Dummy": {
-    "template_id": "1d95020b-e3a7-4210-8a8e-638126b2137b",
+    "template_id": "5ee7d5e2-1df7-4335-9cac-09a5c749b859",
     "internal_name": "[Community Team] Training Dummy",
     "name": "[Community Team] Training Dummy",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -19497,13 +19597,15 @@
     ]
   },
   "Radiant Corsair": {
-    "template_id": "a859bd39-a384-43e8-9299-08a73c6810a6",
+    "template_id": "608eb88e-c6d8-41c3-ac88-c20aeb185664",
     "internal_name": "Radiant Corsair",
     "name": "Radiant Corsair",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -19627,13 +19729,15 @@
     "tags": []
   },
   "Bloodreef Raider": {
-    "template_id": "c4488147-71e7-4383-95d7-f96910221060",
+    "template_id": "6129261a-c4e5-4ff9-b057-58ae1ef29bf7",
     "internal_name": "Bloodreef Raider",
     "name": "Bloodreef Raider",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -20562,13 +20666,15 @@
     ]
   },
   "Overwhelmed Student": {
-    "template_id": "77a31f8e-77b1-431f-aab8-22bbe5c3826b",
+    "template_id": "6547a38e-d27f-4443-84bb-db8e04bae467",
     "internal_name": "Overwhelmed Student",
     "name": "Overwhelmed Student",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -20838,13 +20944,15 @@
     "tags": []
   },
   "Outlands Terror (Monster)": {
-    "template_id": "3ca7de5f-ed87-4343-892b-3623c4be0ce5",
+    "template_id": "6727fa2f-f378-49c7-a839-86bac0fec9a6",
     "internal_name": "Outlands Terror (Monster)",
     "name": "Outlands Terror (Monster)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -21226,13 +21334,15 @@
     "tags": []
   },
   "Lich": {
-    "template_id": "266a6b58-ec93-4d4a-8cea-549caa4224e1",
+    "template_id": "69af3106-78fd-4a74-b150-ec41442cdbba",
     "internal_name": "Lich",
     "name": "Lich",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -21483,13 +21593,15 @@
     "tags": []
   },
   "PVE_Karnok_D6_001": {
-    "template_id": "9db29de4-9b68-4a8e-9f21-01ba1340bd8b",
+    "template_id": "6b199d60-0032-4ecd-9632-03332702c4ac",
     "internal_name": "PVE_Karnok_D6_001",
     "name": "PVE_Karnok_D6_001",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -21695,13 +21807,15 @@
     ]
   },
   "Overbearing Teacher": {
-    "template_id": "50c31091-e157-4009-8a9e-121605fb0ac3",
+    "template_id": "6c45b720-a58c-43ba-a66e-e0ecfb1b69e2",
     "internal_name": "Overbearing Teacher",
     "name": "Overbearing Teacher",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -21744,24 +21858,35 @@
     ]
   },
   "Worry Wart": {
-    "template_id": "b4b6423e-d0aa-47a2-a9d9-35ea1c291992",
+    "template_id": "6c80dddf-31ea-4e2a-8d7a-78c5cf672597",
     "internal_name": "Worry Wart",
     "name": "Worry Wart",
-    "type": "",
-    "size": "",
+    "type": "Item",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
+    "heroes": [
+      "Karnok"
+    ],
+    "tiers": [
+      "Bronze",
+      "Silver",
+      "Gold",
+      "Diamond"
+    ],
+    "tags": [
+      "Friend"
+    ]
   },
   "Drone Operator": {
-    "template_id": "b224deab-292e-4b0d-b18f-96445517dc42",
+    "template_id": "6c84f0a7-4669-4eeb-bb0b-a0dce69e6a29",
     "internal_name": "Drone Operator",
     "name": "Drone Operator",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -22614,24 +22739,28 @@
     "tags": []
   },
   "Mr. Moo": {
-    "template_id": "0a633def-7135-408c-bcc7-785f5172ee34",
+    "template_id": "72411b58-e99a-44a9-a43f-9767896c7508",
     "internal_name": "Mr. Moo",
     "name": "Mr. Moo",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
   "Zookeeper": {
-    "template_id": "2551f0d8-a57c-4670-993d-13b8b7ee2791",
+    "template_id": "7294ff99-ca2b-409e-838f-0efdb10dded0",
     "internal_name": "Zookeeper",
     "name": "Zookeeper",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -22649,15 +22778,24 @@
     "tags": []
   },
   "Unibou": {
-    "template_id": "7f5894c9-b7ce-4f48-a831-4a33543866b9",
+    "template_id": "7317d6a2-adea-442c-9e97-7f7bbf64ae99",
     "internal_name": "Unibou",
     "name": "Unibou",
-    "type": "",
-    "size": "",
+    "type": "Item",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
+    "heroes": [
+      "Karnok"
+    ],
+    "tiers": [
+      "Bronze",
+      "Silver",
+      "Gold",
+      "Diamond"
+    ],
+    "tags": [
+      "Friend"
+    ]
   },
   "Pyre (Silver)": {
     "template_id": "731fdecd-bc3f-48a7-bdf9-4096f3eaa963",
@@ -23026,24 +23164,28 @@
     ]
   },
   "[Jungle Expedition] Blowguns Monster (Toxic)": {
-    "template_id": "23820462-925d-4867-bfce-70388594aafb",
+    "template_id": "7570c77c-7d47-4ab2-ab33-a140bcdf4b70",
     "internal_name": "[Jungle Expedition] Blowguns Monster (Toxic)",
     "name": "[Jungle Expedition] Blowguns Monster (Toxic)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
   "Bloodreef Captain": {
-    "template_id": "fdcb435f-d6c4-4657-81b5-1888e8eefe5a",
+    "template_id": "7590dbeb-8087-4464-90f0-96aeee910186",
     "internal_name": "Bloodreef Captain",
     "name": "Bloodreef Captain",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -23279,13 +23421,15 @@
     ]
   },
   "Car Conductor": {
-    "template_id": "75efe2bc-97e2-4b72-b1e2-778ab3bc3645",
+    "template_id": "76c8dc41-96c9-4c05-acb1-5eaab4ea8e17",
     "internal_name": "Car Conductor",
     "name": "Car Conductor",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -23349,13 +23493,15 @@
     "tags": []
   },
   "[Crash Site Expedition] Conspiracy Theorist": {
-    "template_id": "eac82969-e761-4bf1-983f-de644b9716c2",
+    "template_id": "7718437a-cc2e-44d0-b3f1-4a370ea84fdc",
     "internal_name": "[Crash Site Expedition] Conspiracy Theorist",
     "name": "[Crash Site Expedition] Conspiracy Theorist",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -23405,13 +23551,15 @@
     ]
   },
   "Void Colossus": {
-    "template_id": "f73ab4b7-f33d-4d65-bb3f-2fea8d003500",
+    "template_id": "776c224d-1e4e-4a20-8516-550b94c05ff1",
     "internal_name": "Void Colossus",
     "name": "Void Colossus",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -23569,13 +23717,15 @@
     "tags": []
   },
   "Dire Inglet": {
-    "template_id": "626224f6-4aea-458f-8947-86a4798de419",
+    "template_id": "78139f32-94b1-4dc6-9ef0-374c3c8863a7",
     "internal_name": "Dire Inglet",
     "name": "Dire Inglet",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -23664,13 +23814,15 @@
     "tags": []
   },
   "Cloudtop Officer": {
-    "template_id": "9af5fe85-c06f-4227-906c-e5f8df83a0fd",
+    "template_id": "78c335a6-42bc-45e2-a8e7-e9a1dce7502d",
     "internal_name": "Cloudtop Officer",
     "name": "Cloudtop Officer",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -26257,13 +26409,15 @@
     "tags": []
   },
   "Mimic (Bronze)": {
-    "template_id": "7f6cecb6-3f07-4606-8d62-21c0b5e4e369",
+    "template_id": "85420ae1-363b-4e84-8405-cc1a306b00fb",
     "internal_name": "Mimic (Bronze)",
     "name": "Mimic (Bronze)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -27959,13 +28113,15 @@
     "tags": []
   },
   "Dabbling Apprentice": {
-    "template_id": "f0d347b0-2e9a-46da-9d82-45b65244b0f4",
+    "template_id": "8e389a21-9e14-49c4-bdf3-24183f9f9295",
     "internal_name": "Dabbling Apprentice",
     "name": "Dabbling Apprentice",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -28086,13 +28242,15 @@
     ]
   },
   "Hellbilly": {
-    "template_id": "418f33bf-b721-4e89-a1dd-c375b3174df9",
+    "template_id": "8eb6cf35-27ab-4726-b9f7-05133a4b94b8",
     "internal_name": "Hellbilly",
     "name": "Hellbilly",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -28268,13 +28426,15 @@
     "tags": []
   },
   "Lord Arken": {
-    "template_id": "6c87be29-e82d-4ce1-ac79-8a642b8e0c4f",
+    "template_id": "8f73d2d6-6071-4464-bb19-8e0783de4df0",
     "internal_name": "Lord Arken",
     "name": "Lord Arken",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -28466,13 +28626,15 @@
     ]
   },
   "Wildman": {
-    "template_id": "334bb95e-ab53-4ac6-9133-4401696f1647",
+    "template_id": "90aa768f-4a8d-4087-ad5a-5f44efe28e3a",
     "internal_name": "Wildman",
     "name": "Wildman",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -28744,24 +28906,28 @@
     ]
   },
   "Scovyle": {
-    "template_id": "2b6ec186-af49-4dff-ab66-93448256f513",
+    "template_id": "91c233ed-b88c-4ec9-b3ee-cec880a14213",
     "internal_name": "Scovyle",
     "name": "Scovyle",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
   "Outlands Dervish": {
-    "template_id": "b3f9a83f-772b-4286-bf21-cd2d86a13b58",
+    "template_id": "91e59b0c-968c-4c45-9391-5104571fee28",
     "internal_name": "Outlands Dervish",
     "name": "Outlands Dervish",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -28782,13 +28948,15 @@
     "tags": []
   },
   "Annexed Army": {
-    "template_id": "7e4b11e2-2873-405e-8f2e-9756e43a09f6",
+    "template_id": "921d3a60-82d7-445f-8ff0-0d4bccdc6c1e",
     "internal_name": "Annexed Army",
     "name": "Annexed Army",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -28849,13 +29017,15 @@
     "tags": []
   },
   "[Jungle Expedition] Blowguns Monster (Obsidian)": {
-    "template_id": "8aa0c4b7-fcc9-48db-a0ed-be8aecde1628",
+    "template_id": "9283b658-2d0b-4c0a-8e62-b185a8ac6ad0",
     "internal_name": "[Jungle Expedition] Blowguns Monster (Obsidian)",
     "name": "[Jungle Expedition] Blowguns Monster (Obsidian)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -29006,13 +29176,15 @@
     ]
   },
   "Dr. Vortex": {
-    "template_id": "820dd8f1-6721-4c32-88a4-b5071566dcc4",
+    "template_id": "93d7bb74-2d23-4ccc-a99f-9380afaf738a",
     "internal_name": "Dr. Vortex",
     "name": "Dr. Vortex",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -29411,15 +29583,24 @@
     "tags": []
   },
   "Wolverine": {
-    "template_id": "9eb2bbbf-ad2d-4fa6-be5c-8d46f11df55f",
+    "template_id": "95b3dc70-822e-4973-a567-e8d00e1ad9ee",
     "internal_name": "Wolverine",
     "name": "Wolverine",
-    "type": "",
-    "size": "",
+    "type": "Item",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
+    "heroes": [
+      "Karnok"
+    ],
+    "tiers": [
+      "Silver",
+      "Gold",
+      "Diamond"
+    ],
+    "tags": [
+      "Weapon",
+      "Friend"
+    ]
   },
   "Crusher Claw": {
     "template_id": "95ff786e-b6bf-4bad-9d5c-6b2b41e9f0c3",
@@ -29463,13 +29644,15 @@
     ]
   },
   "Foundation Weeper": {
-    "template_id": "96553caa-fac6-484f-8b71-0bff3c06a483",
+    "template_id": "962bf2b2-fc1b-4ad3-9526-15d76d3bb0de",
     "internal_name": "Foundation Weeper",
     "name": "Foundation Weeper",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -29518,13 +29701,15 @@
     ]
   },
   "[Jungle Expedition] Caltrops Monster (Obsidian)": {
-    "template_id": "85fffe21-ab28-4390-80c7-04bd5eebe95c",
+    "template_id": "967508d9-5c1b-4084-a445-23e53a3839bc",
     "internal_name": "[Jungle Expedition] Caltrops Monster (Obsidian)",
     "name": "[Jungle Expedition] Caltrops Monster (Obsidian)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -29566,13 +29751,15 @@
     ]
   },
   "Gibbus": {
-    "template_id": "6217804b-1d4b-4517-a9ee-869d35bf0d59",
+    "template_id": "96c9ede1-34f3-442c-89d3-befbef196729",
     "internal_name": "Gibbus",
     "name": "Gibbus",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -30394,13 +30581,15 @@
     "tags": []
   },
   "Trashtown Mayor": {
-    "template_id": "f820c620-244a-46c4-bace-51eb70ce48e6",
+    "template_id": "9c167a0c-d348-4e09-8f6b-be0ac65d3cda",
     "internal_name": "Trashtown Mayor",
     "name": "Trashtown Mayor",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -30965,13 +31154,15 @@
     "tags": []
   },
   "Retiree": {
-    "template_id": "0fb23601-c5a2-47a0-94bb-655d93372354",
+    "template_id": "9e637cb7-18cf-460d-9c50-5401ee4be521",
     "internal_name": "Retiree",
     "name": "Retiree",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -31583,13 +31774,15 @@
     ]
   },
   "Bouncertron": {
-    "template_id": "73163ebc-46fd-43f0-9693-8666ccc9da09",
+    "template_id": "a1c3df15-1058-44ff-bee9-0991cfba2068",
     "internal_name": "Bouncertron",
     "name": "Bouncertron",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -31690,13 +31883,15 @@
     "tags": []
   },
   "Foreman": {
-    "template_id": "f43985fe-7e14-4797-a86d-71ee83195154",
+    "template_id": "a2baf3bc-6164-4a16-ab41-48b450f694d1",
     "internal_name": "Foreman",
     "name": "Foreman",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -31964,13 +32159,15 @@
     ]
   },
   "Yerdan": {
-    "template_id": "fd9ad26c-3360-4df5-bf83-52bd6e1f869a",
+    "template_id": "a44c3d18-8968-4956-b3a2-5cbf3b4c12c2",
     "internal_name": "Yerdan",
     "name": "Yerdan",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -32053,13 +32250,15 @@
     ]
   },
   "PVE_Jules_D6_001": {
-    "template_id": "b21565c5-71c6-4e4d-bf3d-5fd9d8602aa8",
+    "template_id": "a49618ae-2923-448a-9435-df48a256158f",
     "internal_name": "PVE_Jules_D6_001",
     "name": "PVE_Jules_D6_001",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -32175,13 +32374,15 @@
     "tags": []
   },
   "[Jungle Expedition] Qomatz": {
-    "template_id": "47a96863-a95f-4f79-8869-8b8bb48c51c5",
+    "template_id": "a5103989-fb08-4ac6-a5e8-6a610e0b1d46",
     "internal_name": "[Jungle Expedition] Qomatz",
     "name": "[Jungle Expedition] Qomatz",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -32657,13 +32858,15 @@
     ]
   },
   "Fairy Circle": {
-    "template_id": "0fb054c9-c8e7-4f6e-a5f3-156433577c2d",
+    "template_id": "e54908bc-bf2d-4aac-93c3-393be464558a",
     "internal_name": "Fairy Circle",
     "name": "Fairy Circle",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -32719,13 +32922,15 @@
     ]
   },
   "Master Alchemist": {
-    "template_id": "8c211464-5961-449b-b5e9-b222c601e3c1",
+    "template_id": "a871d83c-fbe0-4b38-b004-6cc598b31239",
     "internal_name": "Master Alchemist",
     "name": "Master Alchemist",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -32974,13 +33179,15 @@
     ]
   },
   "Trash Golem": {
-    "template_id": "d34242a2-02b0-4361-9402-e216cb12d165",
+    "template_id": "a9b27854-6f5c-4414-b458-90c54c444171",
     "internal_name": "Trash Golem",
     "name": "Trash Golem",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -34932,13 +35139,15 @@
     ]
   },
   "Byg": {
-    "template_id": "87365f71-1a50-40ac-b4f6-903177ebebab",
+    "template_id": "b3c0c6f2-4f33-48cd-933f-53a54751d92b",
     "internal_name": "Byg",
     "name": "Byg",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -35212,13 +35421,15 @@
     "tags": []
   },
   "Ahexa": {
-    "template_id": "ee26b888-c50f-43cf-848b-ca572b6e9583",
+    "template_id": "b511bd4d-5ad6-4f54-bc74-89622da4d956",
     "internal_name": "Ahexa",
     "name": "Ahexa",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -35484,13 +35695,15 @@
     ]
   },
   "[Jungle Expedition] Boulder Monster (Obsidian)": {
-    "template_id": "340c9717-9ac5-4ce9-b242-cddd8c24581b",
+    "template_id": "b654d08b-cd50-44af-b92c-ebf189d81547",
     "internal_name": "[Jungle Expedition] Boulder Monster (Obsidian)",
     "name": "[Jungle Expedition] Boulder Monster (Obsidian)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -35845,13 +36058,15 @@
     ]
   },
   "Viper": {
-    "template_id": "e07396b2-a71e-46e7-b32b-d9568585dd93",
+    "template_id": "b79845a7-f806-4e7a-9011-d98ebd22a323",
     "internal_name": "Viper",
     "name": "Viper",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -36197,13 +36412,15 @@
     ]
   },
   "Boarrior": {
-    "template_id": "6d939dd0-fd9b-46b8-8861-cccb818757da",
+    "template_id": "b93f5b44-ba9f-4196-a94e-c5de17ab5c5d",
     "internal_name": "Boarrior",
     "name": "Boarrior",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -36221,13 +36438,15 @@
     "tags": []
   },
   "QA Test Monster": {
-    "template_id": "5b3da8f1-5834-4a8d-967f-f98e8989b26f",
+    "template_id": "b98f8dc6-5173-4882-a227-a3019c486c37",
     "internal_name": "QA Test Monster",
     "name": "QA Test Monster",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -36504,13 +36723,15 @@
     ]
   },
   "Fanged Inglet": {
-    "template_id": "d7391818-e677-4c98-994d-71e25ed2d41c",
+    "template_id": "bb1e3506-3735-4669-be90-915a55a7ee05",
     "internal_name": "Fanged Inglet",
     "name": "Fanged Inglet",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -36653,13 +36874,15 @@
     "tags": []
   },
   "Dire Mosquito": {
-    "template_id": "fd181d89-0706-4220-bb95-637af574b61b",
+    "template_id": "bc5fa0a4-8ca9-4384-a283-9c7c84b27169",
     "internal_name": "Dire Mosquito",
     "name": "Dire Mosquito",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -36889,13 +37112,15 @@
     "tags": []
   },
   "Mutant Baker": {
-    "template_id": "a010a4a0-7dc2-4673-a377-fc0db5ff1410",
+    "template_id": "be111234-2b9f-4e30-b0d6-368c49780faa",
     "internal_name": "Mutant Baker",
     "name": "Mutant Baker",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -36940,13 +37165,15 @@
     "tags": []
   },
   "Void Knight": {
-    "template_id": "ce7b529c-819f-41c8-8fc6-8c58968ab2fe",
+    "template_id": "be75b034-f986-4cdd-b871-5e8258865c29",
     "internal_name": "Void Knight",
     "name": "Void Knight",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -38012,15 +38239,25 @@
     "tags": []
   },
   "Anaconda": {
-    "template_id": "4d3ed706-14c0-4a08-baca-be0b2da4370f",
+    "template_id": "c39c18f9-fe1b-4329-af69-ede09a5da58b",
     "internal_name": "Anaconda",
     "name": "Anaconda",
-    "type": "",
-    "size": "",
+    "type": "Item",
+    "size": "Large",
     "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
+    "heroes": [
+      "Karnok"
+    ],
+    "tiers": [
+      "Gold",
+      "Diamond"
+    ],
+    "tags": [
+      "Friend",
+      "Weapon",
+      "Vehicle",
+      "Aquatic"
+    ]
   },
   "Atlas Stone": {
     "template_id": "c39eed44-0e6a-4720-9d70-817b737449ec",
@@ -38204,13 +38441,15 @@
     ]
   },
   "Mod Squad": {
-    "template_id": "b04cb7b2-76ec-4e3d-b05a-e8eade30ec03",
+    "template_id": "c472b821-e68b-4567-b7e1-3e63f67936b3",
     "internal_name": "Mod Squad",
     "name": "Mod Squad",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -39921,13 +40160,15 @@
     "tags": []
   },
   "Mimic (Silver)": {
-    "template_id": "ffc1e147-c9d2-4b16-a57a-36bdd77b209c",
+    "template_id": "cd2a68cd-bc2f-4a4d-b5c0-27905dcd3011",
     "internal_name": "Mimic (Silver)",
     "name": "Mimic (Silver)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -40466,13 +40707,15 @@
     ]
   },
   "Dragon": {
-    "template_id": "58ba322d-a76c-4106-b91c-37ea207353a0",
+    "template_id": "d0202706-46dc-4c65-bf87-5e4ab63632ec",
     "internal_name": "Dragon",
     "name": "Dragon",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -40928,13 +41171,15 @@
     "tags": []
   },
   "[Jungle Expedition] Greenheart Guardian": {
-    "template_id": "5c185768-3f09-4b9a-87c8-9b8e95d43b5b",
+    "template_id": "d1dc075f-f5d4-4bb7-9655-55591e123941",
     "internal_name": "[Jungle Expedition] Greenheart Guardian",
     "name": "[Jungle Expedition] Greenheart Guardian",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -41315,13 +41560,15 @@
     "tags": []
   },
   "Mad Diver": {
-    "template_id": "40e83ce1-7c54-4038-baf3-096ea6ddb060",
+    "template_id": "d3439b21-bde3-47cc-9f4e-d92987b942aa",
     "internal_name": "Mad Diver",
     "name": "Mad Diver",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -41572,13 +41819,15 @@
     ]
   },
   "Loan Shark": {
-    "template_id": "ecb2508b-07b1-4712-a82a-fb47c433ed6a",
+    "template_id": "d50543f3-132c-4c43-9230-50a5e96087d9",
     "internal_name": "Loan Shark",
     "name": "Loan Shark",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -41992,13 +42241,15 @@
     "tags": []
   },
   "Weapons Platform": {
-    "template_id": "6a6fffdc-100a-436e-823c-77e712a71d57",
+    "template_id": "d63f985a-2960-408e-97ea-f023d4afd440",
     "internal_name": "Weapons Platform",
     "name": "Weapons Platform",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -42651,13 +42902,15 @@
     ]
   },
   "Annex Trooper": {
-    "template_id": "d64499b5-a27c-4fb8-bc7d-28a2e091b929",
+    "template_id": "d9e56b4c-8ad2-465d-b44c-45a7f2562bde",
     "internal_name": "Annex Trooper",
     "name": "Annex Trooper",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -43266,13 +43519,15 @@
     "tags": []
   },
   "Grandfather Klok": {
-    "template_id": "e22fee79-eee2-43ad-abce-ad974513745c",
+    "template_id": "de126a7a-a0bc-4a6f-96f0-442920104fcf",
     "internal_name": "Grandfather Klok",
     "name": "Grandfather Klok",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -43620,15 +43875,24 @@
     "tags": []
   },
   "Wild Boar": {
-    "template_id": "5d779101-3fa5-44b7-b885-f8bb9b0f7438",
+    "template_id": "e01ac7ab-1ad5-4235-81b4-44d057878953",
     "internal_name": "Wild Boar",
     "name": "Wild Boar",
-    "type": "",
-    "size": "",
+    "type": "Item",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
+    "heroes": [
+      "Karnok"
+    ],
+    "tiers": [
+      "Silver",
+      "Gold",
+      "Diamond"
+    ],
+    "tags": [
+      "Weapon",
+      "Friend"
+    ]
   },
   "Ulu Knife": {
     "template_id": "e01e1043-3417-40f6-953e-d6a7357f2168",
@@ -44366,13 +44630,15 @@
     ]
   },
   "Awakened Primordial": {
-    "template_id": "53b1db70-75b2-4d5e-a98c-b558fe9040af",
+    "template_id": "e51634b6-ce99-4038-97e4-b9d86bdddae0",
     "internal_name": "Awakened Primordial",
     "name": "Awakened Primordial",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -44486,13 +44752,15 @@
     ]
   },
   "Capital Punisher": {
-    "template_id": "91542365-a790-4345-81f6-78a20e8a50e9",
+    "template_id": "e5e65711-035e-4e95-9017-4110aad06f9a",
     "internal_name": "Capital Punisher",
     "name": "Capital Punisher",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -45058,24 +45326,28 @@
     "tags": []
   },
   "Sandwich Artist": {
-    "template_id": "58ba1384-5aee-4cb6-b009-6e4c96c14e69",
+    "template_id": "e8782aea-3511-4a9d-98d4-e25c62120547",
     "internal_name": "Sandwich Artist",
     "name": "Sandwich Artist",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
   "Castaway Corsair": {
-    "template_id": "436bdf36-22ac-4736-a0ad-fa3a4711dcba",
+    "template_id": "e890b42d-43d7-4c4f-a03b-bef8f9d2e23d",
     "internal_name": "Castaway Corsair",
     "name": "Castaway Corsair",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -45132,13 +45404,15 @@
     "tags": []
   },
   "[Jungle Expedition] Caltrops Monster (Toxic)": {
-    "template_id": "2952299d-b7f3-45d4-a1ea-ad248b883f90",
+    "template_id": "e915e6f0-93c1-46cc-a546-3867f192bb17",
     "internal_name": "[Jungle Expedition] Caltrops Monster (Toxic)",
     "name": "[Jungle Expedition] Caltrops Monster (Toxic)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -45269,13 +45543,15 @@
     "tags": []
   },
   "Mimic (Gold)": {
-    "template_id": "d983bc94-56b1-4069-9668-0e0ce4ee5533",
+    "template_id": "ea7cb329-3bb5-4f5c-bbb0-a29135d7aade",
     "internal_name": "Mimic (Gold)",
     "name": "Mimic (Gold)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -47381,13 +47657,15 @@
     ]
   },
   "Cloudtop Admiral": {
-    "template_id": "db1773e8-40a2-42ac-8ec3-2a9b7777fc17",
+    "template_id": "f4bc9c3d-ce22-4fd8-9b7f-27214fed9f1d",
     "internal_name": "Cloudtop Admiral",
     "name": "Cloudtop Admiral",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -47902,13 +48180,15 @@
     ]
   },
   "Ghost Pepper": {
-    "template_id": "8cda08b2-06db-49c1-8a06-80baecee024f",
+    "template_id": "f79e72dc-7f9b-4e7e-b14e-d4896fcf004f",
     "internal_name": "Ghost Pepper",
     "name": "Ghost Pepper",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -48307,13 +48587,15 @@
     "tags": []
   },
   "Sergeant Suds": {
-    "template_id": "e27b5f5f-2b71-42c5-a839-37e0aca0a8a5",
+    "template_id": "f9e17ce4-c82d-44c2-8406-ad33277a3b1c",
     "internal_name": "Sergeant Suds",
     "name": "Sergeant Suds",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -48466,13 +48748,15 @@
     "tags": []
   },
   "Awakened District": {
-    "template_id": "8cf3c8cc-2d9e-4f10-b133-711e0fec7039",
+    "template_id": "fb2e242e-daf3-4771-bede-21b3adf03739",
     "internal_name": "Awakened District",
     "name": "Awakened District",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -48768,13 +49052,15 @@
     ]
   },
   "Foundation Revenant": {
-    "template_id": "2d7806a6-f674-4d5c-a1fd-655af9ba90e2",
+    "template_id": "fc3dee8e-aef5-41c9-95a8-d91ad54adede",
     "internal_name": "Foundation Revenant",
     "name": "Foundation Revenant",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -48817,13 +49103,15 @@
     ]
   },
   "Lord of the Wastes": {
-    "template_id": "16038f84-3cec-4ccd-b58b-2ce974442142",
+    "template_id": "fc59e9b3-88be-450c-b2dc-65d58a33d1d0",
     "internal_name": "Lord of the Wastes",
     "name": "Lord of the Wastes",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -49108,13 +49396,15 @@
     ]
   },
   "Test Subject Alpha (Monster)": {
-    "template_id": "2a8318be-a86f-45bd-9944-dbad6eee2ab6",
+    "template_id": "fd862d85-66cd-431f-a85a-07742cbc2e1b",
     "internal_name": "Test Subject Alpha (Monster)",
     "name": "Test Subject Alpha (Monster)",
-    "type": "",
-    "size": "",
+    "type": "CombatEncounter",
+    "size": "Medium",
     "hero": "",
-    "heroes": [],
+    "heroes": [
+      "Common"
+    ],
     "tiers": [],
     "tags": []
   },
@@ -49527,479 +49817,6 @@
       "Gold",
       "Diamond"
     ],
-    "tags": []
-  },
-  "Flame Juggler": {
-    "template_id": "04747408-de0e-4944-b79d-23ca41008619",
-    "internal_name": "Flame Juggler",
-    "name": "Flame Juggler",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_47": {
-    "template_id": "0af10a6e-4ea8-4f76-b3f7-c0364ce6d42b",
-    "internal_name": "Monster_Battle_Player_Template_47",
-    "name": "Monster_Battle_Player_Template_47",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Wandering Shoal": {
-    "template_id": "1177568a-757f-469f-9438-8f3bfeacd93f",
-    "internal_name": "Wandering Shoal",
-    "name": "Wandering Shoal",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Gorgon Noble": {
-    "template_id": "20061be9-0823-41c8-afae-60f49073058f",
-    "internal_name": "Gorgon Noble",
-    "name": "Gorgon Noble",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Treasure Turtle": {
-    "template_id": "23274e3a-c38d-4aff-92b6-599103256cee",
-    "internal_name": "Treasure Turtle",
-    "name": "Treasure Turtle",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Coconut Crab Monster": {
-    "template_id": "2e9ed78c-6070-4802-9e98-e1090fe5bd78",
-    "internal_name": "Coconut Crab Monster",
-    "name": "Coconut Crab Monster",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_37": {
-    "template_id": "3a2f9a4b-f573-46d4-a2ed-1ed0088da55b",
-    "internal_name": "Monster_Battle_Player_Template_37",
-    "name": "Monster_Battle_Player_Template_37",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Infernal Envoy": {
-    "template_id": "3f3d11c5-b943-45d1-80b3-a567130708f0",
-    "internal_name": "Infernal Envoy",
-    "name": "Infernal Envoy",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_48": {
-    "template_id": "479ad0ec-51a9-4d26-ba63-8062d3814619",
-    "internal_name": "Monster_Battle_Player_Template_48",
-    "name": "Monster_Battle_Player_Template_48",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Eccentric Etherwright": {
-    "template_id": "4c1a67f6-f9b4-4a46-8481-d252a24544e7",
-    "internal_name": "Eccentric Etherwright",
-    "name": "Eccentric Etherwright",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Eight Arm Davvy": {
-    "template_id": "50a31ea0-ed74-484a-b04b-30f6fe273958",
-    "internal_name": "Eight Arm Davvy",
-    "name": "Eight Arm Davvy",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Infernal": {
-    "template_id": "54030dd4-8051-4c21-abcd-9205df585ea5",
-    "internal_name": "Infernal",
-    "name": "Infernal",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_32": {
-    "template_id": "55823d26-5fa0-46ca-9d3d-50bbbff5068b",
-    "internal_name": "Monster_Battle_Player_Template_32",
-    "name": "Monster_Battle_Player_Template_32",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_36": {
-    "template_id": "55902c8f-01af-4234-bc56-852113c85ac9",
-    "internal_name": "Monster_Battle_Player_Template_36",
-    "name": "Monster_Battle_Player_Template_36",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Coconut Crab 2": {
-    "template_id": "709e1dce-7e91-4612-b010-d107a6800158",
-    "internal_name": "Coconut Crab 2",
-    "name": "Coconut Crab 2",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_40": {
-    "template_id": "70eaf194-d60a-4605-aac2-41f84ea84c46",
-    "internal_name": "Monster_Battle_Player_Template_40",
-    "name": "Monster_Battle_Player_Template_40",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "[DEBUG] Design Testing Monster": {
-    "template_id": "7a965849-4a02-4635-a3f0-476b4a7ea465",
-    "internal_name": "[DEBUG] Design Testing Monster",
-    "name": "[DEBUG] Design Testing Monster",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_39": {
-    "template_id": "80a6cd15-2213-493f-904f-fb6ce7c60270",
-    "internal_name": "Monster_Battle_Player_Template_39",
-    "name": "Monster_Battle_Player_Template_39",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_35": {
-    "template_id": "867110c7-92f5-49d9-a074-2d687548e47e",
-    "internal_name": "Monster_Battle_Player_Template_35",
-    "name": "Monster_Battle_Player_Template_35",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_38": {
-    "template_id": "8e823884-a27d-46cd-bddc-9815a224aae4",
-    "internal_name": "Monster_Battle_Player_Template_38",
-    "name": "Monster_Battle_Player_Template_38",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_34": {
-    "template_id": "8ef44226-7c66-417e-9f31-4cc636a68866",
-    "internal_name": "Monster_Battle_Player_Template_34",
-    "name": "Monster_Battle_Player_Template_34",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Covetous Thief Monster": {
-    "template_id": "924c56d7-1a5e-4e57-a6b2-bb0c2362980e",
-    "internal_name": "Covetous Thief Monster",
-    "name": "Covetous Thief Monster",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Preening Duelist Monster": {
-    "template_id": "a0b78419-e252-4bdc-8861-4325ecbeadd0",
-    "internal_name": "Preening Duelist Monster",
-    "name": "Preening Duelist Monster",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "[MONSTER LOADOUT TEMPLATE]": {
-    "template_id": "a14373f5-e18f-44df-b988-54151d595af0",
-    "internal_name": "[MONSTER LOADOUT TEMPLATE]",
-    "name": "[MONSTER LOADOUT TEMPLATE]",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Skill Board Test Monster": {
-    "template_id": "a6d543e2-e4fc-4e7d-a2b3-998ee6ef1a50",
-    "internal_name": "Skill Board Test Monster",
-    "name": "Skill Board Test Monster",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_46": {
-    "template_id": "b236a2b6-3bbb-4f3e-b505-ba67605312de",
-    "internal_name": "Monster_Battle_Player_Template_46",
-    "name": "Monster_Battle_Player_Template_46",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_33": {
-    "template_id": "b41bd40f-c380-4342-bfa2-3dbf772d956d",
-    "internal_name": "Monster_Battle_Player_Template_33",
-    "name": "Monster_Battle_Player_Template_33",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_43": {
-    "template_id": "b5409ad0-edb2-49eb-8dee-6d4ec238e10e",
-    "internal_name": "Monster_Battle_Player_Template_43",
-    "name": "Monster_Battle_Player_Template_43",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Rogue Scrapper": {
-    "template_id": "b6ca5c91-632d-4093-87f9-cbd0d649740e",
-    "internal_name": "Rogue Scrapper",
-    "name": "Rogue Scrapper",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Mimic (OLD?)": {
-    "template_id": "b88974f2-e953-4c66-a231-7337fd409c53",
-    "internal_name": "Mimic (OLD?)",
-    "name": "Mimic (OLD?)",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Ferros Khan": {
-    "template_id": "c2fd54df-9cd2-4f61-ae6e-9b6c8cf87785",
-    "internal_name": "Ferros Khan",
-    "name": "Ferros Khan",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Aleppa": {
-    "template_id": "ccdb8409-bef2-4db6-9ad8-d18ad5768eae",
-    "internal_name": "Aleppa",
-    "name": "Aleppa",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Monster_Battle_Player_Template_45": {
-    "template_id": "d2fdf346-78ae-4694-8c9d-45285f09d408",
-    "internal_name": "Monster_Battle_Player_Template_45",
-    "name": "Monster_Battle_Player_Template_45",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "QA Test Radiant (Greg)": {
-    "template_id": "db438675-632e-449c-8c65-bd3e8c33d1ee",
-    "internal_name": "QA Test Radiant (Greg)",
-    "name": "QA Test Radiant (Greg)",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Giant Mosquito Monster": {
-    "template_id": "dd985314-939f-4388-86dc-50ef8e7c25b7",
-    "internal_name": "Giant Mosquito Monster",
-    "name": "Giant Mosquito Monster",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Oasis Guardian": {
-    "template_id": "e18b8358-920d-48d7-b90c-37e455135991",
-    "internal_name": "Oasis Guardian",
-    "name": "Oasis Guardian",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Art Test Monster": {
-    "template_id": "e217df23-3730-40d7-9b47-30d62f8a49f6",
-    "internal_name": "Art Test Monster",
-    "name": "Art Test Monster",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Cosmic Roc": {
-    "template_id": "e38c6e90-e0b3-495f-9d18-9facf49a336f",
-    "internal_name": "Cosmic Roc",
-    "name": "Cosmic Roc",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Calico (monster)": {
-    "template_id": "e3b97056-4bbb-4904-a90d-5708b35c05ea",
-    "internal_name": "Calico (monster)",
-    "name": "Calico (monster)",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Frost Street Challenger": {
-    "template_id": "e6782454-5c72-47f3-ac43-140f0cc7eb8f",
-    "internal_name": "Frost Street Challenger",
-    "name": "Frost Street Challenger",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Sparring Partner": {
-    "template_id": "e98f8212-6dc2-463d-87cc-9d407c60c50d",
-    "internal_name": "Sparring Partner",
-    "name": "Sparring Partner",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Infernal Frigate": {
-    "template_id": "f8cf1723-aa0c-4019-8c59-842cecda1c93",
-    "internal_name": "Infernal Frigate",
-    "name": "Infernal Frigate",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
-    "tags": []
-  },
-  "Kyver Drone Monster": {
-    "template_id": "fc5aa4c0-8d87-457b-bc3c-2ebf0b07d12d",
-    "internal_name": "Kyver Drone Monster",
-    "name": "Kyver Drone Monster",
-    "type": "",
-    "size": "",
-    "hero": "",
-    "heroes": [],
-    "tiers": [],
     "tags": []
   }
 }

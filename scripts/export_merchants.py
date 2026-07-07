@@ -1,8 +1,8 @@
 """导出商人规则 — 两分类(通用/专属)"""
 import sqlite3, os, json
 
-DIR = os.path.dirname(os.path.abspath(__file__))
-trans_path = os.path.join(DIR, 'translations_zh_cn.json')
+DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+trans_path = os.path.join(DIR, 'data', 'translations_zh_cn.json')
 trans = {}
 if os.path.exists(trans_path):
     with open(trans_path, 'r', encoding='utf-8') as f:

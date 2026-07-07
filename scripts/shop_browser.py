@@ -9,7 +9,7 @@ import tkinter as tk
 from pypinyin import lazy_pinyin
 from tkinter import ttk
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 
 # ─── 英雄配置 ───
@@ -78,6 +78,42 @@ def load_data():
         filtered[k] = v
     return merchants_raw, filtered, translations
 
+# ─── 天数 & 等级数据 ───
+def load_tier_data():
+    """加载物品等级随天数分布"""
+    analysis = load_json("game_data_analysis.json")
+    raw = analysis.get("item_skill_tier_by_day", {})
+    result = {}
+    for k, v in raw.items():
+        result[int(k)] = v
+    return result
+
+def get_available_tiers(day, tier_probs):
+    """返回当天概率>0的等级集合"""
+    keys = sorted(tier_probs.keys())
+    if not keys:
+        return set()
+    best_key = keys[0]
+    for k in keys:
+        if k <= day:
+            best_key = k
+        else:
+            break
+    prob = tier_probs.get(best_key, {})
+    return {t for t, p in prob.items() if p > 0}
+
+def card_available_today(card, available_tiers):
+    """检查物品在当前天数是否至少有一个等级可用"""
+    card_tiers = set(card.get("tiers", []) or [])
+    card_tiers.discard("Legendary")
+    return bool(card_tiers & available_tiers)
+
+def blend_alpha(fg_hex, bg_hex="#1e1e32", alpha=0.5):
+    """将前景色与背景色混合，模拟50%透明度"""
+    fg_r, fg_g, fg_b = int(fg_hex[1:3], 16), int(fg_hex[3:5], 16), int(fg_hex[5:7], 16)
+    bg_r, bg_g, bg_b = int(bg_hex[1:3], 16), int(bg_hex[3:5], 16), int(bg_hex[5:7], 16)
+    return f"#{int(fg_r*alpha+bg_r*(1-alpha)):02x}{int(fg_g*alpha+bg_g*(1-alpha)):02x}{int(fg_b*alpha+bg_b*(1-alpha)):02x}"
+
 # ─── 商店物品池构建 (复刻 RateShop 逻辑) ───
 def card_matches_tags(card_tags, card_desc, merchant_tags):
     """复刻 CardMatchesMerchantTags（修复 Health 误匹配 Heal）"""
@@ -116,7 +152,7 @@ def has_exclude_tag(card_tags, exclude_tags):
             return True
     return False
 
-def build_shop_pool(hero, merchant, cards):
+def build_shop_pool(hero, merchant, cards, available_tiers=None):
     pool = []
     merchant_heroes = [h.lower() for h in merchant.get("heroes", [])]
     cross_hero = merchant.get("cross_hero", False)
@@ -204,11 +240,38 @@ def build_shop_pool(hero, merchant, cards):
             if has_exclude_tag(all_tags, exclude_tags):
                 continue
 
+        # 天数等级过滤：物品至少有一个等级在当天可用
+        if available_tiers is not None:
+            card_tiers = set(card.get("tiers", []) or [])
+            card_tiers.discard("Legendary")
+            if not (card_tiers & available_tiers):
+                continue
+            # 附加上今天可用的等级列表，供 UI 显示
+            card["_available_tiers_today"] = sorted(card_tiers & available_tiers)
+
         pool.append(card)
     return pool
 # ─── 翻译 ───
 def tr(text, translations):
-    return translations.get(text, text)
+    result = translations.get(text)
+    if result is not None and result != text:
+        return result
+    # 尝试 (Merchant) 后缀
+    result = translations.get(f"{text} (Merchant)")
+    if result is not None:
+        return result
+    return text
+
+def load_builds():
+    """加载社区阵容数据"""
+    path = os.path.join(DATA_DIR, "community_builds.json")
+    if not os.path.exists(path):
+        return []
+    with open(path, "r", encoding="utf-8") as f:
+        raw = json.load(f)
+    if isinstance(raw, dict):
+        return list(raw.values())
+    return raw
 
 # ─── GUI ───
 class ShopBrowser:
@@ -220,15 +283,71 @@ class ShopBrowser:
 
         # 加载数据
         self.merchants, self.cards, self.translations = load_data()
+        self.tier_probs = load_tier_data()
 
         # 状态
         self.selected_hero = None     # None = 全部
         self.selected_merchant = None
         self.pool = []
+        self.current_day = 1
+        self.available_tiers = get_available_tiers(1, self.tier_probs)
+        self.build_annotations = {}   # {card_name_lower: role}
 
-        self.all_heroes = HEROES  # 按固定顺序: VAN PYG DOO MAK STE JUL KAR
+        self.all_heroes = HEROES
+
+        # 预计算构建索引
+        self._precompute_build_index()
 
         self._build_ui()
+
+    def _precompute_build_index(self):
+        """预计算构建索引: (hero_lower, day) -> {card_name_lower: role}"""
+        builds = load_builds()
+        index = {}
+        for b in builds:
+            hero = b.get("hero", "").lower()
+            if not hero:
+                continue
+            dr = b.get("day_range", [])
+            if not dr or len(dr) < 1:
+                continue
+            start_day = int(dr[0]) if dr[0] is not None else 1
+            end_day = int(dr[1]) if len(dr) > 1 and dr[1] is not None else 20
+            for day in range(start_day, end_day + 1):
+                key = (hero, day)
+                if key not in index:
+                    index[key] = {}
+                for card_name in b.get("core_cards", []):
+                    cn = card_name.lower()
+                    if cn not in index[key] or index[key][cn] != "core":
+                        index[key][cn] = "core"
+                for card_name in b.get("transition_cards", []):
+                    cn = card_name.lower()
+                    if cn not in index[key]:
+                        index[key][cn] = "transition"
+                for card_name in b.get("optional_cards", []):
+                    cn = card_name.lower()
+                    if cn not in index[key]:
+                        index[key][cn] = "optional"
+        self.build_index = index
+
+    def _get_build_annotations(self):
+        """获取当前英雄+天数的构建标注"""
+        if not self.selected_hero:
+            return {}
+        key = (self.selected_hero.lower(), self.current_day)
+        return self.build_index.get(key, {})
+
+    def _on_day_change(self, val):
+        self.current_day = int(float(val))
+        self.available_tiers = get_available_tiers(self.current_day, self.tier_probs)
+        self.build_annotations = self._get_build_annotations()
+        # 更新可用等级标签
+        TIER_ABB = {"Bronze": "B", "Silver": "S", "Gold": "G", "Diamond": "D"}
+        tiers_str = "/".join(TIER_ABB.get(t, t[0]) for t in sorted(self.available_tiers))
+        self.tier_info_label.configure(text=f"可用: {tiers_str}")
+        self.day_label.configure(text=f"Day {self.current_day}")
+        self._update_items()
 
     def _build_ui(self):
         # ── 主框架 ──
@@ -266,6 +385,26 @@ class ShopBrowser:
                             command=lambda hero=h: self._select_hero(hero))
             btn.pack(side=tk.LEFT, padx=2)
             self.hero_btns[h] = btn
+
+        # ── 天数选择 ──
+        day_frame = tk.Frame(main, bg="#1a1a2e")
+        day_frame.pack(fill=tk.X, pady=(4, 2))
+        tk.Label(day_frame, text="天数:", font=("微软雅黑", 11),
+                 fg="#aaaaaa", bg="#1a1a2e").pack(side=tk.LEFT, padx=(0, 8))
+        self.day_var = tk.IntVar(value=1)
+        self.day_scale = tk.Scale(day_frame, from_=1, to=20, orient=tk.HORIZONTAL,
+                                  variable=self.day_var, length=300, resolution=1,
+                                  bg="#2a2a3e", fg="#e0c080", troughcolor="#1a1a2e",
+                                  highlightthickness=0, bd=0, command=self._on_day_change)
+        self.day_scale.pack(side=tk.LEFT)
+        self.day_label = tk.Label(day_frame, text="Day 1", font=("微软雅黑", 11, "bold"),
+                                  fg="#e0c080", bg="#1a1a2e")
+        self.day_label.pack(side=tk.LEFT, padx=(10, 20))
+        TIER_ABB = {"Bronze": "B", "Silver": "S", "Gold": "G", "Diamond": "D"}
+        tiers_str = "/".join(TIER_ABB.get(t, t[0]) for t in sorted(self.available_tiers))
+        self.tier_info_label = tk.Label(day_frame, text=f"可用: {tiers_str}",
+                                        font=("微软雅黑", 9), fg="#808080", bg="#1a1a2e")
+        self.tier_info_label.pack(side=tk.LEFT)
 
         # ── 分隔线 ──
         ttk.Separator(main, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=4)
@@ -355,6 +494,9 @@ class ShopBrowser:
         else:
             none_btn.configure(bg="#555555", relief=tk.FLAT)
 
+        # 更新构建标注
+        self.build_annotations = self._get_build_annotations()
+
         # 更新商店列表（内部会保留当前选中）
         self.selected_merchant = None
         self._update_shop_list()
@@ -421,7 +563,7 @@ class ShopBrowser:
         if merchant:
             for h in self.all_heroes:
                 if h in self.hero_btns:
-                    p = build_shop_pool(h, merchant, self.cards)
+                    p = build_shop_pool(h, merchant, self.cards, self.available_tiers)
                     clr = HERO_COLORS.get(h, "#888888") if len(p) > 0 else "#444444"
                     self.hero_btns[h].configure(fg=clr)
         else:
@@ -434,7 +576,7 @@ class ShopBrowser:
             self.total_label.configure(text="总计: 0 件")
             return
 
-        self.pool = build_shop_pool(hero, merchant, self.cards)
+        self.pool = build_shop_pool(hero, merchant, self.cards, self.available_tiers)
         self.total_label.configure(text=f"总计: {len(self.pool)} 件")
 
         if not self.pool:

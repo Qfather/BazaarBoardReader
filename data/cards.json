@@ -749,13 +749,17 @@
     },
     "Haunted Kimono": {
       "internal_name": "Haunted Kimono",
-      "display_name": "Haunted Kimono",
-      "type": "",
-      "heroes": [],
+      "display_name": "怨念和服",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "hidden_tags": [
+        "DamageReference"
+      ],
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Hunter's Sled": {
@@ -1168,13 +1172,15 @@
     },
     "Tempest Bravo": {
       "internal_name": "Tempest Bravo",
-      "display_name": "Tempest Bravo",
-      "type": "",
-      "heroes": [],
+      "display_name": "焰风勇士",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Meal Prep (Silver) (Level Up)": {
@@ -1532,12 +1538,14 @@
     "Training Dummy": {
       "internal_name": "Training Dummy",
       "display_name": "Training Dummy",
-      "type": "",
-      "heroes": [],
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Pickled Peppers": {
@@ -1817,13 +1825,17 @@
     },
     "Happy Camper": {
       "internal_name": "Happy Camper",
-      "display_name": "Happy Camper",
-      "type": "",
-      "heroes": [],
+      "display_name": "快乐露营者",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "hidden_tags": [
+        "DamageReference"
+      ],
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Furnace (Bronze)": {
@@ -2263,13 +2275,15 @@
     },
     "Bounty Hunters": {
       "internal_name": "Bounty Hunters",
-      "display_name": "Bounty Hunters",
-      "type": "",
-      "heroes": [],
+      "display_name": "赏金猎人",
+      "type": "EventEncounter",
+      "heroes": [
+        "Vanessa"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Make a Wish 3 Day 6 (Wishing Fountain)": {
@@ -3631,13 +3645,15 @@
     },
     "[Crash Site Expedition] Augmented Hellbilly": {
       "internal_name": "[Crash Site Expedition] Augmented Hellbilly",
-      "display_name": "[Crash Site Expedition] Augmented Hellbilly",
-      "type": "",
-      "heroes": [],
+      "display_name": "改造地狱乡巴佬",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Grater": {
@@ -4663,13 +4679,15 @@
     },
     "[Jungle Expedition] Blowguns Monster (Fiery)": {
       "internal_name": "[Jungle Expedition] Blowguns Monster (Fiery)",
-      "display_name": "[Jungle Expedition] Blowguns Monster (Fiery)",
-      "type": "",
-      "heroes": [],
+      "display_name": "吹箭枪陷阱",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Incendiary Rounds": {
@@ -5033,13 +5051,15 @@
     },
     "[Jungle Expedition] Caltrops Monster (Fiery)": {
       "internal_name": "[Jungle Expedition] Caltrops Monster (Fiery)",
-      "display_name": "[Jungle Expedition] Caltrops Monster (Fiery)",
-      "type": "",
-      "heroes": [],
+      "display_name": "铁蒺藜陷阱",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Regeneration Potion": {
@@ -5605,13 +5625,15 @@
     },
     "Mimic (Diamond)": {
       "internal_name": "Mimic (Diamond)",
-      "display_name": "Mimic (Diamond)",
-      "type": "",
-      "heroes": [],
+      "display_name": "拟形怪",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Steam Ladle": {
@@ -6475,13 +6497,17 @@
     },
     "Banannibal": {
       "internal_name": "Banannibal",
-      "display_name": "Banannibal",
-      "type": "",
-      "heroes": [],
+      "display_name": "蕉宝",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "hidden_tags": [
+        "DamageReference"
+      ],
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Frost Totem": {
@@ -6742,13 +6768,15 @@
     },
     "Trash Titan": {
       "internal_name": "Trash Titan",
-      "display_name": "Trash Titan",
-      "type": "",
-      "heroes": [],
+      "display_name": "垃圾泰坦",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Barbed Claws": {
@@ -7363,13 +7391,15 @@
     },
     "Morguloth": {
       "internal_name": "Morguloth",
-      "display_name": "Morguloth",
-      "type": "",
-      "heroes": [],
+      "display_name": "魔古洛斯",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Legendary",
       "tiers": []
     },
     "Make a Wish 3 Day 7 (Wishing Fountain)": {
@@ -7691,13 +7721,15 @@
     },
     "Viper Tyrant": {
       "internal_name": "Viper Tyrant",
-      "display_name": "Viper Tyrant",
-      "type": "",
-      "heroes": [],
+      "display_name": "毒蛇暴君",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Strength Training": {
@@ -7964,13 +7996,15 @@
     },
     "Chilly Charles": {
       "internal_name": "Chilly Charles",
-      "display_name": "Chilly Charles",
-      "type": "",
-      "heroes": [],
+      "display_name": "寒霜查尔斯",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Secret Formula": {
@@ -8289,13 +8323,15 @@
     },
     "Roaming Isle": {
       "internal_name": "Roaming Isle",
-      "display_name": "Roaming Isle",
-      "type": "",
-      "heroes": [],
+      "display_name": "流浪岛屿",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "House Party (Gold)": {
@@ -8387,13 +8423,15 @@
     },
     "Joyful Jack": {
       "internal_name": "Joyful Jack",
-      "display_name": "Joyful Jack",
-      "type": "",
-      "heroes": [],
+      "display_name": "快乐杰克南瓜",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Left-Handed": {
@@ -8447,13 +8485,15 @@
     },
     "Dooltron (Monster)": {
       "internal_name": "Dooltron (Monster)",
-      "display_name": "Dooltron (Monster)",
-      "type": "",
-      "heroes": [],
+      "display_name": "多尔王",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Treasure Location": {
@@ -8514,13 +8554,15 @@
     },
     "Property Baron": {
       "internal_name": "Property Baron",
-      "display_name": "Property Baron",
-      "type": "",
-      "heroes": [],
+      "display_name": "地产大亨",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Golf Clubs": {
@@ -8918,13 +8960,15 @@
     },
     "Rex Spex (Monster)": {
       "internal_name": "Rex Spex (Monster)",
-      "display_name": "Rex Spex (Monster)",
-      "type": "",
-      "heroes": [],
+      "display_name": "机甲暴龙",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Chimeric Egg": {
@@ -9553,13 +9597,15 @@
     },
     "Thug": {
       "internal_name": "Thug",
-      "display_name": "Thug",
-      "type": "",
-      "heroes": [],
+      "display_name": "暴徒",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Frontline Logistics": {
@@ -9647,13 +9693,15 @@
     },
     "Tortuga (Monster)": {
       "internal_name": "Tortuga (Monster)",
-      "display_name": "Tortuga (Monster)",
-      "type": "",
-      "heroes": [],
+      "display_name": "巨龟托图加",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Ask for Help": {
@@ -9699,13 +9747,15 @@
     },
     "Surly Mechanic": {
       "internal_name": "Surly Mechanic",
-      "display_name": "Surly Mechanic",
-      "type": "",
-      "heroes": [],
+      "display_name": "粗鲁机械师",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "The Financial District - Blacksmith Investment - Return Event Small Sale - Collect Earnings": {
@@ -11336,13 +11386,15 @@
     },
     "Elite Duelist": {
       "internal_name": "Elite Duelist",
-      "display_name": "Elite Duelist",
-      "type": "",
-      "heroes": [],
+      "display_name": "精英决斗者",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Candy Stash (Day 4-6)": {
@@ -11798,13 +11850,15 @@
     },
     "Product Demonstrator": {
       "internal_name": "Product Demonstrator",
-      "display_name": "Product Demonstrator",
-      "type": "",
-      "heroes": [],
+      "display_name": "产品演示员",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Death Caps": {
@@ -12170,13 +12224,15 @@
     },
     "[Jungle Expedition] Boulder Monster (Toxic)": {
       "internal_name": "[Jungle Expedition] Boulder Monster (Toxic)",
-      "display_name": "[Jungle Expedition] Boulder Monster (Toxic)",
-      "type": "",
-      "heroes": [],
+      "display_name": "滚石陷阱",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Gain 3 Toughness Statia Free": {
@@ -12372,13 +12428,15 @@
     },
     "Burninator Bot": {
       "internal_name": "Burninator Bot",
-      "display_name": "Burninator Bot",
-      "type": "",
-      "heroes": [],
+      "display_name": "焚毁机器人",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Cabin Fishing (Gold)": {
@@ -12616,13 +12674,15 @@
     },
     "Hoverbike Hooligan": {
       "internal_name": "Hoverbike Hooligan",
-      "display_name": "Hoverbike Hooligan",
-      "type": "",
-      "heroes": [],
+      "display_name": "飞车暴徒",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Rageforge (Silver) (Level Up)": {
@@ -13024,13 +13084,15 @@
     },
     "[Jungle Expedition] Boulder Monster (Fiery)": {
       "internal_name": "[Jungle Expedition] Boulder Monster (Fiery)",
-      "display_name": "[Jungle Expedition] Boulder Monster (Fiery)",
-      "type": "",
-      "heroes": [],
+      "display_name": "滚石陷阱",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Luxury Tents": {
@@ -13347,13 +13409,15 @@
     },
     "Infernal Dreadnought": {
       "internal_name": "Infernal Dreadnought",
-      "display_name": "Infernal Dreadnought",
-      "type": "",
-      "heroes": [],
+      "display_name": "地狱空艇",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Drone Crusher": {
@@ -13464,12 +13528,14 @@
     "PVE_Stelle_D6_001": {
       "internal_name": "PVE_Stelle_D6_001",
       "display_name": "PVE_Stelle_D6_001",
-      "type": "",
-      "heroes": [],
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Double Barrel": {
@@ -13967,13 +14033,15 @@
     },
     "Terrorform": {
       "internal_name": "Terrorform",
-      "display_name": "Terrorform",
-      "type": "",
-      "heroes": [],
+      "display_name": "恐怖弗尔姆",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Colt's Package": {
@@ -14440,13 +14508,15 @@
     },
     "Street Gamer": {
       "internal_name": "Street Gamer",
-      "display_name": "Street Gamer",
-      "type": "",
-      "heroes": [],
+      "display_name": "街头玩家",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "[Finn's Big Bite] Farm Fresh Ingredients": {
@@ -14616,13 +14686,15 @@
     },
     "Ventriloquist": {
       "internal_name": "Ventriloquist",
-      "display_name": "Ventriloquist",
-      "type": "",
-      "heroes": [],
+      "display_name": "腹语者",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "The Tester": {
@@ -15468,24 +15540,30 @@
     },
     "Pyro": {
       "internal_name": "Pyro",
-      "display_name": "Pyro",
-      "type": "",
-      "heroes": [],
+      "display_name": "火灵",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "hidden_tags": [
+        "DamageReference"
+      ],
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Frost Street Champion": {
       "internal_name": "Frost Street Champion",
-      "display_name": "Frost Street Champion",
-      "type": "",
-      "heroes": [],
+      "display_name": "霜猴霸王",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Rewards Card": {
@@ -15911,13 +15989,15 @@
     },
     "Sabretooth": {
       "internal_name": "Sabretooth",
-      "display_name": "Sabretooth",
-      "type": "",
-      "heroes": [],
+      "display_name": "剑齿虎",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Murkwood Bayou (Level Up)": {
@@ -16236,13 +16316,15 @@
     },
     "Hulking Experiment": {
       "internal_name": "Hulking Experiment",
-      "display_name": "Hulking Experiment",
-      "type": "",
-      "heroes": [],
+      "display_name": "庞大实验体",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Diamond item (Level Up)": {
@@ -16487,13 +16569,15 @@
     },
     "Boilerroom Brawler": {
       "internal_name": "Boilerroom Brawler",
-      "display_name": "Boilerroom Brawler",
-      "type": "",
-      "heroes": [],
+      "display_name": "锅炉斗士",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Toy Training": {
@@ -16546,13 +16630,15 @@
     },
     "Not a Spy": {
       "internal_name": "Not a Spy",
-      "display_name": "Not a Spy",
-      "type": "",
-      "heroes": [],
+      "display_name": "绝非间谍",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Dingle Ingle": {
@@ -16728,13 +16814,15 @@
     },
     "Stew": {
       "internal_name": "Stew",
-      "display_name": "Stew",
-      "type": "",
-      "heroes": [],
+      "display_name": "老炖",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Thrown Net": {
@@ -17153,13 +17241,15 @@
     },
     "Boss Harrow": {
       "internal_name": "Boss Harrow",
-      "display_name": "Boss Harrow",
-      "type": "",
-      "heroes": [],
+      "display_name": "哈洛老大",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "[DEBUG] Transform leftmost SocketEffect": {
@@ -17177,24 +17267,28 @@
     },
     "[Jungle Expedition] Mythkeeper": {
       "internal_name": "[Jungle Expedition] Mythkeeper",
-      "display_name": "[Jungle Expedition] Mythkeeper",
-      "type": "",
-      "heroes": [],
+      "display_name": "神话典守",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Lost Hero": {
       "internal_name": "Lost Hero",
-      "display_name": "Lost Hero",
-      "type": "",
-      "heroes": [],
+      "display_name": "迷失英雄",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Toolbox": {
@@ -17539,13 +17633,15 @@
     },
     "[Crash Site Expedition] The Vessel": {
       "internal_name": "[Crash Site Expedition] The Vessel",
-      "display_name": "[Crash Site Expedition] The Vessel",
-      "type": "",
-      "heroes": [],
+      "display_name": "载体",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Oblivion Vortex": {
@@ -18168,13 +18264,15 @@
     },
     "Prince Marianas": {
       "internal_name": "Prince Marianas",
-      "display_name": "Prince Marianas",
-      "type": "",
-      "heroes": [],
+      "display_name": "马力亚纳斯王子",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Ande's Package": {
@@ -18760,13 +18858,15 @@
     },
     "Kyver Commander": {
       "internal_name": "Kyver Commander",
-      "display_name": "Kyver Commander",
-      "type": "",
-      "heroes": [],
+      "display_name": "凯沃斯指挥官",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Ship [OnBuy] effectdata 2": {
@@ -19271,13 +19371,15 @@
     },
     "Void Golem": {
       "internal_name": "Void Golem",
-      "display_name": "Void Golem",
-      "type": "",
-      "heroes": [],
+      "display_name": "虚空魔像",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Legendary",
       "tiers": []
     },
     "Burst of Rage": {
@@ -19725,13 +19827,15 @@
     },
     "Volkas Enforcer": {
       "internal_name": "Volkas Enforcer",
-      "display_name": "Volkas Enforcer",
-      "type": "",
-      "heroes": [],
+      "display_name": "沃卡斯打手",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "[Jungle Expedition] Temple Reliquary": {
@@ -20007,13 +20111,15 @@
     },
     "Harkuvian Rocket Trooper": {
       "internal_name": "Harkuvian Rocket Trooper",
-      "display_name": "Harkuvian Rocket Trooper",
-      "type": "",
-      "heroes": [],
+      "display_name": "哈库维火箭兵",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Tomb of the Ancients": {
@@ -21098,12 +21204,14 @@
     "[Community Team] Training Dummy": {
       "internal_name": "[Community Team] Training Dummy",
       "display_name": "[Community Team] Training Dummy",
-      "type": "",
-      "heroes": [],
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Cake Batter": {
@@ -21520,13 +21628,15 @@
     },
     "Radiant Corsair": {
       "internal_name": "Radiant Corsair",
-      "display_name": "Radiant Corsair",
-      "type": "",
-      "heroes": [],
+      "display_name": "辉耀海盗",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Legendary",
       "tiers": []
     },
     "Repeater": {
@@ -21666,13 +21776,15 @@
     },
     "Bloodreef Raider": {
       "internal_name": "Bloodreef Raider",
-      "display_name": "Bloodreef Raider",
-      "type": "",
-      "heroes": [],
+      "display_name": "血礁奇兵",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Wish for Wealth (3rd Wish)": {
@@ -22699,13 +22811,15 @@
     },
     "Overwhelmed Student": {
       "internal_name": "Overwhelmed Student",
-      "display_name": "Overwhelmed Student",
-      "type": "",
-      "heroes": [],
+      "display_name": "不堪重负的学生",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Depth Charge": {
@@ -23003,13 +23117,15 @@
     },
     "Outlands Terror (Monster)": {
       "internal_name": "Outlands Terror (Monster)",
-      "display_name": "Outlands Terror (Monster)",
-      "type": "",
-      "heroes": [],
+      "display_name": "荒原恐兽",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "[DEBUG] Merchant All Item Cost increase": {
@@ -23429,13 +23545,15 @@
     },
     "Lich": {
       "internal_name": "Lich",
-      "display_name": "Lich",
-      "type": "",
-      "heroes": [],
+      "display_name": "巫妖",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Legendary",
       "tiers": []
     },
     "Dooley's Crib (Start Run)": {
@@ -23706,12 +23824,14 @@
     "PVE_Karnok_D6_001": {
       "internal_name": "PVE_Karnok_D6_001",
       "display_name": "PVE_Karnok_D6_001",
-      "type": "",
-      "heroes": [],
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Long Strides": {
@@ -23942,13 +24062,15 @@
     },
     "Overbearing Teacher": {
       "internal_name": "Overbearing Teacher",
-      "display_name": "Overbearing Teacher",
-      "type": "",
-      "heroes": [],
+      "display_name": "专横教师",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Laurel's Favorite": {
@@ -23998,24 +24120,38 @@
     },
     "Worry Wart": {
       "internal_name": "Worry Wart",
-      "display_name": "Worry Wart",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
+      "display_name": "忧虑疣蛙",
+      "type": "Item",
+      "heroes": [
+        "Karnok"
+      ],
+      "tags": [
+        "Friend"
+      ],
+      "hidden_tags": [
+        "Poison",
+        "Slow"
+      ],
+      "size": "Medium",
+      "starting_tier": "Bronze",
+      "tiers": [
+        "Bronze",
+        "Silver",
+        "Gold",
+        "Diamond"
+      ]
     },
     "Drone Operator": {
       "internal_name": "Drone Operator",
-      "display_name": "Drone Operator",
-      "type": "",
-      "heroes": [],
+      "display_name": "无人机操作员",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Upgrade an item ($15)": {
@@ -24937,24 +25073,28 @@
     },
     "Mr. Moo": {
       "internal_name": "Mr. Moo",
-      "display_name": "Mr. Moo",
-      "type": "",
-      "heroes": [],
+      "display_name": "黑牛先生",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Zookeeper": {
       "internal_name": "Zookeeper",
-      "display_name": "Zookeeper",
-      "type": "",
-      "heroes": [],
+      "display_name": "动物饲养员",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Regain Resolve: Upgrade 3 items": {
@@ -24972,14 +25112,27 @@
     },
     "Unibou": {
       "internal_name": "Unibou",
-      "display_name": "Unibou",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
+      "display_name": "独角驯",
+      "type": "Item",
+      "heroes": [
+        "Karnok"
+      ],
+      "tags": [
+        "Friend"
+      ],
+      "hidden_tags": [
+        "Shield",
+        "Heal",
+        "RageReference"
+      ],
+      "size": "Medium",
+      "starting_tier": "Bronze",
+      "tiers": [
+        "Bronze",
+        "Silver",
+        "Gold",
+        "Diamond"
+      ]
     },
     "Pyre (Silver)": {
       "internal_name": "Pyre (Silver)",
@@ -25387,24 +25540,28 @@
     },
     "[Jungle Expedition] Blowguns Monster (Toxic)": {
       "internal_name": "[Jungle Expedition] Blowguns Monster (Toxic)",
-      "display_name": "[Jungle Expedition] Blowguns Monster (Toxic)",
-      "type": "",
-      "heroes": [],
+      "display_name": "吹箭枪陷阱",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Bloodreef Captain": {
       "internal_name": "Bloodreef Captain",
-      "display_name": "Bloodreef Captain",
-      "type": "",
-      "heroes": [],
+      "display_name": "血礁船长",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Pyro Gauntlet": {
@@ -25656,13 +25813,15 @@
     },
     "Car Conductor": {
       "internal_name": "Car Conductor",
-      "display_name": "Car Conductor",
-      "type": "",
-      "heroes": [],
+      "display_name": "驾驶督导",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Medicine Cabinet (Bronze)": {
@@ -25729,13 +25888,15 @@
     },
     "[Crash Site Expedition] Conspiracy Theorist": {
       "internal_name": "[Crash Site Expedition] Conspiracy Theorist",
-      "display_name": "[Crash Site Expedition] Conspiracy Theorist",
-      "type": "",
-      "heroes": [],
+      "display_name": "阴谋论者",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "[DEBUG] Enchant Ethereal": {
@@ -25788,13 +25949,15 @@
     },
     "Void Colossus": {
       "internal_name": "Void Colossus",
-      "display_name": "Void Colossus",
-      "type": "",
-      "heroes": [],
+      "display_name": "虚空巨像",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Reflecting Pool": {
@@ -25967,13 +26130,15 @@
     },
     "Dire Inglet": {
       "internal_name": "Dire Inglet",
-      "display_name": "Dire Inglet",
-      "type": "",
-      "heroes": [],
+      "display_name": "英格恐狼",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Vending Machine": {
@@ -26072,13 +26237,15 @@
     },
     "Cloudtop Officer": {
       "internal_name": "Cloudtop Officer",
-      "display_name": "Cloudtop Officer",
-      "type": "",
-      "heroes": [],
+      "display_name": "云顶军官",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Aldric": {
@@ -28973,13 +29140,15 @@
     },
     "Mimic (Bronze)": {
       "internal_name": "Mimic (Bronze)",
-      "display_name": "Mimic (Bronze)",
-      "type": "",
-      "heroes": [],
+      "display_name": "拟形怪",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Piggy Bank": {
@@ -30840,13 +31009,15 @@
     },
     "Dabbling Apprentice": {
       "internal_name": "Dabbling Apprentice",
-      "display_name": "Dabbling Apprentice",
-      "type": "",
-      "heroes": [],
+      "display_name": "初学学徒",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Relay Drone": {
@@ -30975,13 +31146,15 @@
     },
     "Hellbilly": {
       "internal_name": "Hellbilly",
-      "display_name": "Hellbilly",
-      "type": "",
-      "heroes": [],
+      "display_name": "地狱乡巴佬",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Red Button": {
@@ -31181,13 +31354,15 @@
     },
     "Lord Arken": {
       "internal_name": "Lord Arken",
-      "display_name": "Lord Arken",
-      "type": "",
-      "heroes": [],
+      "display_name": "阿肯领主",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Legendary",
       "tiers": []
     },
     "Excavation (Bronze)": {
@@ -31403,13 +31578,15 @@
     },
     "Wildman": {
       "internal_name": "Wildman",
-      "display_name": "Wildman",
-      "type": "",
-      "heroes": [],
+      "display_name": "野人",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Farmer's Market": {
@@ -31708,24 +31885,28 @@
     },
     "Scovyle": {
       "internal_name": "Scovyle",
-      "display_name": "Scovyle",
-      "type": "",
-      "heroes": [],
+      "display_name": "辣火狂徒",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Outlands Dervish": {
       "internal_name": "Outlands Dervish",
-      "display_name": "Outlands Dervish",
-      "type": "",
-      "heroes": [],
+      "display_name": "荒原旋舞者",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Ravenous": {
@@ -31746,13 +31927,15 @@
     },
     "Annexed Army": {
       "internal_name": "Annexed Army",
-      "display_name": "Annexed Army",
-      "type": "",
-      "heroes": [],
+      "display_name": "已被统合的军队",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Vermir (Level Up)": {
@@ -31816,13 +31999,15 @@
     },
     "[Jungle Expedition] Blowguns Monster (Obsidian)": {
       "internal_name": "[Jungle Expedition] Blowguns Monster (Obsidian)",
-      "display_name": "[Jungle Expedition] Blowguns Monster (Obsidian)",
-      "type": "",
-      "heroes": [],
+      "display_name": "吹箭枪陷阱",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Wrecking Ball": {
@@ -31992,13 +32177,15 @@
     },
     "Dr. Vortex": {
       "internal_name": "Dr. Vortex",
-      "display_name": "Dr. Vortex",
-      "type": "",
-      "heroes": [],
+      "display_name": "漩涡博士",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Appraisal (Level Up)": {
@@ -32434,14 +32621,27 @@
     },
     "Wolverine": {
       "internal_name": "Wolverine",
-      "display_name": "Wolverine",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
+      "display_name": "狼獾",
+      "type": "Item",
+      "heroes": [
+        "Karnok"
+      ],
+      "tags": [
+        "Weapon",
+        "Friend"
+      ],
+      "hidden_tags": [
+        "Damage",
+        "Haste",
+        "Crit"
+      ],
+      "size": "Medium",
+      "starting_tier": "Silver",
+      "tiers": [
+        "Silver",
+        "Gold",
+        "Diamond"
+      ]
     },
     "Crusher Claw": {
       "internal_name": "Crusher Claw",
@@ -32492,13 +32692,15 @@
     },
     "Foundation Weeper": {
       "internal_name": "Foundation Weeper",
-      "display_name": "Foundation Weeper",
-      "type": "",
-      "heroes": [],
+      "display_name": "基石泣妖",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Eight Arm Davvy (Monster)": {
@@ -32549,13 +32751,15 @@
     },
     "[Jungle Expedition] Caltrops Monster (Obsidian)": {
       "internal_name": "[Jungle Expedition] Caltrops Monster (Obsidian)",
-      "display_name": "[Jungle Expedition] Caltrops Monster (Obsidian)",
-      "type": "",
-      "heroes": [],
+      "display_name": "铁蒺藜陷阱",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Tool Up (Gold) (Level Up)": {
@@ -32597,13 +32801,15 @@
     },
     "Gibbus": {
       "internal_name": "Gibbus",
-      "display_name": "Gibbus",
-      "type": "",
-      "heroes": [],
+      "display_name": "月之主",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "JayJay - Tutorial Day 2 Hour 2": {
@@ -33502,13 +33708,15 @@
     },
     "Trashtown Mayor": {
       "internal_name": "Trashtown Mayor",
-      "display_name": "Trashtown Mayor",
-      "type": "",
-      "heroes": [],
+      "display_name": "垃圾镇镇长",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Celestial Conduit (Level Up)": {
@@ -34132,13 +34340,15 @@
     },
     "Retiree": {
       "internal_name": "Retiree",
-      "display_name": "Retiree",
-      "type": "",
-      "heroes": [],
+      "display_name": "退休人员",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Circle of Life": {
@@ -34815,13 +35025,15 @@
     },
     "Bouncertron": {
       "internal_name": "Bouncertron",
-      "display_name": "Bouncertron",
-      "type": "",
-      "heroes": [],
+      "display_name": "门卫机甲",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "[Jungle Expedition] Temple Vault (Fiery)": {
@@ -34927,13 +35139,15 @@
     },
     "Foreman": {
       "internal_name": "Foreman",
-      "display_name": "Foreman",
-      "type": "",
-      "heroes": [],
+      "display_name": "领班",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Stand Mixer": {
@@ -35231,13 +35445,15 @@
     },
     "Yerdan": {
       "internal_name": "Yerdan",
-      "display_name": "Yerdan",
-      "type": "",
-      "heroes": [],
+      "display_name": "耶丹",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "[Shrouded Figure] Sacrifice Ancient Locket": {
@@ -35330,12 +35546,14 @@
     "PVE_Jules_D6_001": {
       "internal_name": "PVE_Jules_D6_001",
       "display_name": "PVE_Jules_D6_001",
-      "type": "",
-      "heroes": [],
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Hammock": {
@@ -35465,13 +35683,15 @@
     },
     "[Jungle Expedition] Qomatz": {
       "internal_name": "[Jungle Expedition] Qomatz",
-      "display_name": "[Jungle Expedition] Qomatz",
-      "type": "",
-      "heroes": [],
+      "display_name": "柯玛兹",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "[DEBUG] Enchant Toxic": {
@@ -35984,13 +36204,15 @@
     },
     "Fairy Circle": {
       "internal_name": "Fairy Circle",
-      "display_name": "Fairy Circle",
-      "type": "",
-      "heroes": [],
+      "display_name": "仙女环",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Loaded Fury": {
@@ -36052,13 +36274,15 @@
     },
     "Master Alchemist": {
       "internal_name": "Master Alchemist",
-      "display_name": "Master Alchemist",
-      "type": "",
-      "heroes": [],
+      "display_name": "炼金大师",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Marbles": {
@@ -36336,13 +36560,15 @@
     },
     "Trash Golem": {
       "internal_name": "Trash Golem",
-      "display_name": "Trash Golem",
-      "type": "",
-      "heroes": [],
+      "display_name": "垃圾魔像",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Defender's Toxins": {
@@ -38517,13 +38743,15 @@
     },
     "Byg": {
       "internal_name": "Byg",
-      "display_name": "Byg",
-      "type": "",
-      "heroes": [],
+      "display_name": "拜格",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Legendary",
       "tiers": []
     },
     "Knife Tricks": {
@@ -38824,13 +39052,15 @@
     },
     "Ahexa": {
       "internal_name": "Ahexa",
-      "display_name": "Ahexa",
-      "type": "",
-      "heroes": [],
+      "display_name": "阿海克萨",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Righty Tighty": {
@@ -39129,13 +39359,15 @@
     },
     "[Jungle Expedition] Boulder Monster (Obsidian)": {
       "internal_name": "[Jungle Expedition] Boulder Monster (Obsidian)",
-      "display_name": "[Jungle Expedition] Boulder Monster (Obsidian)",
-      "type": "",
-      "heroes": [],
+      "display_name": "滚石陷阱",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Escort the Convoy (Day 5)": {
@@ -39525,13 +39757,15 @@
     },
     "Viper": {
       "internal_name": "Viper",
-      "display_name": "Viper",
-      "type": "",
-      "heroes": [],
+      "display_name": "毒蛇",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Mysterious Portal": {
@@ -39914,13 +40148,15 @@
     },
     "Boarrior": {
       "internal_name": "Boarrior",
-      "display_name": "Boarrior",
-      "type": "",
-      "heroes": [],
+      "display_name": "蛮猪战士",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Aleppa Tantius": {
@@ -39939,12 +40175,14 @@
     "QA Test Monster": {
       "internal_name": "QA Test Monster",
       "display_name": "QA Test Monster",
-      "type": "",
-      "heroes": [],
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Honey Badger": {
@@ -40246,13 +40484,17 @@
     },
     "Fanged Inglet": {
       "internal_name": "Fanged Inglet",
-      "display_name": "Fanged Inglet",
-      "type": "",
-      "heroes": [],
+      "display_name": "獠牙英格狼",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "hidden_tags": [
+        "DamageReference"
+      ],
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Shrouded Figure - Seek Knowledge - Glimpse of Insight": {
@@ -40405,13 +40647,15 @@
     },
     "Dire Mosquito": {
       "internal_name": "Dire Mosquito",
-      "display_name": "Dire Mosquito",
-      "type": "",
-      "heroes": [],
+      "display_name": "恶蚊",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "[PlayerAttributes] Fights Won": {
@@ -40654,13 +40898,15 @@
     },
     "Mutant Baker": {
       "internal_name": "Mutant Baker",
-      "display_name": "Mutant Baker",
-      "type": "",
-      "heroes": [],
+      "display_name": "变异烘焙师",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Escort the Convoy (Day 3)": {
@@ -40708,13 +40954,15 @@
     },
     "Void Knight": {
       "internal_name": "Void Knight",
-      "display_name": "Void Knight",
-      "type": "",
-      "heroes": [],
+      "display_name": "虚空骑士",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Legendary",
       "tiers": []
     },
     "Food Training": {
@@ -41864,14 +42112,27 @@
     },
     "Anaconda": {
       "internal_name": "Anaconda",
-      "display_name": "Anaconda",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
+      "display_name": "巨蟒",
+      "type": "Item",
+      "heroes": [
+        "Karnok"
+      ],
+      "tags": [
+        "Friend",
+        "Weapon",
+        "Vehicle",
+        "Aquatic"
+      ],
+      "hidden_tags": [
+        "Damage",
+        "RageReference"
+      ],
+      "size": "Large",
+      "starting_tier": "Gold",
+      "tiers": [
+        "Gold",
+        "Diamond"
+      ]
     },
     "Atlas Stone": {
       "internal_name": "Atlas Stone",
@@ -42078,13 +42339,15 @@
     },
     "Mod Squad": {
       "internal_name": "Mod Squad",
-      "display_name": "Mod Squad",
-      "type": "",
-      "heroes": [],
+      "display_name": "改装小队",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Parts Picker": {
@@ -43981,13 +44244,15 @@
     },
     "Mimic (Silver)": {
       "internal_name": "Mimic (Silver)",
-      "display_name": "Mimic (Silver)",
-      "type": "",
-      "heroes": [],
+      "display_name": "拟形怪",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Rune Axe": {
@@ -44582,13 +44847,15 @@
     },
     "Dragon": {
       "internal_name": "Dragon",
-      "display_name": "Dragon",
-      "type": "",
-      "heroes": [],
+      "display_name": "巨龙",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Legendary",
       "tiers": []
     },
     "Improvised Bludgeon": {
@@ -45092,13 +45359,15 @@
     },
     "[Jungle Expedition] Greenheart Guardian": {
       "internal_name": "[Jungle Expedition] Greenheart Guardian",
-      "display_name": "[Jungle Expedition] Greenheart Guardian",
-      "type": "",
-      "heroes": [],
+      "display_name": "碧心守护神",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Machine Learning": {
@@ -45513,13 +45782,15 @@
     },
     "Mad Diver": {
       "internal_name": "Mad Diver",
-      "display_name": "Mad Diver",
-      "type": "",
-      "heroes": [],
+      "display_name": "疯狂潜水员",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Dungeon move forward 1": {
@@ -45797,13 +46068,15 @@
     },
     "Loan Shark": {
       "internal_name": "Loan Shark",
-      "display_name": "Loan Shark",
-      "type": "",
-      "heroes": [],
+      "display_name": "放贷鲨",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Hacksaw": {
@@ -46266,13 +46539,15 @@
     },
     "Weapons Platform": {
       "internal_name": "Weapons Platform",
-      "display_name": "Weapons Platform",
-      "type": "",
-      "heroes": [],
+      "display_name": "武器平台",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Ancient Locket": {
@@ -46995,13 +47270,15 @@
     },
     "Annex Trooper": {
       "internal_name": "Annex Trooper",
-      "display_name": "Annex Trooper",
-      "type": "",
-      "heroes": [],
+      "display_name": "附属部队士兵",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Magnus' Femur": {
@@ -47678,13 +47955,15 @@
     },
     "Grandfather Klok": {
       "internal_name": "Grandfather Klok",
-      "display_name": "Grandfather Klok",
-      "type": "",
-      "heroes": [],
+      "display_name": "发条爷爷",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Kelsa (Level Up)": {
@@ -48081,14 +48360,28 @@
     },
     "Wild Boar": {
       "internal_name": "Wild Boar",
-      "display_name": "Wild Boar",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
+      "display_name": "野猪",
+      "type": "Item",
+      "heroes": [
+        "Karnok"
+      ],
+      "tags": [
+        "Weapon",
+        "Friend"
+      ],
+      "hidden_tags": [
+        "Damage",
+        "Shield",
+        "ShieldReference",
+        "RageReference"
+      ],
+      "size": "Medium",
+      "starting_tier": "Silver",
+      "tiers": [
+        "Silver",
+        "Gold",
+        "Diamond"
+      ]
     },
     "Ulu Knife": {
       "internal_name": "Ulu Knife",
@@ -48105,7 +48398,8 @@
         "Damage",
         "Crit",
         "HasteReference",
-        "Haste"
+        "Haste",
+        "ChilledReference"
       ],
       "size": "Small",
       "starting_tier": "Bronze",
@@ -48911,13 +49205,15 @@
     },
     "Awakened Primordial": {
       "internal_name": "Awakened Primordial",
-      "display_name": "Awakened Primordial",
-      "type": "",
-      "heroes": [],
+      "display_name": "觉醒元初体",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Escort the Convoy (Day 7)": {
@@ -49046,13 +49342,15 @@
     },
     "Capital Punisher": {
       "internal_name": "Capital Punisher",
-      "display_name": "Capital Punisher",
-      "type": "",
-      "heroes": [],
+      "display_name": "资本惩罚者",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Vitality Stew": {
@@ -49668,24 +49966,28 @@
     },
     "Sandwich Artist": {
       "internal_name": "Sandwich Artist",
-      "display_name": "Sandwich Artist",
-      "type": "",
-      "heroes": [],
+      "display_name": "三明治艺术家",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Castaway Corsair": {
       "internal_name": "Castaway Corsair",
-      "display_name": "Castaway Corsair",
-      "type": "",
-      "heroes": [],
+      "display_name": "漂流海盗",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "I Would Eat That": {
@@ -49749,13 +50051,15 @@
     },
     "[Jungle Expedition] Caltrops Monster (Toxic)": {
       "internal_name": "[Jungle Expedition] Caltrops Monster (Toxic)",
-      "display_name": "[Jungle Expedition] Caltrops Monster (Toxic)",
-      "type": "",
-      "heroes": [],
+      "display_name": "铁蒺藜陷阱",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Frostfire": {
@@ -49902,13 +50206,15 @@
     },
     "Mimic (Gold)": {
       "internal_name": "Mimic (Gold)",
-      "display_name": "Mimic (Gold)",
-      "type": "",
-      "heroes": [],
+      "display_name": "拟形怪",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Recycling Center (Silver)": {
@@ -52229,13 +52535,15 @@
     },
     "Cloudtop Admiral": {
       "internal_name": "Cloudtop Admiral",
-      "display_name": "Cloudtop Admiral",
-      "type": "",
-      "heroes": [],
+      "display_name": "云顶海军上将",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Bronze",
       "tiers": []
     },
     "Cleaver": {
@@ -52809,13 +53117,15 @@
     },
     "Ghost Pepper": {
       "internal_name": "Ghost Pepper",
-      "display_name": "Ghost Pepper",
-      "type": "",
-      "heroes": [],
+      "display_name": "幽灵辣椒",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Backup Defenses": {
@@ -53269,13 +53579,15 @@
     },
     "Sergeant Suds": {
       "internal_name": "Sergeant Suds",
-      "display_name": "Sergeant Suds",
-      "type": "",
-      "heroes": [],
+      "display_name": "皂沫中士",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Gold",
       "tiers": []
     },
     "Networking": {
@@ -53433,13 +53745,15 @@
     },
     "Awakened District": {
       "internal_name": "Awakened District",
-      "display_name": "Awakened District",
-      "type": "",
-      "heroes": [],
+      "display_name": "觉醒街区",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Legendary",
       "tiers": []
     },
     "[DEBUG] Super Fast Rage Gainer": {
@@ -53767,13 +54081,15 @@
     },
     "Foundation Revenant": {
       "internal_name": "Foundation Revenant",
-      "display_name": "Foundation Revenant",
-      "type": "",
-      "heroes": [],
+      "display_name": "基石亡灵",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Diamond",
       "tiers": []
     },
     "Display Case": {
@@ -53822,13 +54138,15 @@
     },
     "Lord of the Wastes": {
       "internal_name": "Lord of the Wastes",
-      "display_name": "Lord of the Wastes",
-      "type": "",
-      "heroes": [],
+      "display_name": "废土领主",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Sniper Rifle": {
@@ -54151,13 +54469,15 @@
     },
     "Test Subject Alpha (Monster)": {
       "internal_name": "Test Subject Alpha (Monster)",
-      "display_name": "Test Subject Alpha (Monster)",
-      "type": "",
-      "heroes": [],
+      "display_name": "实验体阿尔法",
+      "type": "CombatEncounter",
+      "heroes": [
+        "Common"
+      ],
       "tags": [],
       "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
+      "size": "Medium",
+      "starting_tier": "Silver",
       "tiers": []
     },
     "Improvised Protection": {
@@ -54627,479 +54947,6 @@
         "Gold",
         "Diamond"
       ]
-    },
-    "Flame Juggler": {
-      "internal_name": "Flame Juggler",
-      "display_name": "Flame Juggler",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_47": {
-      "internal_name": "Monster_Battle_Player_Template_47",
-      "display_name": "Monster_Battle_Player_Template_47",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Wandering Shoal": {
-      "internal_name": "Wandering Shoal",
-      "display_name": "Wandering Shoal",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Gorgon Noble": {
-      "internal_name": "Gorgon Noble",
-      "display_name": "Gorgon Noble",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Treasure Turtle": {
-      "internal_name": "Treasure Turtle",
-      "display_name": "Treasure Turtle",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Coconut Crab Monster": {
-      "internal_name": "Coconut Crab Monster",
-      "display_name": "Coconut Crab Monster",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_37": {
-      "internal_name": "Monster_Battle_Player_Template_37",
-      "display_name": "Monster_Battle_Player_Template_37",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Infernal Envoy": {
-      "internal_name": "Infernal Envoy",
-      "display_name": "Infernal Envoy",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_48": {
-      "internal_name": "Monster_Battle_Player_Template_48",
-      "display_name": "Monster_Battle_Player_Template_48",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Eccentric Etherwright": {
-      "internal_name": "Eccentric Etherwright",
-      "display_name": "Eccentric Etherwright",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Eight Arm Davvy": {
-      "internal_name": "Eight Arm Davvy",
-      "display_name": "Eight Arm Davvy",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Infernal": {
-      "internal_name": "Infernal",
-      "display_name": "Infernal",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_32": {
-      "internal_name": "Monster_Battle_Player_Template_32",
-      "display_name": "Monster_Battle_Player_Template_32",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_36": {
-      "internal_name": "Monster_Battle_Player_Template_36",
-      "display_name": "Monster_Battle_Player_Template_36",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Coconut Crab 2": {
-      "internal_name": "Coconut Crab 2",
-      "display_name": "Coconut Crab 2",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_40": {
-      "internal_name": "Monster_Battle_Player_Template_40",
-      "display_name": "Monster_Battle_Player_Template_40",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "[DEBUG] Design Testing Monster": {
-      "internal_name": "[DEBUG] Design Testing Monster",
-      "display_name": "[DEBUG] Design Testing Monster",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_39": {
-      "internal_name": "Monster_Battle_Player_Template_39",
-      "display_name": "Monster_Battle_Player_Template_39",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_35": {
-      "internal_name": "Monster_Battle_Player_Template_35",
-      "display_name": "Monster_Battle_Player_Template_35",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_38": {
-      "internal_name": "Monster_Battle_Player_Template_38",
-      "display_name": "Monster_Battle_Player_Template_38",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_34": {
-      "internal_name": "Monster_Battle_Player_Template_34",
-      "display_name": "Monster_Battle_Player_Template_34",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Covetous Thief Monster": {
-      "internal_name": "Covetous Thief Monster",
-      "display_name": "Covetous Thief Monster",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Preening Duelist Monster": {
-      "internal_name": "Preening Duelist Monster",
-      "display_name": "Preening Duelist Monster",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "[MONSTER LOADOUT TEMPLATE]": {
-      "internal_name": "[MONSTER LOADOUT TEMPLATE]",
-      "display_name": "[MONSTER LOADOUT TEMPLATE]",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Skill Board Test Monster": {
-      "internal_name": "Skill Board Test Monster",
-      "display_name": "Skill Board Test Monster",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_46": {
-      "internal_name": "Monster_Battle_Player_Template_46",
-      "display_name": "Monster_Battle_Player_Template_46",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_33": {
-      "internal_name": "Monster_Battle_Player_Template_33",
-      "display_name": "Monster_Battle_Player_Template_33",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_43": {
-      "internal_name": "Monster_Battle_Player_Template_43",
-      "display_name": "Monster_Battle_Player_Template_43",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Rogue Scrapper": {
-      "internal_name": "Rogue Scrapper",
-      "display_name": "Rogue Scrapper",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Mimic (OLD?)": {
-      "internal_name": "Mimic (OLD?)",
-      "display_name": "Mimic (OLD?)",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Ferros Khan": {
-      "internal_name": "Ferros Khan",
-      "display_name": "Ferros Khan",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Aleppa": {
-      "internal_name": "Aleppa",
-      "display_name": "Aleppa",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Monster_Battle_Player_Template_45": {
-      "internal_name": "Monster_Battle_Player_Template_45",
-      "display_name": "Monster_Battle_Player_Template_45",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "QA Test Radiant (Greg)": {
-      "internal_name": "QA Test Radiant (Greg)",
-      "display_name": "QA Test Radiant (Greg)",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Giant Mosquito Monster": {
-      "internal_name": "Giant Mosquito Monster",
-      "display_name": "Giant Mosquito Monster",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Oasis Guardian": {
-      "internal_name": "Oasis Guardian",
-      "display_name": "Oasis Guardian",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Art Test Monster": {
-      "internal_name": "Art Test Monster",
-      "display_name": "Art Test Monster",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Cosmic Roc": {
-      "internal_name": "Cosmic Roc",
-      "display_name": "Cosmic Roc",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Calico (monster)": {
-      "internal_name": "Calico (monster)",
-      "display_name": "Calico (monster)",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Frost Street Challenger": {
-      "internal_name": "Frost Street Challenger",
-      "display_name": "Frost Street Challenger",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Sparring Partner": {
-      "internal_name": "Sparring Partner",
-      "display_name": "Sparring Partner",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Infernal Frigate": {
-      "internal_name": "Infernal Frigate",
-      "display_name": "Infernal Frigate",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
-    },
-    "Kyver Drone Monster": {
-      "internal_name": "Kyver Drone Monster",
-      "display_name": "Kyver Drone Monster",
-      "type": "",
-      "heroes": [],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "",
-      "starting_tier": "",
-      "tiers": []
     }
   }
 }

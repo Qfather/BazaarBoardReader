@@ -27,8 +27,8 @@ namespace BazaarStateExporter
 
         private void Awake()
         {
-            // 输出到我们自己的 BoardData 目录（和 board_latest.json 在一起）
-            string defaultOutputPath = Path.Combine(Paths.GameRootPath, "BoardData", "game_state.json");
+            // 输出到 BazaarBoardReader/data 目录
+            string defaultOutputPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "game_state.json");
 
             outputPath = Config.Bind(
                 "Export",

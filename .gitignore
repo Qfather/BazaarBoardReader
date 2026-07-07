@@ -20,8 +20,20 @@ Desktop.ini
 # Python
 __pycache__/
 
+# 运行时生成数据
+data/game_state.json
+data/game_state_zh.json
+data/board_*.json
+data/board_latest.json
+
+# 编译输出
+obj/
+bin/
+*.dll
+*.pdb
+*.exe
+
 # 诊断脚本
 find_shops.ps1
 *.txt
-obj/
-bin/
+temp_data/

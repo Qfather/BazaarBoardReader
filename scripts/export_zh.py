@@ -6,11 +6,11 @@ import os
 from pathlib import Path
 
 # === 路径 ===
-SCRIPT_DIR = Path(__file__).resolve().parent
-GAME_STATE = SCRIPT_DIR.parent / "BoardData" / "game_state.json"
+SCRIPT_DIR = Path(__file__).resolve().parent.parent
+GAME_STATE = SCRIPT_DIR / "data" / "game_state.json"
 CARDS_DB = SCRIPT_DIR / "data" / "cards_generated.json"
 TRANS_ZH = SCRIPT_DIR / "data" / "translations_zh_cn.json"
-OUTPUT = SCRIPT_DIR.parent / "BoardData" / "game_state_zh.json"
+OUTPUT = SCRIPT_DIR / "data" / "game_state_zh.json"
 
 # === 加载翻译映射 ===
 def load_name_map():

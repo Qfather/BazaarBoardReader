@@ -9,6 +9,7 @@ using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace BazaarBoardReader
@@ -149,6 +150,17 @@ namespace BazaarBoardReader
         private List<BuildMatchResult> _matchResults = new List<BuildMatchResult>();
         private string _detectedHero = "";
         private int _currentDay = -1;
+        // 物品/技能等级随天数变化：等级→最早出现天数
+        private static readonly Dictionary<string, int> TierMinDay = new Dictionary<string, int>
+        {
+            {"Bronze", 1}, {"Silver", 2}, {"Gold", 6}, {"Diamond", 8}, {"Legendary", 99}
+        };
+        // 卡牌英文名→可用的等级列表（从 cards.json 加载）
+        private Dictionary<string, List<string>> _cardNameToTiers = new Dictionary<string, List<string>>();
+        // template_id → internal_name 映射（从 cards_generated.json 加载，用于读取 game_state.json）
+        private Dictionary<string, string> _templateIdToName = new Dictionary<string, string>();
+        // 已拥有物品缓存（内存持久化，不会因关背包而丢失）
+        private Dictionary<string, string> _ownedItemsCache = new Dictionary<string, string>();
         private int _currentGold = 0;
         private int _currentIncome = 0;
         private int _currentHealth = 0;
@@ -260,6 +272,15 @@ namespace BazaarBoardReader
                 _logger.LogInfo("[BoardReader] Harmony OK");
             }
             catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] Harmony: {0}", ex)); }
+
+            // 确保 BoardData 目录存在
+            try
+            {
+                var boardDataDir = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data");
+                Directory.CreateDirectory(boardDataDir);
+                _logger.LogInfo("[BoardReader] BoardData dir: " + boardDataDir);
+            }
+            catch { }
         }
 
         // ==================== 输入 ====================
@@ -365,7 +386,12 @@ namespace BazaarBoardReader
 
         private void OnGUI()
         {
-            if (_overlayEnabled)
+            // 每5秒尝试刷新天数（从 game_state.json 或 UI）
+            if (_currentDay < 1 && Time.frameCount % 300 == 0)
+                RefreshDayFromFile();
+            // 天数未知时隐藏所有面板与标签（数据不完整）
+            bool dayKnown = _currentDay >= 1;
+            if (_overlayEnabled && dayKnown)
             {
                 var cam = Camera.main ?? Camera.current;
                 if (cam != null)
@@ -380,8 +406,8 @@ namespace BazaarBoardReader
             }
             if (_showSliders) { try { DrawSlidersPanel(); } catch (Exception e) { _logger.LogError("F7面板: " + e); } }
             if (_captureMode) { try { DrawCaptureDialog(); } catch (Exception e) { _logger.LogError("捕获: " + e); } }
-            if (_showRecommendations) { try { DrawRecommendationPanel(); } catch (Exception e) { _logger.LogError("推荐: " + e); } }
-            if (_showBuildManager) { try { DrawBuildManagerPanel(); } catch (Exception e) { _logger.LogError("管理: " + e); } }
+            if (_showRecommendations && dayKnown) { try { DrawRecommendationPanel(); } catch (Exception e) { _logger.LogError("推荐: " + e); } }
+            if (_showBuildManager && dayKnown) { try { DrawBuildManagerPanel(); } catch (Exception e) { _logger.LogError("管理: " + e); } }
             DrawHoverTooltip();
         }
 
@@ -453,22 +479,19 @@ namespace BazaarBoardReader
                 for (int i = 0; i < subLines.Length; i++)
                 {
                     var line = subLines[i];
-                    var lsz = subStyle.CalcSize(new GUIContent(line));
                     if (line.StartsWith("★★") || line.StartsWith("★"))
                         subStyle.normal.textColor = new Color(1f, 0.85f, 0.2f);
-                    else if (line.StartsWith("~"))
-                    {
-                        subStyle.normal.textColor = new Color(0.6f, 0.6f, 0.6f, 0.35f); // 钻石=暗灰
-                        line = line.Substring(1);
-                    }
                     else if (i == 1)
                         subStyle.normal.textColor = new Color(1f, 0.25f, 0.2f);       // 核心=红色
                     else if (i == 2)
                         subStyle.normal.textColor = new Color(1f, 0.85f, 0.1f);       // 灵活=黄色
                     else
                         subStyle.normal.textColor = new Color(0.7f, 0.7f, 0.7f);
-                    var lineRect = new Rect(r.x + 4, subY, w - 8, lsz.y + 1);
-                    GUI.Label(lineRect, line, subStyle);
+                    // 居中：先计算总宽度
+                    float totalW = CalcLineWidth(line, subStyle);
+                    float startX = r.x + Mathf.Max(4, (w - totalW) / 2f);
+                    DrawLineWithOwnedAlpha(startX, subY, w - 8, line, subStyle);
+                    var lsz = subStyle.CalcSize(new GUIContent(line));
                     subY += lsz.y + 1;
                 }
             }
@@ -482,6 +505,47 @@ namespace BazaarBoardReader
                     _hoverTooltip = lbl.HoverData;
                     _lastHoverRect = r;
                 }
+            }
+        }
+
+        // 计算一行物品文本的总渲染宽度
+        private float CalcLineWidth(string line, GUIStyle baseStyle)
+        {
+            if (string.IsNullOrEmpty(line)) return 0;
+            float total = 0;
+            var parts = line.Split(',');
+            var s = new GUIStyle(baseStyle);
+            for (int pi = 0; pi < parts.Length; pi++)
+            {
+                var part = parts[pi];
+                var display = part.StartsWith("*") ? part.Substring(1).Trim() : part.Trim();
+                var sep = (pi < parts.Length - 1) ? "," : "";
+                total += s.CalcSize(new GUIContent(display + sep)).x;
+            }
+            return total;
+        }
+
+        // 渲染一行物品文本，*前缀的物品用50%透明度（已拥有可升级）
+        private void DrawLineWithOwnedAlpha(float x, float y, float maxW, string line, GUIStyle baseStyle)
+        {
+            if (string.IsNullOrEmpty(line)) return;
+            float cx = x;
+            // 按逗号分割，逐项渲染
+            var parts = line.Split(',');
+            for (int pi = 0; pi < parts.Length; pi++)
+            {
+                var part = parts[pi];
+                bool isOwned = part.StartsWith("*");
+                var display = isOwned ? part.Substring(1).Trim() : part.Trim();
+                var sep = (pi < parts.Length - 1) ? "," : "";
+                var text = display + sep;
+                var s = new GUIStyle(baseStyle);
+                if (isOwned)
+                    s.normal.textColor = new Color(baseStyle.normal.textColor.r, baseStyle.normal.textColor.g, baseStyle.normal.textColor.b, 0.5f);
+                var sz = s.CalcSize(new GUIContent(text));
+                if (cx + sz.x > x + maxW - 4) { cx = x; y += sz.y + 1; }
+                GUI.Label(new Rect(cx, y, sz.x + 2, sz.y), text, s);
+                cx += sz.x;
             }
         }
 
@@ -732,7 +796,7 @@ namespace BazaarBoardReader
 
             var ts = new GUIStyle(s) { fontSize = 15, fontStyle = FontStyle.Bold };
             ts.normal.textColor = new Color(1f, 0.8f, 0.2f);
-            GUI.Label(new Rect(px + 10, py + 5, pw - 50, 22), "阵容推荐 (F6)", ts);
+            GUI.Label(new Rect(px + 10, py + 5, pw - 50, 22), string.Format("阵容推荐 D{0} (F6)", _currentDay > 0 ? _currentDay.ToString() : "?"), ts);
             // 折叠按钮
             var foldBtn = new GUIStyle(GUI.skin.button) { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
             if (GUI.Button(new Rect(px + pw - 30, py + 2, 24, 22), _recCollapsed ? "▼" : "▲", foldBtn))
@@ -810,14 +874,68 @@ namespace BazaarBoardReader
                 GUI.Label(new Rect(10, ry, barMaxW - 4, barH), string.Format("{0:F0}%", score), ps2);
                 ry += barH + 4;
 
-                if (mr.CoreMissing.Count > 0 || mr.CoreOwned.Count > 0)
-                    DrawItemsLine(15, ref ry, pw - 30, "", mr.CoreOwned, mr.CoreMissing, mr.ShopCoreMatches, new Color(0.2f, 1f, 0.3f), new Color(0.2f, 1f, 0.5f));
-                if (mr.FlexMissing.Count > 0 || mr.FlexOwned.Count > 0)
-                    DrawItemsLine(15, ref ry, pw - 30, "", mr.FlexOwned, mr.FlexMissing, mr.ShopFlexMatches, new Color(1f, 0.7f, 0.3f), new Color(0.5f, 1f, 0.5f));
-                if (mr.SkillCoreMissing.Count > 0 || mr.SkillCoreOwned.Count > 0)
-                    DrawItemsLine(15, ref ry, pw - 30, "", mr.SkillCoreOwned, mr.SkillCoreMissing, new List<string>(), new Color(0.4f, 0.5f, 1f), new Color(0.5f, 1f, 0.5f));
-                if (mr.SkillFlexMissing.Count > 0 || mr.SkillFlexOwned.Count > 0)
-                    DrawItemsLine(15, ref ry, pw - 30, "", mr.SkillFlexOwned, mr.SkillFlexMissing, new List<string>(), new Color(0.3f, 1f, 0.5f), new Color(0.5f, 1f, 0.5f));
+                // 按构筑原始顺序合并 owned+missing，构建不可用集合
+                var coreOwnedSet = new HashSet<string>(mr.CoreOwned);
+                var coreMissingSet = new HashSet<string>(mr.CoreMissing);
+                var coreUnavailSet = new HashSet<string>();
+                var coreOrdered = new List<string>();
+                foreach (var item in mr.Template.CoreItems)
+                {
+                    if (coreOwnedSet.Contains(item)) coreOrdered.Add(item);
+                    else if (coreMissingSet.Contains(item))
+                    {
+                        coreOrdered.Add(item);
+                        if (!ItemCanAppearOnDay(item, _currentDay)) coreUnavailSet.Add(item);
+                    }
+                }
+                var flexOwnedSet = new HashSet<string>(mr.FlexOwned);
+                var flexMissingSet = new HashSet<string>(mr.FlexMissing);
+                var flexUnavailSet = new HashSet<string>();
+                var flexOrdered = new List<string>();
+                foreach (var item in mr.Template.FlexItems)
+                {
+                    if (flexOwnedSet.Contains(item)) flexOrdered.Add(item);
+                    else if (flexMissingSet.Contains(item))
+                    {
+                        flexOrdered.Add(item);
+                        if (!ItemCanAppearOnDay(item, _currentDay)) flexUnavailSet.Add(item);
+                    }
+                }
+                var scOwnedSet = new HashSet<string>(mr.SkillCoreOwned);
+                var scMissingSet = new HashSet<string>(mr.SkillCoreMissing);
+                var scUnavailSet = new HashSet<string>();
+                var scOrdered = new List<string>();
+                foreach (var item in mr.Template.CoreSkills)
+                {
+                    if (scOwnedSet.Contains(item)) scOrdered.Add(item);
+                    else if (scMissingSet.Contains(item))
+                    {
+                        scOrdered.Add(item);
+                        if (!ItemCanAppearOnDay(item, _currentDay)) scUnavailSet.Add(item);
+                    }
+                }
+                var sfOwnedSet = new HashSet<string>(mr.SkillFlexOwned);
+                var sfMissingSet = new HashSet<string>(mr.SkillFlexMissing);
+                var sfUnavailSet = new HashSet<string>();
+                var sfOrdered = new List<string>();
+                foreach (var item in mr.Template.FlexSkills)
+                {
+                    if (sfOwnedSet.Contains(item)) sfOrdered.Add(item);
+                    else if (sfMissingSet.Contains(item))
+                    {
+                        sfOrdered.Add(item);
+                        if (!ItemCanAppearOnDay(item, _currentDay)) sfUnavailSet.Add(item);
+                    }
+                }
+
+                if (coreOrdered.Count > 0)
+                    DrawItemsLine(15, ref ry, pw - 30, "", coreOrdered, coreOwnedSet, mr.ShopCoreMatches, coreUnavailSet, new Color(0.2f, 1f, 0.3f), new Color(0.2f, 1f, 0.5f));
+                if (flexOrdered.Count > 0)
+                    DrawItemsLine(15, ref ry, pw - 30, "", flexOrdered, flexOwnedSet, mr.ShopFlexMatches, flexUnavailSet, new Color(1f, 0.7f, 0.3f), new Color(0.5f, 1f, 0.5f));
+                if (scOrdered.Count > 0)
+                    DrawItemsLine(15, ref ry, pw - 30, "", scOrdered, scOwnedSet, new List<string>(), scUnavailSet, new Color(0.4f, 0.5f, 1f), new Color(0.5f, 1f, 0.5f));
+                if (sfOrdered.Count > 0)
+                    DrawItemsLine(15, ref ry, pw - 30, "", sfOrdered, sfOwnedSet, new List<string>(), sfUnavailSet, new Color(0.3f, 1f, 0.5f), new Color(0.5f, 1f, 0.5f));
                 ry += 5;
             }
 
@@ -831,36 +949,35 @@ namespace BazaarBoardReader
             { try { ExportToJson(GatherBoardData()); } catch { } }
         }
 
+        // 按构筑原始顺序统一渲染（已拥有=30%透明 / 缺失可刷=100% / 缺失不可刷=30%灰 / 商店有=闪烁★）
         private void DrawItemsLine(float x, ref float y, float maxW, string prefix,
-            List<string> owned, List<string> missing, List<string> inShop, Color lineColor, Color shopColor)
+            List<string> orderedItems, HashSet<string> ownedSet, List<string> inShop, HashSet<string> unavailable,
+            Color lineColor, Color shopColor)
         {
             var ms = new GUIStyle(_labelStyle) { fontSize = 11, alignment = TextAnchor.UpperLeft };
             float cx = x + 5;
 
-            // 先画已拥有的物品（30%透明度）
-            foreach (var item in owned)
+            for (int i = 0; i < orderedItems.Count; i++)
             {
+                var item = orderedItems[i];
                 var disp = Translate(item);
-                ms.normal.textColor = new Color(lineColor.r, lineColor.g, lineColor.b, 0.3f);
-                var itemText = disp + " ";
-                var sz = ms.CalcSize(new GUIContent(itemText));
-                GUI.Label(new Rect(cx, y, sz.x, 16), itemText, ms);
-                cx += sz.x;
-                if (cx > x + maxW - 10) { cx = x + 5; y += 16; }
-            }
+                bool isOwned = ownedSet.Contains(item);
+                bool inStore = inShop.Contains(item);
+                bool isUnavail = unavailable.Contains(item);
 
-            // 再画缺失的物品（正常透明度，商店中有的闪烁+★）
-            for (int i = 0; i < missing.Count; i++)
-            {
-                var item = missing[i];
-                var disp = Translate(item);
-                var inStore = inShop.Contains(item);
-                if (inStore) ms.normal.textColor = new Color(shopColor.r, shopColor.g, shopColor.b, 0.6f + 0.4f * Mathf.Sin(Time.time * 5f));
-                else ms.normal.textColor = lineColor;
-                var itemText = (i < missing.Count - 1) ? disp + " " : disp;
+                if (isOwned)
+                    ms.normal.textColor = new Color(lineColor.r, lineColor.g, lineColor.b, 0.3f);   // 已拥有=30%透明
+                else if (isUnavail)
+                    ms.normal.textColor = new Color(0.3f, 0.3f, 0.3f, 0.3f);                        // 刷不出=30%灰色
+                else if (inStore)
+                    ms.normal.textColor = new Color(shopColor.r, shopColor.g, shopColor.b, 0.6f + 0.4f * Mathf.Sin(Time.time * 5f));
+                else
+                    ms.normal.textColor = lineColor;
+
+                var itemText = (i < orderedItems.Count - 1) ? disp + " " : disp;
                 var sz = ms.CalcSize(new GUIContent(itemText));
                 GUI.Label(new Rect(cx, y, sz.x + 5, 16), itemText, ms);
-                if (inStore)
+                if (inStore && !isUnavail && !isOwned)
                 {
                     var ss = new GUIStyle(ms) { fontSize = 10 };
                     ss.normal.textColor = new Color(1f, 0.9f, 0.1f);
@@ -1224,6 +1341,54 @@ namespace BazaarBoardReader
             return list;
         }
 
+        // 从 game_state.json 或 board_latest.json 读取天数（DTO 回退）
+        private void RefreshDayFromFile()
+        {
+            try
+            {
+                var bdDir = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data");
+                // 1. 先试 game_state.json（StateExporter）
+                var gsPath = Path.Combine(bdDir, "game_state.json");
+                if (File.Exists(gsPath))
+                {
+                    var json = File.ReadAllText(gsPath, Encoding.UTF8);
+                    var gs = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                    if (gs != null && gs.ContainsKey("day"))
+                    {
+                        var newDay = Convert.ToInt32(gs["day"]);
+                        var newHero = gs.ContainsKey("hero") ? gs["hero"]?.ToString() ?? "" : "";
+                        // 新对局检测：天数变小或英雄变了 → 清缓存
+                        if ((newDay < _currentDay && _currentDay > 0) || (!string.IsNullOrEmpty(newHero) && !string.IsNullOrEmpty(_detectedHero) && newHero != _detectedHero))
+                            _ownedItemsCache.Clear();
+                        _currentDay = newDay;
+                        if (!string.IsNullOrEmpty(newHero) && string.IsNullOrEmpty(_detectedHero))
+                            _detectedHero = newHero;
+                        _logger.LogInfo(string.Format("[BoardReader] Day from game_state.json: {0}", _currentDay));
+                        return;
+                    }
+                }
+                // 2. 再试 board_latest.json（F5 导出）
+                var blPath = Path.Combine(bdDir, "board_latest.json");
+                if (File.Exists(blPath))
+                {
+                    var json = File.ReadAllText(blPath, Encoding.UTF8);
+                    var bl = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                    if (bl != null && bl.ContainsKey("Day"))
+                    {
+                        _currentDay = Convert.ToInt32(bl["Day"]);
+                        if (bl.ContainsKey("Hero") && string.IsNullOrEmpty(_detectedHero))
+                            _detectedHero = bl["Hero"]?.ToString() ?? "";
+                        _logger.LogInfo(string.Format("[BoardReader] Day from board_latest.json: {0}", _currentDay));
+                        return;
+                    }
+                }
+                // 3. 最后 UI 扫描
+                var ui = TryReadUiDay();
+                if (ui.HasValue) { _currentDay = ui.Value; _logger.LogInfo(string.Format("[BoardReader] Day from UI: {0}", _currentDay)); }
+            }
+            catch (Exception ex) { _logger.LogInfo("[BoardReader] RefreshDay error: " + ex.Message); }
+        }
+
         // 从拦截的 GameStateSync DTO 读取天数/金币/收入等
         private void ReadGameStateFromDto()
         {
@@ -1418,18 +1583,32 @@ namespace BazaarBoardReader
 
         private List<string> GatherAllItemNames()
         {
+            // 直接复用 GatherAllItemsWithTier 的缓存逻辑
             var result = new List<string>();
-            // 优先 Harmony 追踪
+            foreach (var kv in GatherAllItemsWithTier())
+                result.Add(kv.Key);
+            return result;
+        }
+
+        private List<KeyValuePair<string, string>> GatherAllItemsWithTier()
+        {
+            var fresh = new Dictionary<string, string>(); // lowercased name → rarity
+
+            // 1. 从 TrackedCards 收集
             lock (TrackedCards)
             {
                 foreach (var kv in TrackedCards)
                 {
                     var tc = kv.Value;
-                    if (tc.IsPlayer && tc.Type == "Item") result.Add(BoardCardName(tc.Name));
+                    if (tc.IsPlayer && tc.Type == "Item" && !string.IsNullOrEmpty(tc.Name))
+                    {
+                        var key = BoardCardName(tc.Name).ToLower();
+                        fresh[key] = tc.Tier ?? "Bronze";
+                    }
                 }
             }
-            // 回退
-            if (result.Count == 0)
+            // 2. TrackedCards 少时从场景收集
+            if (fresh.Count < 3)
             {
                 try
                 {
@@ -1446,7 +1625,8 @@ namespace BazaarBoardReader
                                 if (cd == null || cd.Type.ToString() != "Item") continue;
                                 if (!IsPlayerItem(cc.transform)) continue;
                                 var name = GetCardNameStatic(cd);
-                                if (!string.IsNullOrEmpty(name) && name != "???") result.Add(name);
+                                if (!string.IsNullOrEmpty(name) && name != "???")
+                                    fresh[name.ToLower()] = cd.Tier.ToString();
                             }
                             catch { }
                         }
@@ -1454,21 +1634,53 @@ namespace BazaarBoardReader
                 }
                 catch { }
             }
-            return result;
-        }
-
-        private List<KeyValuePair<string, string>> GatherAllItemsWithTier()
-        {
-            var result = new List<KeyValuePair<string, string>>();
-            lock (TrackedCards)
+            // 3. 合并 game_state.json（含背包）
+            if (_templateIdToName.Count > 0)
             {
-                foreach (var kv in TrackedCards)
+                try
                 {
-                    var tc = kv.Value;
-                    if (tc.IsPlayer && tc.Type == "Item" && !string.IsNullOrEmpty(tc.Name))
-                        result.Add(new KeyValuePair<string, string>(BoardCardName(tc.Name), tc.Tier ?? "Bronze"));
+                    var gsPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "BoardData", "game_state.json");
+                    if (File.Exists(gsPath))
+                    {
+                        var gsJson = File.ReadAllText(gsPath, Encoding.UTF8);
+                        var gs = JsonConvert.DeserializeObject<Dictionary<string, object>>(gsJson);
+                        if (gs != null)
+                        {
+                            var ownedItems = gs.ContainsKey("owned_items") ? gs["owned_items"] as Newtonsoft.Json.Linq.JArray : null;
+                            if (ownedItems == null && gs.ContainsKey("owned_cards"))
+                                ownedItems = gs["owned_cards"] as Newtonsoft.Json.Linq.JArray;
+                            if (ownedItems != null)
+                            {
+                                foreach (var item in ownedItems)
+                                {
+                                    try
+                                    {
+                                        var tid = item.Value<string>("template_id");
+                                        var rarity = item.Value<string>("rarity") ?? "Bronze";
+                                        if (!string.IsNullOrEmpty(tid) && _templateIdToName.ContainsKey(tid))
+                                        {
+                                            var key = _templateIdToName[tid].ToLower();
+                                            if (!fresh.ContainsKey(key))
+                                                fresh[key] = rarity;
+                                        }
+                                    }
+                                    catch { }
+                                }
+                            }
+                        }
+                    }
                 }
+                catch { }
             }
+
+            // 4. 合并到持久缓存（全部小写 key，统一匹配）
+            foreach (var kv in fresh)
+                _ownedItemsCache[kv.Key] = kv.Value;
+
+            // 返回缓存中的所有物品
+            var result = new List<KeyValuePair<string, string>>();
+            foreach (var kv in _ownedItemsCache)
+                result.Add(new KeyValuePair<string, string>(kv.Key, kv.Value));
             return result;
         }
 
@@ -1592,9 +1804,9 @@ namespace BazaarBoardReader
         private List<BuildMatchResult> MatchBuilds(string heroName, List<string> currentItems)
         {
             var results = new List<BuildMatchResult>();
-            var ownedSet = new HashSet<string>(currentItems);
+            var ownedSet = new HashSet<string>(currentItems, StringComparer.OrdinalIgnoreCase);
             var ownedSkills = GatherPlayerSkillNames();
-            var skillSet = new HashSet<string>(ownedSkills);
+            var skillSet = new HashSet<string>(ownedSkills, StringComparer.OrdinalIgnoreCase);
 
             foreach (var build in _builds)
             {
@@ -1680,7 +1892,9 @@ namespace BazaarBoardReader
             // 从 JSON 文件加载翻译（由 extract_translations.py 从游戏缓存生成）
             try
             {
-                var path = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "translations_zh_cn.json");
+                var path = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "translations_zh_cn.json");
+                if (!File.Exists(path))
+                    path = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "translations_zh_cn.json"); // 旧路径回退
                 if (!File.Exists(path))
                     path = Path.Combine(Path.GetDirectoryName(typeof(BazaarBoardReaderPlugin).Assembly.Location), "translations_zh_cn.json");
                 if (File.Exists(path))
@@ -1740,6 +1954,11 @@ namespace BazaarBoardReader
                             // Package 奖励包
                             if (c.internal_name != null && c.internal_name.IndexOf("'s Package", StringComparison.OrdinalIgnoreCase) >= 0) continue;
                             _cardDb[kv.Key.ToLower()] = c;
+                            // 构建名称→tiers索引（用于天数-等级过滤，同时按 internal_name 和 key 索引）
+                            if (c.internal_name != null && c.tiers != null)
+                                _cardNameToTiers[c.internal_name.ToLower()] = c.tiers;
+                            if (c.tiers != null)
+                                _cardNameToTiers[kv.Key.ToLower()] = c.tiers;
                         }
                     }
                 }
@@ -1763,8 +1982,11 @@ namespace BazaarBoardReader
                                     _cardDb[key].description = kv.Value.description ?? "";
                                     descLoaded++;
                                 }
+                                // 构建 template_id → internal_name 映射
+                                if (!string.IsNullOrEmpty(kv.Value.template_id) && !_templateIdToName.ContainsKey(kv.Value.template_id))
+                                    _templateIdToName[kv.Value.template_id] = kv.Value.internal_name;
                             }
-                            _logger.LogInfo(string.Format("[BoardReader] 描述加载: {0} 条", descLoaded));
+                            _logger.LogInfo(string.Format("[BoardReader] 描述:{0} template_id映射:{1}", descLoaded, _templateIdToName.Count));
                         }
                     }
                 }
@@ -1834,6 +2056,67 @@ namespace BazaarBoardReader
                 }
             }
             return false;
+        }
+
+        // 判断卡牌在当前天数是否可能出现在商店
+        private bool CardCanAppearOnDay(CardDataEntry card, int day)
+        {
+            if (day < 1) return true; // 天数未知时不限制
+            if (card.tiers == null || card.tiers.Count == 0) return false; // EventEncounter 等非物品
+            foreach (var tier in card.tiers)
+            {
+                int minDay;
+                if (TierMinDay.TryGetValue(tier, out minDay) && day >= minDay) return true;
+            }
+            return false; // 所有等级都还没到出现天数
+        }
+
+        // 根据英文名判断物品能否在当前天数出现
+        private bool ItemCanAppearOnDay(string itemName, int day)
+        {
+            if (day < 1) return true;
+            var key = itemName.ToLower();
+
+            // 1. 先从 _cardNameToTiers 查找（按 internal_name 索引）
+            List<string> tiers;
+            if (_cardNameToTiers.TryGetValue(key, out tiers) && tiers.Count > 0)
+            {
+                foreach (var tier in tiers)
+                {
+                    int minDay;
+                    if (TierMinDay.TryGetValue(tier, out minDay) && day >= minDay) return true;
+                }
+                return false; // 有tier信息但当前天数不满足
+            }
+
+            // 2. 再从 _cardDb 按 key 查找（兜底）
+            CardDataEntry card;
+            if (_cardDb.TryGetValue(key, out card) && card.tiers != null && card.tiers.Count > 0)
+            {
+                foreach (var tier in card.tiers)
+                {
+                    int minDay;
+                    if (TierMinDay.TryGetValue(tier, out minDay) && day >= minDay) return true;
+                }
+                return false;
+            }
+
+            // 3. 遍历 _cardDb 按 internal_name 查找（兜底）
+            foreach (var kv in _cardDb)
+            {
+                if (kv.Value.internal_name != null && kv.Value.internal_name.ToLower() == key
+                    && kv.Value.tiers != null && kv.Value.tiers.Count > 0)
+                {
+                    foreach (var tier in kv.Value.tiers)
+                    {
+                        int minDay;
+                        if (TierMinDay.TryGetValue(tier, out minDay) && day >= minDay) return true;
+                    }
+                    return false;
+                }
+            }
+
+            return true; // 完全找不到tier信息，默认显示（不过滤）
         }
 
         private string RateShop(string shopName)
@@ -1919,6 +2202,8 @@ namespace BazaarBoardReader
                 {
                     if (merchant.exclude_tags.Any(t => allCardTags.Contains(t))) continue;
                 }
+                // 天数-等级过滤：当前天数刷不出的物品不计入
+                if (!CardCanAppearOnDay(card, _currentDay)) continue;
                 pool.Add(kv.Value.internal_name ?? kv.Key);
             }
             if (pool.Count == 0) return null;
@@ -1945,50 +2230,59 @@ namespace BazaarBoardReader
                 if (poolLower.Contains(item.ToLower())) buildItemsInPool++;
             foreach (var item in bestBuild.FlexItems)
                 if (poolLower.Contains(item.ToLower())) buildItemsInPool++;
-            int hitPct = pool.Count > 0 ? (int)(buildItemsInPool * 100f / pool.Count) : 0;
 
             // 收集已拥有物品及品质
             var ownedTiers = new Dictionary<string, string>();
             foreach (var kv in GatherAllItemsWithTier())
                 ownedTiers[kv.Key.ToLower()] = kv.Value ?? "Bronze";
 
-            // 分类：非钻石 → hits（需要），钻石 → diamond（已满变暗）
-            var coreHits = new List<string>();
-            var flexHits = new List<string>();
-            var coreDiamond = new List<string>();
-            var flexDiamond = new List<string>();
+            // 分类：已拥有非钻石 → *前缀（50%透明），未拥有 → 正常显示，钻石 → 不显示
+            var coreOwned = new List<string>();    // 已拥有未钻石 → *前缀
+            var coreMissing = new List<string>();  // 未拥有 → 正常
+            var flexOwned = new List<string>();
+            var flexMissing = new List<string>();
             foreach (var item in bestBuild.CoreItems)
             {
                 if (!poolLower.Contains(item.ToLower())) continue;
                 string tier;
                 if (ownedTiers.TryGetValue(item.ToLower(), out tier) && tier == "Diamond")
-                    coreDiamond.Add(item);
+                    continue; // 已钻石不显示
+                if (ownedTiers.ContainsKey(item.ToLower()))
+                    coreOwned.Add(item);   // 已拥有未钻石 → 可升级
                 else
-                    coreHits.Add(item);
+                    coreMissing.Add(item); // 未拥有 → 需要获取
             }
             foreach (var item in bestBuild.FlexItems)
             {
                 if (!poolLower.Contains(item.ToLower())) continue;
                 string tier;
                 if (ownedTiers.TryGetValue(item.ToLower(), out tier) && tier == "Diamond")
-                    flexDiamond.Add(item);
+                    continue;
+                if (ownedTiers.ContainsKey(item.ToLower()))
+                    flexOwned.Add(item);
                 else
-                    flexHits.Add(item);
+                    flexMissing.Add(item);
             }
 
-            if (coreHits.Count == 0 && flexHits.Count == 0 && coreDiamond.Count == 0 && flexDiamond.Count == 0) return null;
+            if (coreOwned.Count == 0 && coreMissing.Count == 0 && flexOwned.Count == 0 && flexMissing.Count == 0) return null;
 
-            int score = coreHits.Count * 3 + flexHits.Count * 1;
-            string stars = (score >= 9 ? "★★★" : score >= 6 ? "★★" : "★") + " " + hitPct + "%";
+            int totalHits = coreOwned.Count + coreMissing.Count + flexOwned.Count + flexMissing.Count;
+            int hitPct = pool.Count > 0 ? (int)(totalHits * 100f / pool.Count) : 0;
+            int score = (coreMissing.Count + coreOwned.Count) * 3 + (flexMissing.Count + flexOwned.Count) * 1;
+            string stars = (score >= 9 ? "★★★" : score >= 6 ? "★★" : "★") + " " + hitPct + "% (" + totalHits + "/" + pool.Count + ")";
             var lines = new List<string> { stars };
-            if (coreHits.Count > 0)
-                lines.Add(string.Join(",", TranslateEach(coreHits).Take(4).ToArray()));
-            if (flexHits.Count > 0)
-                lines.Add(string.Join(",", TranslateEach(flexHits).Take(4).ToArray()));
-            if (coreDiamond.Count > 0)
-                lines.Add("~" + string.Join(",", TranslateEach(coreDiamond).Take(4).ToArray()));
-            if (flexDiamond.Count > 0)
-                lines.Add("~" + string.Join(",", TranslateEach(flexDiamond).Take(4).ToArray()));
+            // 核心行：先未拥有(正常) 再已拥有(*前缀=50%透明)，最多4个
+            var coreLine = new List<string>();
+            coreLine.AddRange(TranslateEach(coreMissing));
+            coreLine.AddRange(TranslateEach(coreOwned).Select(s => "*" + s));
+            if (coreLine.Count > 0)
+                lines.Add(string.Join(",", coreLine.Take(4).ToArray()) + (coreLine.Count > 4 ? "……" : ""));
+            // 灵活行：同上
+            var flexLine = new List<string>();
+            flexLine.AddRange(TranslateEach(flexMissing));
+            flexLine.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
+            if (flexLine.Count > 0)
+                lines.Add(string.Join(",", flexLine.Take(4).ToArray()) + (flexLine.Count > 4 ? "……" : ""));
             return string.Join("\n", lines.ToArray());
         }
 
@@ -2892,7 +3186,7 @@ namespace BazaarBoardReader
 
         private void ExportToJson(BoardData d)
         {
-            var dir = Path.Combine(Paths.GameRootPath, "BoardData");
+            var dir = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data");
             Directory.CreateDirectory(dir);
             var json = JsonConvert.SerializeObject(d, Formatting.Indented);
             // 带时间戳的历史文件
@@ -2917,7 +3211,7 @@ namespace BazaarBoardReader
     public class MerchantEntry { public string name; public string category; public List<string> heroes; public string tier; public List<string> tags; public List<string> exclude_tags; public string size; public bool cross_hero; }
     public class CardDataEntry { public string internal_name; public string type; public List<string> heroes; public List<string> tags; public List<string> hidden_tags; public string size; public string description; public List<string> tiers; }
     public class CardsData { public Dictionary<string, CardDataEntry> cards; }
-    public class CardDescEntry { public string internal_name; public string description; }
+    public class CardDescEntry { public string internal_name; public string description; public string template_id; }
     public class CommunityBuild { public string hero; public string display_name; public List<string> core_cards; public List<string> transition_cards; public List<string> optional_cards; }
 
     [Serializable]
