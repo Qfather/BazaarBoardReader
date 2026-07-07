@@ -9942,15 +9942,26 @@
     "Calico": {
       "internal_name": "Calico",
       "display_name": "三花",
-      "type": "CombatEncounter",
+      "type": "Item",
       "heroes": [
-        "Common"
+        "Vanessa"
       ],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "Medium",
-      "starting_tier": "Gold",
-      "tiers": []
+      "tags": [
+        "Friend",
+        "Weapon"
+      ],
+      "hidden_tags": [
+        "Damage",
+        "CritReference"
+      ],
+      "size": "Small",
+      "starting_tier": "Bronze",
+      "tiers": [
+        "Bronze",
+        "Silver",
+        "Gold",
+        "Diamond"
+      ]
     },
     "Medic's Aid": {
       "internal_name": "Medic's Aid",
@@ -14018,18 +14029,23 @@
     "Gunpowder": {
       "internal_name": "Gunpowder",
       "display_name": "火药",
-      "type": "EncounterStep",
+      "type": "Item",
       "heroes": [
-        "Vanessa"
+        "Common"
       ],
-      "tags": [],
+      "tags": [
+        "Loot"
+      ],
       "hidden_tags": [
-        "DamageReference",
-        "Heal"
+        "AmmoReference"
       ],
-      "size": "Medium",
+      "size": "Small",
       "starting_tier": "Silver",
-      "tiers": []
+      "tiers": [
+        "Silver",
+        "Gold",
+        "Diamond"
+      ]
     },
     "Terrorform": {
       "internal_name": "Terrorform",
@@ -36205,15 +36221,24 @@
     "Fairy Circle": {
       "internal_name": "Fairy Circle",
       "display_name": "仙女环",
-      "type": "CombatEncounter",
+      "type": "Item",
       "heroes": [
-        "Common"
+        "Karnok"
       ],
-      "tags": [],
-      "hidden_tags": [],
-      "size": "Medium",
-      "starting_tier": "Bronze",
-      "tiers": []
+      "tags": [
+        "Property"
+      ],
+      "hidden_tags": [
+        "FreezeReference",
+        "SlowReference",
+        "Charge"
+      ],
+      "size": "Large",
+      "starting_tier": "Gold",
+      "tiers": [
+        "Gold",
+        "Diamond"
+      ]
     },
     "Loaded Fury": {
       "internal_name": "Loaded Fury",

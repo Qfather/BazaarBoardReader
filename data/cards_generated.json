@@ -8990,17 +8990,25 @@
     ]
   },
   "Calico": {
-    "template_id": "dbf8eefa-99bd-475b-ad4d-91a9734518cf",
+    "template_id": "2d395818-28b0-46b5-87a8-bf384c846344",
     "internal_name": "Calico",
     "name": "Calico",
-    "type": "CombatEncounter",
-    "size": "Medium",
+    "type": "Item",
+    "size": "Small",
     "hero": "",
     "heroes": [
-      "Common"
+      "Vanessa"
     ],
-    "tiers": [],
-    "tags": []
+    "tiers": [
+      "Bronze",
+      "Silver",
+      "Gold",
+      "Diamond"
+    ],
+    "tags": [
+      "Friend",
+      "Weapon"
+    ]
   },
   "Medic's Aid": {
     "template_id": "2d5de8be-7364-4f07-afe5-b11fd9fc2cd0",
@@ -12663,17 +12671,23 @@
     "tags": []
   },
   "Gunpowder": {
-    "template_id": "9c3f0308-8050-4721-8fed-29e817596827",
+    "template_id": "3e563d2a-87e7-4e9a-bfa2-3268b27b7447",
     "internal_name": "Gunpowder",
     "name": "Gunpowder",
-    "type": "EncounterStep",
-    "size": "Medium",
+    "type": "Item",
+    "size": "Small",
     "hero": "",
     "heroes": [
-      "Vanessa"
+      "Common"
     ],
-    "tiers": [],
-    "tags": []
+    "tiers": [
+      "Silver",
+      "Gold",
+      "Diamond"
+    ],
+    "tags": [
+      "Loot"
+    ]
   },
   "Terrorform": {
     "template_id": "3e80e4e9-13e6-441c-b770-a82a0297ad47",
@@ -32858,17 +32872,22 @@
     ]
   },
   "Fairy Circle": {
-    "template_id": "e54908bc-bf2d-4aac-93c3-393be464558a",
+    "template_id": "a7f36ca3-2ed2-453e-9e44-260ade42500e",
     "internal_name": "Fairy Circle",
     "name": "Fairy Circle",
-    "type": "CombatEncounter",
-    "size": "Medium",
+    "type": "Item",
+    "size": "Large",
     "hero": "",
     "heroes": [
-      "Common"
+      "Karnok"
     ],
-    "tiers": [],
-    "tags": []
+    "tiers": [
+      "Gold",
+      "Diamond"
+    ],
+    "tags": [
+      "Property"
+    ]
   },
   "Loaded Fury": {
     "template_id": "a80d8cc7-3472-45cb-ac33-11fe7e583e42",

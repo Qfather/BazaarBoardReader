@@ -37,3 +37,5 @@ bin/
 find_shops.ps1
 *.txt
 temp_data/
+temp/
+data/event_notes.json

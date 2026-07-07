@@ -1,5 +1,5 @@
 """从 GameData.db 直接生成 data/ 下的数据文件"""
-import sqlite3, json, os
+import sqlite3, json, os, re
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
@@ -80,6 +80,18 @@ for table in ["cards", "monsters", "challenges", "collectibles", "game_modes", "
         if zh:
             by_name[iname] = zh
             by_id[tid] = zh
+            # 同时用去掉等级后缀的基础名索引（方便事件查找）
+            base = re.sub(r'\s*\((?:Bronze|Silver|Gold|Diamond|Legendary|Level Up|Day\s+\d+\s*(?:to\s+\d+)?|Start Run|Encounter|Tutorial)\)\s*$', '', iname).strip()
+            if base != iname and base not in by_name:
+                by_name[base] = zh
+
+        # Item优先：已有Item条目时不覆盖
+        existing = cards_compact.get(iname, {})
+        if existing.get("type") == "Item" and card_type != "Item":
+            continue
+        existing_gen = cards_generated.get(iname, {})
+        if existing_gen.get("type") == "Item" and card_type != "Item":
+            continue
 
         # cards_generated.json
         cards_generated[iname] = {
@@ -110,6 +122,27 @@ for table in ["cards", "monsters", "challenges", "collectibles", "game_modes", "
     print(f"  [{table}]: {row_count} 行")
 
 print(f"[2/3] 卡牌: {stats}")
+
+# 2.5 补充事件 notes 翻译
+import hashlib
+try:
+    events_path = DATA_DIR / "events.json"
+    if events_path.exists():
+        with open(events_path, "r", encoding="utf-8") as f:
+            events_data = json.load(f)
+        notes_added = 0
+        for cat, items in events_data.items():
+            for evt in items:
+                notes = evt.get("notes", "")
+                if notes and notes not in by_name:
+                    h = hashlib.md5(notes.encode("utf-8")).hexdigest()
+                    zh = zh_map.get(h)
+                    if zh:
+                        by_name[notes] = zh
+                        notes_added += 1
+        print(f"  事件notes翻译补充: {notes_added} 条")
+except Exception as e:
+    print(f"  事件notes翻译: {e}")
 
 # ═══════════════════════════════════════════════
 # 3. 写入 data/ 主文件

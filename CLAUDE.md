@@ -193,6 +193,14 @@ python scripts/export_raw_db.py
 ```
 直接从 GameData.db 生成 `data/cards.json`、`data/cards_generated.json`、`data/translations_zh_cn.json`。
 
+### 翻译来源
+
+所有中文翻译来自游戏内置的 `zh-CN.bytes`（SQLite 数据库）：
+- 卡牌/事件名：通过 `Localization.Title.Key` 匹配 `hash → text`
+- 事件描述 notes：通过 MD5(英文原文) 匹配
+- 翻译文件路径：`%LOCALAPPDATA%\..\LocalLow\Tempo Storm\The Bazaar\prod\cache\translations\zh-CN.bytes`
+- 输出到：**[data/translations_zh_cn.json](data/translations_zh_cn.json)**
+
 ## 详细分析数据
 
 完整的游戏数据分析（含所有遭遇事件、商人、物品池等）见：
