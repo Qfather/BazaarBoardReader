@@ -2413,6 +2413,13 @@ namespace BazaarBoardReader
                     foreach (var t in tagList) tags.Add(t.ToString());
             }
 
+            // 无标签的事件不构建物品池（仅显示推荐文本）
+            if (tags.Count == 0)
+            {
+                var recOnly = GetEventRecommendation(shopName);
+                return recOnly != null ? "◆ " + recOnly : null;
+            }
+
             // 构建物品池（按英雄过滤）
             var pool = new List<string>();
             foreach (var kv in _cardDb)
@@ -2420,7 +2427,7 @@ namespace BazaarBoardReader
                 var card = kv.Value;
                 if (card.tiers != null && card.tiers.Contains("Legendary")) continue;
                 var ch = card.heroes ?? new List<string>();
-                if (!ch.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase)) && !ch.Contains("Common")) continue;
+                if (!ch.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
                 if (!CardCanAppearOnDay(card, _currentDay)) continue;
 
                 if (tags.Count > 0)
@@ -2429,7 +2436,12 @@ namespace BazaarBoardReader
                     if (card.tags != null) allTags.AddRange(card.tags);
                     if (card.hidden_tags != null) allTags.AddRange(card.hidden_tags);
                     var allLower = allTags.Select(t => t.ToLower()).ToList();
-                    if (!tags.Any(t => allLower.Contains(t.ToLower()))) continue;
+                    var excludeR = tags.Where(t => t.StartsWith("!")).Select(t => t.Substring(1).ToLower()).ToList();
+                    var includeR = tags.Where(t => !t.StartsWith("!")).Select(t => t.ToLower()).ToList();
+                    // 排除：有排除标签 → 跳过
+                    if (excludeR.Count > 0 && excludeR.Any(t => allLower.Contains(t))) continue;
+                    // 包含：必须有包含标签
+                    if (includeR.Count > 0 && !includeR.Any(t => allLower.Contains(t))) continue;
                 }
                 pool.Add(card.internal_name ?? kv.Key);
             }
@@ -2444,31 +2456,60 @@ namespace BazaarBoardReader
                 var matchResults = MatchBuilds(_detectedHero, GatherAllItemNames());
                 if (matchResults.Count > 0) bestBuild = matchResults[0].Template;
             }
-            if (bestBuild == null) return null;
+            var rec = GetEventRecommendation(shopName);
+            if (bestBuild == null)
+                return rec != null ? "◆ " + rec : null;
 
+            // 收集已拥有物品（与RateShop一致）
+            var ownedTiersEvt = new Dictionary<string, string>();
+            foreach (var kv in GatherAllItemsWithTier())
+                ownedTiersEvt[kv.Key.ToLower()] = kv.Value ?? "Bronze";
+
+            // 分核心/灵活，已拥有半透明（与RateShop一致）
             var poolLower = new HashSet<string>();
             foreach (var p in pool) poolLower.Add(p.ToLower());
-            int hits = 0;
-            var hitNames = new List<string>();
+            var coreHits = new List<string>(); var coreOwned = new List<string>();
+            var flexHits = new List<string>(); var flexOwned = new List<string>();
             foreach (var item in bestBuild.CoreItems)
-                if (poolLower.Contains(item.ToLower())) { hits++; hitNames.Add(item); }
-            foreach (var item in bestBuild.FlexItems)
-                if (poolLower.Contains(item.ToLower())) { hits++; hitNames.Add(item); }
-            var rec = GetEventRecommendation(shopName);
-            if (hits == 0 && string.IsNullOrEmpty(rec)) return null;
-
-            int hitPct = pool.Count > 0 ? (int)(hits * 100f / pool.Count) : 0;
-            int score = hits * 3;
-            string stars = "";
-            if (hits > 0)
-                stars = (score >= 9 ? "★★★" : score >= 6 ? "★★" : "★") + " " + hitPct + "%"
-                    + "\n" + string.Join(",", TranslateEach(hitNames).Take(4).ToArray());
-            if (!string.IsNullOrEmpty(rec))
             {
-                if (!string.IsNullOrEmpty(stars)) stars += "\n";
-                stars += rec;
+                if (!poolLower.Contains(item.ToLower())) continue;
+                string tier;
+                if (ownedTiersEvt.TryGetValue(item.ToLower(), out tier) && tier == "Diamond") continue;
+                if (ownedTiersEvt.ContainsKey(item.ToLower()))
+                    coreOwned.Add(item);
+                else
+                    coreHits.Add(item);
             }
-            return stars;
+            foreach (var item in bestBuild.FlexItems)
+            {
+                if (!poolLower.Contains(item.ToLower())) continue;
+                string tier;
+                if (ownedTiersEvt.TryGetValue(item.ToLower(), out tier) && tier == "Diamond") continue;
+                if (ownedTiersEvt.ContainsKey(item.ToLower()))
+                    flexOwned.Add(item);
+                else
+                    flexHits.Add(item);
+            }
+            int needHitsEvt = coreHits.Count + coreOwned.Count + flexHits.Count + flexOwned.Count;
+            if (needHitsEvt == 0 && string.IsNullOrEmpty(rec)) return null;
+
+            var linesEvt = new List<string>();
+            int hitPct = pool.Count > 0 ? (int)(needHitsEvt * 100f / pool.Count) : 0;
+            int score = coreHits.Count * 3 + coreOwned.Count * 3 + flexHits.Count * 1 + flexOwned.Count * 1;
+            linesEvt.Add((score >= 9 ? "★★★" : score >= 6 ? "★★" : "★") + " " + hitPct + "% (" + needHitsEvt + "/" + pool.Count + ")");
+            // 核心行：未拥有+*前缀已拥有
+            var cl = new List<string>();
+            cl.AddRange(TranslateEach(coreHits));
+            cl.AddRange(TranslateEach(coreOwned).Select(s => "*" + s));
+            if (cl.Count > 0) linesEvt.Add(string.Join(",", cl.Take(4).ToArray()) + (cl.Count > 4 ? "……" : ""));
+            // 灵活行
+            var fl = new List<string>();
+            fl.AddRange(TranslateEach(flexHits));
+            fl.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
+            if (fl.Count > 0) linesEvt.Add(string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "……" : ""));
+            if (!string.IsNullOrEmpty(rec))
+                linesEvt.Add("◆ " + rec);
+            return string.Join("\n", linesEvt.ToArray());
         }
 
         // ── 事件推荐文本 ──
@@ -2563,15 +2604,15 @@ namespace BazaarBoardReader
         private bool EvalCondition(string cond)
         {
             if (string.IsNullOrEmpty(cond)) return true;
-            // 金币<10 / 金币>20 / 金币<=5 / 金币>=30
+            // 金币<10 / 金币>20
             var m = System.Text.RegularExpressions.Regex.Match(cond, @"金币\s*([<>=]+)\s*(\d+)");
-            if (m.Success) return CmpNum(_currentGold, m.Groups[1].Value, int.Parse(m.Groups[2].Value));
+            if (m.Success) return CmpNum(GetGold(), m.Groups[1].Value, int.Parse(m.Groups[2].Value));
             // 生命<500
             m = System.Text.RegularExpressions.Regex.Match(cond, @"生命\s*([<>=]+)\s*(\d+)");
-            if (m.Success) return CmpNum(_currentHealth, m.Groups[1].Value, int.Parse(m.Groups[2].Value));
+            if (m.Success) return CmpNum(GetHealth(), m.Groups[1].Value, int.Parse(m.Groups[2].Value));
             // 收入<5
             m = System.Text.RegularExpressions.Regex.Match(cond, @"收入\s*([<>=]+)\s*(\d+)");
-            if (m.Success) return CmpNum(_currentIncome, m.Groups[1].Value, int.Parse(m.Groups[2].Value));
+            if (m.Success) return CmpNum(_currentIncome > 0 ? _currentIncome : GetGold(), m.Groups[1].Value, int.Parse(m.Groups[2].Value));
             // 天数<5
             m = System.Text.RegularExpressions.Regex.Match(cond, @"天数\s*([<>=]+)\s*(\d+)");
             if (m.Success) return CmpNum(_currentDay, m.Groups[1].Value, int.Parse(m.Groups[2].Value));
@@ -2580,6 +2621,26 @@ namespace BazaarBoardReader
             if (m.Success) return CmpNum(_currentPrestige, m.Groups[1].Value, int.Parse(m.Groups[2].Value));
             return false;
         }
+
+        private int _gsGold = -1, _gsHealth = -1;
+        private void RefreshGameStateCache()
+        {
+            try
+            {
+                if (Time.frameCount % 120 != 0) return; // 每2秒刷新
+                var gsPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "game_state.json");
+                if (!File.Exists(gsPath)) return;
+                var json = File.ReadAllText(gsPath, Encoding.UTF8);
+                var gs = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                if (gs == null) return;
+                if (gs.ContainsKey("gold")) _gsGold = Convert.ToInt32(gs["gold"]);
+                if (gs.ContainsKey("health")) _gsHealth = Convert.ToInt32(gs["health"]);
+            }
+            catch { }
+        }
+
+        private int GetGold() { RefreshGameStateCache(); return _currentGold > 0 ? _currentGold : _gsGold; }
+        private int GetHealth() { RefreshGameStateCache(); return _currentHealth > 0 ? _currentHealth : _gsHealth; }
 
         private bool CmpNum(int actual, string op, int target)
         {

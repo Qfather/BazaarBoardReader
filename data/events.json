@@ -6,7 +6,8 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Sells Expedition Tickets"
     },
     {
       "name": "Workshop (Silver)",
@@ -14,7 +15,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tool"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tool"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Tool"
     },
     {
       "name": "Security Center (Bronze)",
@@ -27,7 +45,24 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Shield item"
     },
     {
       "name": "Mag Storage (Bronze)",
@@ -35,15 +70,36 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tech"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tech"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Tech item"
     },
     {
       "name": "Finn's Big Bite",
-      "event_type": "item_reward",
+      "event_type": "resource_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Eat at Finn's to get Max Health",
+      "resource_rewards": {
+        "health": 1
+      }
     },
     {
       "name": "[Crash Site Expedition] Cargo Hold",
@@ -61,7 +117,27 @@
         "Dooley",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "friend"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "friend"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Friend"
     },
     {
       "name": "Workshop (Bronze)",
@@ -69,7 +145,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tool"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tool"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Tool"
     },
     {
       "name": "Furnace (Bronze)",
@@ -81,15 +174,41 @@
         "Stelle",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Burn item"
     },
     {
       "name": "Bounty Hunters",
-      "event_type": "item_reward",
+      "event_type": "combat_event",
       "event_heroes": [
         "Vanessa"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "The Tyrant's agents have found you!",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Cabin Fishing (Bronze)",
@@ -97,7 +216,27 @@
       "event_heroes": [
         "Vanessa"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "aquatic"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "aquatic"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Aquatic item"
     },
     {
       "name": "Truffle Farming (Diamond)",
@@ -105,7 +244,8 @@
       "event_heroes": [
         "Pygmalien"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Truffle"
     },
     {
       "name": "Alchemy Lab (Gold)",
@@ -113,7 +253,24 @@
       "event_heroes": [
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "potion"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "potion"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Potion"
     },
     {
       "name": "Medicine Cabinet (Diamond)",
@@ -123,7 +280,29 @@
         "Mak",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal",
+        "regen"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "heal",
+          "regen"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Heal or Regen item"
     },
     {
       "name": "[Karnok Unique] Hidden Lake",
@@ -143,15 +322,36 @@
         "Stelle",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Burn item"
     },
     {
       "name": "The Docks",
-      "event_type": "item_reward",
+      "event_type": "resource_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Work at the Docks to earn some coin",
+      "resource_rewards": {
+        "gold": 1
+      }
     },
     {
       "name": "Recycling Center (Bronze)",
@@ -159,15 +359,37 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "!weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary",
+          "weapon"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a non-Weapon item"
     },
     {
       "name": "Grandmaster",
-      "event_type": "item_reward",
+      "event_type": "skill_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Sells Skill upgrades",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Cupboard (Bronze)",
@@ -175,7 +397,8 @@
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Small Food"
     },
     {
       "name": "Cinder Chase (Silver)",
@@ -183,7 +406,26 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Cinders"
+        ],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Cinders (+Burn)"
     },
     {
       "name": "Mag Storage (Silver)",
@@ -191,7 +433,24 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tech"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tech"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Tech item"
     },
     {
       "name": "Cinder Chase (Bronze)",
@@ -199,15 +458,40 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Cinders"
+        ],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Cinders (+Burn)"
     },
     {
       "name": "Jules' Cafe",
-      "event_type": "item_reward",
+      "event_type": "unknown_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Check out Jules' famous cafe for a temporary boost",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Bountiful Harvest (Silver)",
@@ -215,7 +499,8 @@
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Food"
     },
     {
       "name": "Freezer (Gold)",
@@ -225,7 +510,24 @@
         "Jules",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "freeze"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "freeze"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Freeze item"
     },
     {
       "name": "Botanical Gardens (Silver)",
@@ -234,7 +536,24 @@
         "Vanessa",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "poison"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "poison"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Poison item"
     },
     {
       "name": "Scrap Salvage (Bronze)",
@@ -246,15 +565,35 @@
         "Karnok",
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Scrap"
+        ],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Scrap (+Shield)"
     },
     {
       "name": "Jungle Ruins",
-      "event_type": "item_reward",
+      "event_type": "utility_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "You find abandoned ruins in the jungle"
     },
     {
       "name": "Mag Storage (Diamond)",
@@ -262,7 +601,24 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tech"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tech"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Tech item"
     },
     {
       "name": "Freezer (Silver)",
@@ -272,7 +628,24 @@
         "Jules",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "freeze"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "freeze"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Freeze item"
     },
     {
       "name": "Procure Medkit (Bronze)",
@@ -282,17 +655,43 @@
         "Vanessa",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Med Kit"
+        ],
+        "reward_tags": [
+          "heal"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Medkit (+Heal)"
     },
     {
       "name": "Mad Maddie",
-      "event_type": "item_reward",
+      "event_type": "item_event",
       "event_heroes": [
         "Vanessa",
         "Mak",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Improve your Ammo items",
+      "effect": "improve_items",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Treasure Chest (Gold)",
@@ -300,7 +699,20 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get an item"
     },
     {
       "name": "Freezer (Bronze)",
@@ -310,7 +722,24 @@
         "Jules",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "freeze"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "freeze"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Freeze item"
     },
     {
       "name": "Treasure Chest (Silver)",
@@ -318,15 +747,34 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get an item"
     },
     {
       "name": "Underground Resistance",
-      "event_type": "item_reward",
+      "event_type": "unknown_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Deliver a package to further the resistance",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "House Party (Gold)",
@@ -336,15 +784,42 @@
         "Dooley",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "friend"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "friend"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Friend"
     },
     {
       "name": "Mandala",
-      "event_type": "item_reward",
+      "event_type": "item_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Transform your items into something new",
+      "effect": "transform_items",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Deep Sea Fishing (Gold)",
@@ -352,7 +827,24 @@
       "event_heroes": [
         "Vanessa"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "aquatic"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "aquatic"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get an Aquatic item"
     },
     {
       "name": "Excavation (Silver)",
@@ -360,7 +852,8 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Relic from any hero"
     },
     {
       "name": "[Crash Site Expedition] Crystal Growth Chamber",
@@ -378,31 +871,59 @@
         "Dooley",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "friend"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "friend"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Friend"
     },
     {
       "name": "Laurel's Night Terrors",
-      "event_type": "item_reward",
+      "event_type": "unknown_event",
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Comfort Laurel",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Dooley's Crib",
-      "event_type": "item_reward",
+      "event_type": "utility_event",
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Some of the Bazaar's most remarkable technology has been collected here"
     },
     {
       "name": "Street Festival",
-      "event_type": "item_reward",
+      "event_type": "utility_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Browse the Merchant stalls"
     },
     {
       "name": "Alchemy Lab (Bronze)",
@@ -410,7 +931,24 @@
       "event_heroes": [
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "potion"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "potion"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Potion"
     },
     {
       "name": "Extract Extract (Diamond)",
@@ -421,7 +959,26 @@
         "Vanessa",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "poison"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Extract"
+        ],
+        "reward_tags": [
+          "poison"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get an Extract (+Poison)"
     },
     {
       "name": "Alchemy Lab (Diamond)",
@@ -429,7 +986,24 @@
       "event_heroes": [
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "potion"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "potion"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Potion"
     },
     {
       "name": "Tutorial Day 4 Hour 2 - Free Item",
@@ -449,11 +1023,17 @@
     },
     {
       "name": "Bex",
-      "event_type": "item_reward",
+      "event_type": "unknown_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Attend a Bazball Game with Bex",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Deep Sea Fishing (Silver)",
@@ -461,7 +1041,24 @@
       "event_heroes": [
         "Vanessa"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "aquatic"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "aquatic"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get an Aquatic item"
     },
     {
       "name": "Cabin Fishing (Gold)",
@@ -469,7 +1066,27 @@
       "event_heroes": [
         "Vanessa"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "aquatic"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "aquatic"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Aquatic item"
     },
     {
       "name": "Tomb of the Ancients (Encounter)",
@@ -487,7 +1104,24 @@
         "Jules",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "freeze"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "freeze"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Freeze item"
     },
     {
       "name": "Obstacle Course (Bronze)",
@@ -498,7 +1132,24 @@
         "Jules",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "slow"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "slow"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Slow item"
     },
     {
       "name": "Moonlit Meadow (Diamond)",
@@ -507,7 +1158,8 @@
         "Mak",
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Moon Lily (+Regen)"
     },
     {
       "name": "Scrap Salvage (Silver)",
@@ -519,15 +1171,41 @@
         "Karnok",
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Scrap"
+        ],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Scrap (+Shield)"
     },
     {
       "name": "Wink",
-      "event_type": "item_reward",
+      "event_type": "item_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Randomizes and upgrade all your items",
+      "effect": "improve_items",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Cinder Chase (Gold)",
@@ -535,7 +1213,26 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Cinders"
+        ],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Cinders (+Burn)"
     },
     {
       "name": "Furnace (Gold)",
@@ -547,7 +1244,27 @@
         "Stelle",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Burn item"
     },
     {
       "name": "Racetrack (Gold)",
@@ -559,7 +1276,24 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "haste"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "haste"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Haste item."
     },
     {
       "name": "Recycling Center (Gold)",
@@ -567,7 +1301,23 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "!weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary",
+          "weapon"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a non-Weapon item"
     },
     {
       "name": "Utility Box (Gold)",
@@ -575,18 +1325,45 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tool"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tool"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Tool"
     },
     {
       "name": "Botul",
-      "event_type": "item_reward",
+      "event_type": "item_event",
       "event_heroes": [
         "Vanessa",
         "Dooley",
         "Mak",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Improve your Poison items",
+      "effect": "improve_items",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Eating Contest",
@@ -594,7 +1371,27 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Chocolate Bar"
+        ],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get some Chocolate Bars",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Battlefield (Gold)",
@@ -602,7 +1399,27 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "weapon"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Weapon"
     },
     {
       "name": "DEFUNCT - Street Festival (Dooley)",
@@ -618,7 +1435,24 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tech"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tech"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Tech item"
     },
     {
       "name": "Pyre (Gold)",
@@ -630,15 +1464,38 @@
         "Stelle",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Burn item"
     },
     {
       "name": "Chef Brolin",
-      "event_type": "item_reward",
+      "event_type": "unknown_event",
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a consultation to improve your kitchen",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Moonlit Meadow (Bronze)",
@@ -647,7 +1504,8 @@
         "Mak",
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Moon Lily (+Regen)"
     },
     {
       "name": "Recycling Center (Diamond)",
@@ -655,7 +1513,23 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "!weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary",
+          "weapon"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a non-Weapon item"
     },
     {
       "name": "Reagent Harvesting (Silver)",
@@ -663,7 +1537,24 @@
       "event_heroes": [
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "reagent"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "reagent"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Reagent"
     },
     {
       "name": "Dino Trapping (Diamond)",
@@ -671,7 +1562,8 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Dinosaur"
     },
     {
       "name": "Lost and Found (Gold)",
@@ -679,7 +1571,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary",
+          "weapon"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small non-Weapon item"
     },
     {
       "name": "House Party (Diamond)",
@@ -689,7 +1598,27 @@
         "Dooley",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "friend"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "friend"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Friend"
     },
     {
       "name": "Alchemy Lab (Silver)",
@@ -697,7 +1626,24 @@
       "event_heroes": [
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "potion"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "potion"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Potion"
     },
     {
       "name": "Reagent Harvesting (Gold)",
@@ -705,7 +1651,24 @@
       "event_heroes": [
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "reagent"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "reagent"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Reagent"
     },
     {
       "name": "Abandoned Property (Diamond)",
@@ -714,7 +1677,24 @@
         "Pygmalien",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "property"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "property"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Property"
     },
     {
       "name": "[Crash Site Expedition] Command Nexus",
@@ -740,7 +1720,24 @@
         "Dooley",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "friend"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "friend"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Friend"
     },
     {
       "name": "[Jungle Expedition] Temple Reliquary",
@@ -756,7 +1753,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary",
+          "weapon"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small non-Weapon item"
     },
     {
       "name": "Treasure Chest (Diamond)",
@@ -764,7 +1778,20 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get an item"
     },
     {
       "name": "Tech Salvage (Silver)",
@@ -772,15 +1799,41 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tech"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tech"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Tech item"
     },
     {
       "name": "Dabora",
-      "event_type": "item_reward",
+      "event_type": "unknown_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Pays handsomely for stories of heroic battles",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Abandoned Property (Silver)",
@@ -789,7 +1842,24 @@
         "Pygmalien",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "property"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "property"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Property"
     },
     {
       "name": "Dooley's Crib (Start Run 2)",
@@ -797,7 +1867,8 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Some of the Bazaar's most remarkable technology has been collected here"
     },
     {
       "name": "Scrap Salvage (Diamond)",
@@ -809,7 +1880,26 @@
         "Karnok",
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Scrap"
+        ],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Scrap (+Shield)"
     },
     {
       "name": "Furnace (Diamond)",
@@ -821,7 +1911,27 @@
         "Stelle",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Burn item"
     },
     {
       "name": "Dooley's Crib (Start Run)",
@@ -829,15 +1939,23 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Some of the Bazaar's most remarkable technology has been collected here"
     },
     {
       "name": "Advanced Training",
-      "event_type": "item_reward",
+      "event_type": "item_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Be all that you can be with Sergeant Suds (Give Types to your items)",
+      "effect": "improve_items",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Deep Sea Fishing (Diamond)",
@@ -845,7 +1963,24 @@
       "event_heroes": [
         "Vanessa"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "aquatic"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "aquatic"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get an Aquatic item"
     },
     {
       "name": "Cupboard (Diamond)",
@@ -853,7 +1988,8 @@
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Small Food"
     },
     {
       "name": "Obstacle Course (Diamond)",
@@ -864,15 +2000,33 @@
         "Jules",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "slow"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "slow"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Slow item"
     },
     {
       "name": "BazaarCON",
-      "event_type": "item_reward",
+      "event_type": "utility_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "See all that the Bazaar has to offer"
     },
     {
       "name": "Tutorial Day 4 Hour 4 - Free Item",
@@ -890,7 +2044,24 @@
         "Dooley",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "friend"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "friend"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Friend"
     },
     {
       "name": "Treasure Chest (Bronze)",
@@ -898,7 +2069,20 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get an item"
     },
     {
       "name": "Pyre (Silver)",
@@ -910,7 +2094,24 @@
         "Stelle",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Burn item"
     },
     {
       "name": "Tutorial Day 5 Hour 2 - Free Item",
@@ -926,7 +2127,8 @@
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Small Food"
     },
     {
       "name": "Aurora Dome (Encounter)",
@@ -944,7 +2146,29 @@
         "Mak",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal",
+        "regen"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "heal",
+          "regen"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Heal or Regen item"
     },
     {
       "name": "Truffle Farming (Gold)",
@@ -952,26 +2176,35 @@
       "event_heroes": [
         "Pygmalien"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Truffle"
     },
     {
       "name": "Reflecting Pool",
-      "event_type": "item_reward",
+      "event_type": "utility_event",
       "event_heroes": [
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "An echo of the past. A vision of the future"
     },
     {
       "name": "Aldric",
-      "event_type": "item_reward",
+      "event_type": "item_event",
       "event_heroes": [
         "Pygmalien",
         "Mak",
         "Jules",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Improve your Heal and Regen items",
+      "effect": "improve_items",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Sharpening Kit (Silver)",
@@ -979,7 +2212,26 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "damage"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Sharpening Stone"
+        ],
+        "reward_tags": [
+          "damage"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Sharpening Stone (+Damage)"
     },
     {
       "name": "Workshop (Diamond)",
@@ -987,7 +2239,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tool"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tool"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Tool"
     },
     {
       "name": "Chef Brolin (Level Up)",
@@ -995,7 +2264,8 @@
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a consultation to improve your kitchen"
     },
     {
       "name": "[Jungle Expedition] Temple Vault (Obsidian)",
@@ -1014,7 +2284,24 @@
         "Jules",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "slow"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "slow"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Slow item"
     },
     {
       "name": "Armory (Bronze)",
@@ -1022,7 +2309,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "weapon"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Weapon"
     },
     {
       "name": "[Jungle Expedition] Temple Vault (Toxic)",
@@ -1034,11 +2338,17 @@
     },
     {
       "name": "Shrouded Figure",
-      "event_type": "item_reward",
+      "event_type": "unknown_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Knowledge, Wealth, or Power. Which do you seek?",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Botanical Gardens (Bronze)",
@@ -1047,15 +2357,36 @@
         "Vanessa",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "poison"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "poison"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Poison item"
     },
     {
       "name": "Investment Pitch",
-      "event_type": "item_reward",
+      "event_type": "resource_event",
       "event_heroes": [
         "Pygmalien"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Make a pitch for a financial boost",
+      "resource_rewards": {
+        "income": 1
+      }
     },
     {
       "name": "Security Center (Gold)",
@@ -1068,7 +2399,24 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Shield item"
     },
     {
       "name": "Robotics Factory (Encounter)",
@@ -1085,7 +2433,25 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "You find an abandoned chest",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Dino Trapping (Silver)",
@@ -1093,7 +2459,8 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Dinosaur"
     },
     {
       "name": "Tech Salvage (Gold)",
@@ -1101,7 +2468,27 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tech"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tech"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Tech item"
     },
     {
       "name": "Furnace (Silver)",
@@ -1113,7 +2500,27 @@
         "Stelle",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Burn item"
     },
     {
       "name": "Moonlit Meadow (Silver)",
@@ -1122,7 +2529,8 @@
         "Mak",
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Moon Lily (+Regen)"
     },
     {
       "name": "Battlefield (Diamond)",
@@ -1130,7 +2538,27 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "weapon"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Weapon"
     },
     {
       "name": "Invest in Yourself (Day 3-4)",
@@ -1138,7 +2566,8 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Gain {ability.0} Income"
     },
     {
       "name": "Excavation (Bronze)",
@@ -1146,7 +2575,8 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Relic from any hero"
     },
     {
       "name": "Battlefield (Silver)",
@@ -1154,7 +2584,27 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "weapon"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Weapon"
     },
     {
       "name": "Pyre (Diamond)",
@@ -1166,7 +2616,24 @@
         "Stelle",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Burn item"
     },
     {
       "name": "[Jungle Expedition] Temple Expedition",
@@ -1183,7 +2650,8 @@
         "Mak",
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Moon Lily (+Regen)"
     },
     {
       "name": "Tutorial Day 5 Hour 5 - Free Item",
@@ -1199,7 +2667,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary",
+          "weapon"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small non-Weapon item"
     },
     {
       "name": "Guard Locker (Bronze)",
@@ -1212,7 +2697,27 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Shield item"
     },
     {
       "name": "Cabin Fishing (Silver)",
@@ -1220,7 +2725,27 @@
       "event_heroes": [
         "Vanessa"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "aquatic"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "aquatic"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Aquatic item"
     },
     {
       "name": "Battlefield (Bronze)",
@@ -1228,7 +2753,27 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "weapon"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Weapon"
     },
     {
       "name": "Cinder Chase (Diamond)",
@@ -1236,7 +2781,26 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "burn"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Cinders"
+        ],
+        "reward_tags": [
+          "burn"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Cinders (+Burn)"
     },
     {
       "name": "The Financial District - Economic Seminar",
@@ -1252,7 +2816,8 @@
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Food"
     },
     {
       "name": "Deep Sea Fishing (Bronze)",
@@ -1260,7 +2825,24 @@
       "event_heroes": [
         "Vanessa"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "aquatic"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "aquatic"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get an Aquatic item"
     },
     {
       "name": "Extract Extract (Gold)",
@@ -1271,7 +2853,26 @@
         "Vanessa",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "poison"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Extract"
+        ],
+        "reward_tags": [
+          "poison"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get an Extract (+Poison)"
     },
     {
       "name": "Procure Medkit (Silver)",
@@ -1281,7 +2882,26 @@
         "Vanessa",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Med Kit"
+        ],
+        "reward_tags": [
+          "heal"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Medkit (+Heal)"
     },
     {
       "name": "[Jungle Expedition] Temple Vault (Fiery)",
@@ -1299,23 +2919,59 @@
         "Mak",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal",
+        "regen"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "heal",
+          "regen"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Heal or Regen item"
     },
     {
       "name": "Artisan Dunes",
-      "event_type": "item_reward",
+      "event_type": "item_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "The craftsman at the Artisan Dunes offers a variety of ways to enchance your offensive items",
+      "effect": "enhance_offensive_items",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Form",
-      "event_type": "item_reward",
+      "event_type": "item_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Improve your Weapons",
+      "effect": "improve_items",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Salvage Yard (Encounter)",
@@ -1333,7 +2989,26 @@
         "Mak",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal",
+        "regen"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "heal",
+          "regen"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Heal or Regen item"
     },
     {
       "name": "Mimic DEBUG",
@@ -1349,7 +3024,27 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tech"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tech"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Tech item"
     },
     {
       "name": "Racetrack (Silver)",
@@ -1361,7 +3056,24 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "haste"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "haste"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Haste item."
     },
     {
       "name": "Extract Extract (Bronze)",
@@ -1372,7 +3084,26 @@
         "Vanessa",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "poison"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Extract"
+        ],
+        "reward_tags": [
+          "poison"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get an Extract (+Poison)"
     },
     {
       "name": "Armory (Gold)",
@@ -1380,7 +3111,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "weapon"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Weapon"
     },
     {
       "name": "Racetrack (Diamond)",
@@ -1392,7 +3140,24 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "haste"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "haste"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Haste item."
     },
     {
       "name": "Dino Trapping (Bronze)",
@@ -1400,7 +3165,8 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Dinosaur"
     },
     {
       "name": "Excavation (Gold)",
@@ -1408,7 +3174,8 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Relic from any hero"
     },
     {
       "name": "Gumball Machine (Event)",
@@ -1416,7 +3183,25 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Blue Gumball",
+          "Green Gumball",
+          "Red Gumball",
+          "Yellow Gumball"
+        ],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get gumballs"
     },
     {
       "name": "Botanical Gardens (Gold)",
@@ -1425,7 +3210,24 @@
         "Vanessa",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "poison"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "poison"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Poison item"
     },
     {
       "name": "Sharpening Kit (Bronze)",
@@ -1433,7 +3235,26 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "damage"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Sharpening Stone"
+        ],
+        "reward_tags": [
+          "damage"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Sharpening Stone (+Damage)"
     },
     {
       "name": "Invest in Yourself (Day 5-6)",
@@ -1441,7 +3262,8 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Gain {ability.0} Income"
     },
     {
       "name": "Botanical Gardens (Diamond)",
@@ -1450,7 +3272,24 @@
         "Vanessa",
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "poison"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "poison"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Poison item"
     },
     {
       "name": "Security Center (Silver)",
@@ -1463,7 +3302,24 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Shield item"
     },
     {
       "name": "Guard Locker (Gold)",
@@ -1476,7 +3332,27 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Shield item"
     },
     {
       "name": "Reagent Harvesting (Diamond)",
@@ -1484,11 +3360,28 @@
       "event_heroes": [
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "reagent"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "reagent"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Reagent"
     },
     {
       "name": "D'flek",
-      "event_type": "item_reward",
+      "event_type": "item_event",
       "event_heroes": [
         "Dooley",
         "Pygmalien",
@@ -1496,15 +3389,28 @@
         "Jules",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Improve your Shield items",
+      "effect": "improve_items",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "The Cult",
-      "event_type": "item_reward",
+      "event_type": "unknown_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Renounce your worldly possessions, and step into the embrace of the Cult\n(There is no turning back from this)",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Armory (Silver)",
@@ -1512,7 +3418,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "weapon"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Weapon"
     },
     {
       "name": "Racetrack (Bronze)",
@@ -1524,7 +3447,24 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "haste"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "haste"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Haste item."
     },
     {
       "name": "Hospital (Diamond)",
@@ -1534,7 +3474,26 @@
         "Mak",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal",
+        "regen"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "heal",
+          "regen"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Heal or Regen item"
     },
     {
       "name": "Truffle Farming (Silver)",
@@ -1542,23 +3501,29 @@
       "event_heroes": [
         "Pygmalien"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Truffle"
     },
     {
       "name": "Haddy",
-      "event_type": "item_reward",
+      "event_type": "utility_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Spin the wheel for a prize!"
     },
     {
       "name": "Likit",
-      "event_type": "item_reward",
+      "event_type": "resource_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Boost your stats with tasty treats",
+      "resource_rewards": {
+        "health": 1
+      }
     },
     {
       "name": "Truffle Farming (Bronze)",
@@ -1566,7 +3531,8 @@
       "event_heroes": [
         "Pygmalien"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Truffle"
     },
     {
       "name": "Excavation (Diamond)",
@@ -1574,15 +3540,17 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Relic from any hero"
     },
     {
       "name": "A Strange Mushroom",
-      "event_type": "item_reward",
+      "event_type": "utility_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "You find a strange mushroom in the Greenheart"
     },
     {
       "name": "Tutorial Day 3 Hour 4 - Free Item",
@@ -1600,7 +3568,26 @@
         "Vanessa",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Med Kit"
+        ],
+        "reward_tags": [
+          "heal"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Medkit (+Heal)"
     },
     {
       "name": "Tech Salvage (Diamond)",
@@ -1608,15 +3595,41 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tech"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tech"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Tech item"
     },
     {
       "name": "Family Reunion",
-      "event_type": "item_reward",
+      "event_type": "unknown_event",
       "event_heroes": [
         "Stelle"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Stelle's sister shows up to get her to come home",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Sharpening Kit (Diamond)",
@@ -1624,7 +3637,26 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "damage"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Sharpening Stone"
+        ],
+        "reward_tags": [
+          "damage"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Sharpening Stone (+Damage)"
     },
     {
       "name": "Scrap Salvage (Gold)",
@@ -1636,7 +3668,26 @@
         "Karnok",
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Scrap"
+        ],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Scrap (+Shield)"
     },
     {
       "name": "Security Center (Diamond)",
@@ -1649,7 +3700,24 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Shield item"
     },
     {
       "name": "Obstacle Course (Silver)",
@@ -1660,7 +3728,24 @@
         "Jules",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "slow"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "slow"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Slow item"
     },
     {
       "name": "Medicine Cabinet (Gold)",
@@ -1670,7 +3755,29 @@
         "Mak",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal",
+        "regen"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "heal",
+          "regen"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Heal or Regen item"
     },
     {
       "name": "Armory (Diamond)",
@@ -1678,7 +3785,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "weapon"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Weapon"
     },
     {
       "name": "Hospital (Silver)",
@@ -1688,7 +3812,26 @@
         "Mak",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal",
+        "regen"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "heal",
+          "regen"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Heal or Regen item"
     },
     {
       "name": "Reagent Harvesting (Bronze)",
@@ -1696,7 +3839,24 @@
       "event_heroes": [
         "Mak"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "reagent"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "reagent"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Reagent"
     },
     {
       "name": "Utility Box (Silver)",
@@ -1704,7 +3864,27 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tool"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tool"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Tool"
     },
     {
       "name": "Workshop (Gold)",
@@ -1712,7 +3892,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tool"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tool"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Tool"
     },
     {
       "name": "Extract Extract (Silver)",
@@ -1723,7 +3920,26 @@
         "Vanessa",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "poison"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Extract"
+        ],
+        "reward_tags": [
+          "poison"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get an Extract (+Poison)"
     },
     {
       "name": "Block Party (Gold)",
@@ -1733,7 +3949,24 @@
         "Dooley",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "friend"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "friend"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Friend"
     },
     {
       "name": "Abandoned Property (Gold)",
@@ -1742,7 +3975,24 @@
         "Pygmalien",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "property"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "property"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Property"
     },
     {
       "name": "Pearl's Dig Site",
@@ -1750,7 +4000,25 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Dig for a free item. It could be anything, but you can only keep one!",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Launch Tower (Encounter)",
@@ -1766,7 +4034,27 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tool"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tool"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Tool"
     },
     {
       "name": "Procure Medkit (Diamond)",
@@ -1776,15 +4064,35 @@
         "Vanessa",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Med Kit"
+        ],
+        "reward_tags": [
+          "heal"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Medkit (+Heal)"
     },
     {
       "name": "Thieves Guild",
-      "event_type": "item_reward",
+      "event_type": "utility_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Enter the Thieves Guild"
     },
     {
       "name": "Tutorial Day 3 Hour 5 - Free Item",
@@ -1800,7 +4108,23 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "!weapon"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary",
+          "weapon"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a non-Weapon item"
     },
     {
       "name": "[Crash Site Expedition] Crash Site Expedition",
@@ -1816,7 +4140,8 @@
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Food"
     },
     {
       "name": "Block Party (Bronze)",
@@ -1826,7 +4151,24 @@
         "Dooley",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "friend"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "friend"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Friend"
     },
     {
       "name": "Cupboard (Silver)",
@@ -1834,7 +4176,8 @@
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Small Food"
     },
     {
       "name": "Cabin Fishing (Diamond)",
@@ -1842,15 +4185,36 @@
       "event_heroes": [
         "Vanessa"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "aquatic"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "aquatic"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Aquatic item"
     },
     {
       "name": "Aerodrome",
-      "event_type": "item_reward",
+      "event_type": "utility_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "You can travel almost anywhere! (infinite rerolls)"
     },
     {
       "name": "Farmer's Market (Encounter)",
@@ -1862,11 +4226,18 @@
     },
     {
       "name": "Flambe",
-      "event_type": "item_reward",
+      "event_type": "item_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Improve your Burn items",
+      "effect": "improve_items",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Utility Box (Diamond)",
@@ -1874,7 +4245,27 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "tool"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "tool"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Tool"
     },
     {
       "name": "Invest in Yourself (Day 1-2)",
@@ -1882,7 +4273,8 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Gain {ability.0} Income"
     },
     {
       "name": "Guard Locker (Silver)",
@@ -1895,7 +4287,27 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Shield item"
     },
     {
       "name": "Dino Trapping (Gold)",
@@ -1903,7 +4315,8 @@
       "event_heroes": [
         "Dooley"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Dinosaur"
     },
     {
       "name": "Hospital (Gold)",
@@ -1913,7 +4326,26 @@
         "Mak",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "heal",
+        "regen"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "heal",
+          "regen"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Heal or Regen item"
     },
     {
       "name": "Sharpening Kit (Gold)",
@@ -1921,7 +4353,26 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "damage"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [
+          "Sharpening Stone"
+        ],
+        "reward_tags": [
+          "damage"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "any"
+      },
+      "notes": "Get a Sharpening Stone (+Damage)"
     },
     {
       "name": "Bountiful Harvest (Bronze)",
@@ -1929,7 +4380,8 @@
       "event_heroes": [
         "Jules"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Get a Food"
     },
     {
       "name": "Guard Locker (Diamond)",
@@ -1942,7 +4394,27 @@
         "Stelle",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "shield"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "shield"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small Shield item"
     },
     {
       "name": "[DEBUG] Sequential Prerequisites Test",
@@ -1954,11 +4426,17 @@
     },
     {
       "name": "Regenerative Tincture",
-      "event_type": "item_reward",
+      "event_type": "unknown_event",
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "notes": "Permanently gain Regen equal to twice your level [{ability.0}]",
+      "resource_rewards": {
+        "gold": 0,
+        "exp": 0,
+        "health": 0
+      }
     },
     {
       "name": "Abandoned Property (Bronze)",
@@ -1967,7 +4445,24 @@
         "Pygmalien",
         "Karnok"
       ],
-      "reward_tags": []
+      "reward_tags": [
+        "property"
+      ],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [
+          "property"
+        ],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary"
+        ],
+        "hero_scope": "current"
+      },
+      "notes": "Get a Property"
     },
     {
       "name": "Lost and Found (Bronze)",
@@ -1975,7 +4470,24 @@
       "event_heroes": [
         "Common"
       ],
-      "reward_tags": []
+      "reward_tags": [],
+      "card_reward": {
+        "enabled": true,
+        "exact_names": [],
+        "reward_tags": [],
+        "match_mode": "any",
+        "rarity_filter": null,
+        "rarity_rule": "normal_shop_by_day",
+        "excluded_tags": [
+          "legendary",
+          "weapon"
+        ],
+        "hero_scope": "current",
+        "size_filter": [
+          "small"
+        ]
+      },
+      "notes": "Get a Small non-Weapon item"
     },
     {
       "name": "Abandoned Property",
@@ -2915,7 +5427,9 @@
       ],
       "event_type": "item_reward",
       "exact_names": [],
-      "reward_tags": [],
+      "reward_tags": [
+        "!weapon"
+      ],
       "card_reward": {
         "enabled": true,
         "exact_names": [],

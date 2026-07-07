@@ -391,10 +391,12 @@ class App:
         self._refresh_list()
 
     def _toggle_cat(self, cat_name):
-        new_val = not self.event_cat_vars.get(cat_name, False)
-        self.event_cat_vars[cat_name] = new_val
-        btn = self.cat_btns[cat_name]
-        btn.configure(bg="#606060" if new_val else "#333333", relief=tk.SUNKEN if new_val else tk.FLAT)
+        # 单选：取消所有其他，选中当前
+        for cn in self.event_cat_vars:
+            self.event_cat_vars[cn] = (cn == cat_name)
+        for cn, btn in self.cat_btns.items():
+            active = self.event_cat_vars[cn]
+            btn.configure(bg="#606060" if active else "#333333", relief=tk.SUNKEN if active else tk.FLAT)
         self._refresh_list()
 
     def _translate_notes(self, notes):
@@ -752,11 +754,20 @@ class App:
                                 if not evt_tier or evt_tier in ct:
                                     pool.append(card)
                 elif reward_tags or card_reward:
-                    fake = {"name":data.get("name",""),"heroes":[hero],"tags":reward_tags or card_reward.get("reward_tags",[]),
-                            "cross_hero":card_reward.get("hero_scope","")=="any" if card_reward else False,
-                            "size":(card_reward.get("size_filter",[None])[0] if card_reward and card_reward.get("size_filter") else ""),
-                            "exclude_tags":card_reward.get("excluded_tags",[]) if card_reward else []}
-                    pool = build_shop_pool(hero, fake, self.cards, event_tiers)
+                    # 分离排除标签 (!weapon) 和包含标签
+                    tags_all = reward_tags or card_reward.get("reward_tags",[])
+                    exclude_set = {t[1:].lower() for t in tags_all if t.startswith('!')}
+                    include_tags = [t.lower() for t in tags_all if not t.startswith('!')]
+                    # 直接用简易过滤（与C#插件一致）
+                    for k, card in self.cards.items():
+                        ct = card.get("tiers",[]) or []
+                        if event_tiers and not any(t.lower() in {x.lower() for x in event_tiers} for t in ct): continue
+                        ch = [h.lower() for h in (card.get("heroes",[]) or [])]
+                        if hero.lower() not in ch: continue
+                        all_tags = [t.lower() for t in (card.get("tags",[])+card.get("hidden_tags",[]))]
+                        if include_tags and not any(t in all_tags for t in include_tags): continue
+                        if exclude_set and any(t in all_tags for t in exclude_set): continue
+                        pool.append(card)
             self.total_label.configure(text=f"物品: {len(pool)} 件")
 
         elif sel_type == "skill":
