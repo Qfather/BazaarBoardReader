@@ -1,54 +1,84 @@
+param(
+    [ValidateSet("Debug", "Release")]
+    [string]$Configuration = "Debug"
+)
+
+$ErrorActionPreference = "Stop"
+
+function Copy-DllWithRetry {
+    param(
+        [string]$Source,
+        [string]$Destination,
+        [string]$Label
+    )
+
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+        try {
+            Copy-Item -LiteralPath $Source -Destination $Destination -Force
+            Write-Host "Copied to: $Destination"
+            return $true
+        }
+        catch [System.IO.IOException] {
+            if ($attempt -lt 3) {
+                Write-Host "$Label is busy, retrying... ($attempt/3)"
+                Start-Sleep -Milliseconds 500
+            }
+            else {
+                Write-Warning "$Label is locked: $Destination"
+                Write-Warning "Close The Bazaar, then run build.ps1 again to deploy the new DLL."
+                return $false
+            }
+        }
+    }
+
+    return $false
+}
+
 # Auto-detect game root by searching upward for TheBazaar.exe
 $gameDir = $PSScriptRoot
-while ($gameDir -and !(Test-Path "$gameDir\TheBazaar.exe")) {
+while ($gameDir -and !(Test-Path (Join-Path $gameDir "TheBazaar.exe"))) {
     $gameDir = Split-Path -Parent $gameDir
 }
 if (!$gameDir) {
     Write-Error "Cannot find game directory (TheBazaar.exe not found). Ensure this script is inside a subfolder of the game directory."
     exit 1
 }
-Write-Host "Game directory: $gameDir"
 
-$managedDir = "$gameDir\TheBazaar_Data\Managed"
-$bepInExDir = "$gameDir\BepInEx\core"
-$pluginDir = "$gameDir\BepInEx\plugins"
 $projectDir = $PSScriptRoot
-$outputDll = "$projectDir\BazaarBoardReader.dll"
-$csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+$projectFile = Join-Path $projectDir "BazaarBoardReader.csproj"
+$pluginDir = Join-Path $gameDir "BepInEx\plugins"
+$buildDll = Join-Path $projectDir "bin\$Configuration\net472\BazaarBoardReader.dll"
+$rootDll = Join-Path $projectDir "BazaarBoardReader.dll"
+$pluginDll = Join-Path $pluginDir "BazaarBoardReader.dll"
 
-$refs = @()
-$refs += "$managedDir\netstandard.dll"
-$refs += "$managedDir\System.Runtime.dll"
-$refs += "$bepInExDir\BepInEx.dll"
-$refs += "$bepInExDir\0Harmony.dll"
-$refs += "$managedDir\UnityEngine.dll"
-$refs += "$managedDir\UnityEngine.CoreModule.dll"
-$refs += "$managedDir\UnityEngine.InputLegacyModule.dll"
-$refs += "$managedDir\UnityEngine.IMGUIModule.dll"
-$refs += "$managedDir\UnityEngine.TextRenderingModule.dll"
-$refs += "$managedDir\UnityEngine.UI.dll"
-$refs += "$managedDir\UnityEngine.JSONSerializeModule.dll"
-$refs += "$managedDir\BazaarBattleService.dll"
-$refs += "$managedDir\BazaarGameClient.dll"
-$refs += "$managedDir\BazaarGameShared.dll"
-$refs += "$managedDir\TheBazaarRuntime.dll"
-$refs += "$managedDir\Newtonsoft.Json.dll"
+Write-Host "Game directory: $gameDir"
+Write-Host "Configuration: $Configuration"
 
-$refArgs = ""
-foreach ($r in $refs) {
-    $refArgs += "/r:`"$r`" "
+if (!(Get-Command dotnet -ErrorAction SilentlyContinue)) {
+    Write-Error "dotnet SDK was not found in PATH. Install .NET SDK 8.0+ or open this from a shell where dotnet is available."
+    exit 1
 }
 
-$sourceFile = "$projectDir\BazaarBoardReaderPlugin.cs"
-$cmd = "& `"$csc`" /target:library /out:`"$outputDll`" $refArgs `"$sourceFile`" 2>&1"
-Write-Host "Compiling..."
-Write-Host $cmd
-Invoke-Expression $cmd
+Write-Host "Building project..."
+dotnet build $projectFile -c $Configuration
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "dotnet build failed with code: $LASTEXITCODE"
+    exit $LASTEXITCODE
+}
 
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "SUCCESS: $outputDll"
-    Copy-Item $outputDll "$pluginDir\BazaarBoardReader.dll" -Force
-    Write-Host "Copied to plugins folder."
-} else {
-    Write-Host "FAILED with code: $LASTEXITCODE"
+if (!(Test-Path $buildDll)) {
+    Write-Error "Build succeeded, but output DLL was not found: $buildDll"
+    exit 1
+}
+
+if (!(Test-Path $pluginDir)) {
+    New-Item -ItemType Directory -Path $pluginDir | Out-Null
+}
+
+$rootCopied = Copy-DllWithRetry -Source $buildDll -Destination $rootDll -Label "Root DLL"
+$pluginCopied = Copy-DllWithRetry -Source $buildDll -Destination $pluginDll -Label "Plugin DLL"
+
+Write-Host "SUCCESS: $buildDll"
+if (!$rootCopied -or !$pluginCopied) {
+    exit 2
 }

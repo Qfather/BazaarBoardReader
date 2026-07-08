@@ -103,7 +103,7 @@ namespace BazaarBoardReader
     {
         private const string PluginGuid = "com.bazaar.boardreader";
         private const string PluginName = "BazaarBoardReader";
-        private const string PluginVersion = "7.4.0";
+        private const string PluginVersion = "7.6.2";
 
         internal static ManualLogSource _logger;
         private float _lastExportTime;
@@ -161,6 +161,12 @@ namespace BazaarBoardReader
         private Dictionary<string, string> _templateIdToName = new Dictionary<string, string>();
         // 已拥有物品缓存（内存持久化，不会因关背包而丢失）
         private Dictionary<string, string> _ownedItemsCache = new Dictionary<string, string>();
+        private Dictionary<string, string> _ownedBoardItemsCache = new Dictionary<string, string>();
+        private Dictionary<string, string> _ownedStorageItemsCache = new Dictionary<string, string>();
+        private Dictionary<string, string> _lastLiveBoardItems = new Dictionary<string, string>();
+        private Dictionary<string, string> _lastLiveStorageItems = new Dictionary<string, string>();
+        private bool _lastLiveScanSawStorage;
+        private bool _backpackOpen;
         private int _currentGold = 0;
         private int _currentIncome = 0;
         private int _currentHealth = 0;
@@ -402,8 +408,11 @@ namespace BazaarBoardReader
                     { if (lbl.ScreenPos.z <= 0) continue; DrawLabel(lbl, false); }
                     foreach (var lbl in _skillLabels)
                     { if (lbl.ScreenPos.z <= 0) continue; DrawLabel(lbl, false); }
-                    foreach (var lbl in _shopLabels)
-                    { if (lbl.ScreenPos.z <= 0) continue; DrawLabel(lbl, true); }
+                    if (!_backpackOpen)
+                    {
+                        foreach (var lbl in _shopLabels)
+                        { if (lbl.ScreenPos.z <= 0) continue; DrawLabel(lbl, true); }
+                    }
                 }
             }
             if (_showSliders) { try { DrawSlidersPanel(); } catch (Exception e) { _logger.LogError("F7面板: " + e); } }
@@ -448,10 +457,15 @@ namespace BazaarBoardReader
                     if (dx != 0 || dy != 0)
                         GUI.Label(new Rect(tr.x + dx, tr.y + dy, w, sz.y), lbl.Text, os);
 
+            // 无匹配时整体30%透明度
+            bool isEmpty = subLines.Length > 0 && subLines[0].StartsWith("☆☆☆");
+            float masterAlpha = isEmpty ? 0.3f : 1f;
+
             // 主文字颜色
-            if (isShop) style.normal.textColor = new Color(0.2f, 1f, 0.3f);
-            else if (_tierColors.ContainsKey(lbl.Tier)) style.normal.textColor = _tierColors[lbl.Tier];
-            else style.normal.textColor = Color.white;
+            if (isShop) style.normal.textColor = new Color(0.2f, 1f, 0.3f, masterAlpha);
+            else if (_tierColors.ContainsKey(lbl.Tier))
+            { var tc = _tierColors[lbl.Tier]; style.normal.textColor = new Color(tc.r, tc.g, tc.b, masterAlpha); }
+            else style.normal.textColor = new Color(1, 1, 1, masterAlpha);
             GUI.Label(tr, lbl.Text, style);
 
             // 多行副文字
@@ -1157,6 +1171,48 @@ namespace BazaarBoardReader
 
         // ==================== 标签收集 ====================
 
+        private static string GetTransformContext(Transform t)
+        {
+            try
+            {
+                var names = new List<string>();
+                Transform cur = t;
+                for (int d = 0; cur != null && d < 12; d++) { names.Add(cur.name ?? ""); cur = cur.parent; }
+                return string.Join("/", names.ToArray());
+            }
+            catch { return ""; }
+        }
+
+        private bool IsPlayerSkillTransform(Transform t, Camera cam)
+        {
+            if (t == null) return false;
+            var ctx = GetTransformContext(t);
+            if (ctx.IndexOf("Opponent", StringComparison.OrdinalIgnoreCase) >= 0
+                || ctx.IndexOf("Enemy", StringComparison.OrdinalIgnoreCase) >= 0
+                || ctx.IndexOf("Monster", StringComparison.OrdinalIgnoreCase) >= 0)
+                return false;
+
+            try
+            {
+                var bm = t.GetComponentInParent<BoardManager>();
+                if (bm != null) return bm == BoardManager.Instance;
+            }
+            catch { }
+
+            if (ctx.IndexOf("Player", StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+
+            try
+            {
+                if (cam != null)
+                {
+                    var sp = cam.WorldToScreenPoint(t.position);
+                    if (sp.z > 0) return sp.y <= Screen.height * 0.65f;
+                }
+            }
+            catch { }
+            return true;
+        }
         private void RefreshOverlayLabels()
         {
             _itemLabels.Clear(); _skillLabels.Clear(); _shopLabels.Clear();
@@ -1186,6 +1242,7 @@ namespace BazaarBoardReader
                             }
                             else if (typeStr == "Skill")
                             {
+                                if (!IsPlayerSkillTransform(cc.transform, cam)) continue;
                                 sp.y -= _skillOffsetY;
                                 _skillLabels.Add(new OverlayLabel { Text = GetCardName(cd), Tier = cd.Tier.ToString(), ScreenPos = sp });
                             }
@@ -1205,15 +1262,17 @@ namespace BazaarBoardReader
 #pragma warning restore 0618
                     if (spm != null && spm.Length > 0)
                     {
-                        var list = _skillListField.GetValue(spm[0]) as IList;
-                        if (list != null)
+                        foreach (var mgr in spm)
                         {
+                            var list = _skillListField.GetValue(mgr) as IList;
+                            if (list == null) continue;
                             foreach (var obj in list)
                             {
                                 try
                                 {
                                     var r = obj as TheBazaar.SkillProxyRenderer;
                                     if (r == null || r.Card == null) continue;
+                                    if (!IsPlayerSkillTransform(r.transform, cam)) continue;
                                     var sp = cam.WorldToScreenPoint(r.transform.position);
                                     sp.y -= _skillOffsetY;
                                     _skillLabels.Add(new OverlayLabel { Text = GetCardName(r.Card), Tier = r.Card.Tier.ToString(), ScreenPos = sp });
@@ -1231,49 +1290,9 @@ namespace BazaarBoardReader
 
         private void ScanEventRecommendations(Camera cam)
         {
-            try
-            {
-                if (_eventNotes.Count == 0) return;
-                var gsPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "game_state.json");
-                if (!File.Exists(gsPath)) return;
-                var json = File.ReadAllText(gsPath, Encoding.UTF8);
-                var gs = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-                if (gs == null) return;
-
-                var options = gs.ContainsKey("event_options_detailed")
-                    ? gs["event_options_detailed"] as Newtonsoft.Json.Linq.JArray : null;
-                if (options == null) return;
-
-                // 收集所有推荐
-                var recs = new List<string>();
-                foreach (var opt in options)
-                {
-                    var tid = opt.Value<string>("template_id");
-                    var eid = opt.Value<string>("id");
-                    var rec = GetEventRecommendation(eid, tid);
-                    if (rec != null) recs.Add(rec);
-                }
-                if (recs.Count == 0) return;
-
-                // 把推荐文本附加到现有商店标签上（按顺序匹配）
-                int recIdx = 0;
-                for (int i = 0; i < _shopLabels.Count && recIdx < recs.Count; i++)
-                {
-                    var lbl = _shopLabels[i];
-                    if (string.IsNullOrEmpty(lbl.SubText)) continue; // 无评分的跳过
-                    // 在现有标签下方追加推荐
-                    if (string.IsNullOrEmpty(lbl.HoverData))
-                        lbl.HoverData = recs[recIdx];
-                    else
-                        lbl.HoverData += "\n" + recs[recIdx];
-                    // 也追加到SubText
-                    lbl.SubText += "\n" + recs[recIdx];
-                    recIdx++;
-                }
-            }
-            catch { }
+            // Event recommendation text is handled by RateEvent so that non-item
+            // events never leak note-only recommendations into overlays.
         }
-
         private void ScanShops(Camera cam)
         {
             try
@@ -1294,18 +1313,10 @@ namespace BazaarBoardReader
                     if (shopName.EndsWith("(Clone)")) shopName = shopName.Substring(0, shopName.Length - 7);
                     var rating = RateShop(shopName);
                     if (rating == null) rating = RateEvent(shopName);
-                    // 事件推荐文本（金色，与核心/灵活同大小）
-                    var rec = GetEventRecommendation(shopName);
-                    if (string.IsNullOrEmpty(rec) && _eventNotes.Count > 0)
-                        _logger.LogInfo(string.Format("[BoardReader] 推荐未匹配: {0}", shopName));
-                    if (!string.IsNullOrEmpty(rec))
-                    {
-                        if (string.IsNullOrEmpty(rating))
-                            rating = "◆ " + rec;
-                        else
-                            rating += "\n◆ " + rec;
-                    }
-                    if (rating == null) _logger.LogInfo(string.Format("[BoardReader] 无匹配: {0}", shopName));
+                    if (rating == null) rating = RateLevelUpReward(shopName);
+                    // 事件推荐文本（仅当已匹配到事件时才显示）
+                    if (rating == null && _eventNotes.Count > 0)
+                        _logger.LogInfo(string.Format("[BoardReader] 无匹配: {0}", shopName));
                     _shopLabels.Add(new OverlayLabel { Text = Translate(shopName), Tier = "Invalid", ScreenPos = sp, SubText = rating ?? "", HoverData = "" });
                 }
             }
@@ -1420,7 +1431,7 @@ namespace BazaarBoardReader
                         var newHero = gs.ContainsKey("hero") ? gs["hero"]?.ToString() ?? "" : "";
                         // 新对局检测：天数变小或英雄变了 → 清缓存
                         if ((newDay < _currentDay && _currentDay > 0) || (!string.IsNullOrEmpty(newHero) && !string.IsNullOrEmpty(_detectedHero) && newHero != _detectedHero))
-                            _ownedItemsCache.Clear();
+                            ClearOwnedItemCaches();
                         _currentDay = newDay;
                         if (!string.IsNullOrEmpty(newHero) && string.IsNullOrEmpty(_detectedHero))
                             _detectedHero = newHero;
@@ -1651,100 +1662,197 @@ namespace BazaarBoardReader
             return result;
         }
 
+        private void ClearOwnedItemCaches()
+        {
+            _ownedItemsCache.Clear();
+            _ownedBoardItemsCache.Clear();
+            _ownedStorageItemsCache.Clear();
+            _lastLiveBoardItems.Clear();
+            _lastLiveStorageItems.Clear();
+            _lastLiveScanSawStorage = false;
+            _backpackOpen = false;
+        }
+
         private List<KeyValuePair<string, string>> GatherAllItemsWithTier()
         {
-            var fresh = new Dictionary<string, string>(); // lowercased name → rarity
+            var fresh = ScanLiveOwnedItemsWithTier();
+            if (fresh != null && fresh.Count > 0)
+            {
+                _ownedBoardItemsCache.Clear();
+                foreach (var kv in _lastLiveBoardItems)
+                    _ownedBoardItemsCache[kv.Key] = kv.Value;
 
-            // 1. 从 TrackedCards 收集
-            lock (TrackedCards)
-            {
-                foreach (var kv in TrackedCards)
+                if (_lastLiveScanSawStorage)
                 {
-                    var tc = kv.Value;
-                    if (tc.IsPlayer && tc.Type == "Item" && !string.IsNullOrEmpty(tc.Name))
-                    {
-                        var key = BoardCardName(tc.Name).ToLower();
-                        fresh[key] = tc.Tier ?? "Bronze";
-                    }
+                    _ownedStorageItemsCache.Clear();
+                    foreach (var kv in _lastLiveStorageItems)
+                        _ownedStorageItemsCache[kv.Key] = kv.Value;
                 }
             }
-            // 2. TrackedCards 少时从场景收集
-            if (fresh.Count < 3)
+            else if (_ownedBoardItemsCache.Count == 0 && _ownedStorageItemsCache.Count == 0)
             {
-                try
+                var fallback = TryReadOwnedItemsFromGameState();
+                if (fallback == null || fallback.Count == 0)
                 {
-#pragma warning disable 0618
-                    var all = UnityEngine.Object.FindObjectsOfType<CardController>();
-#pragma warning restore 0618
-                    if (all != null)
+                    fallback = new Dictionary<string, string>();
+                    lock (TrackedCards)
                     {
-                        foreach (var cc in all)
+                        foreach (var kv in TrackedCards)
                         {
-                            try
+                            var tc = kv.Value;
+                            if (tc.IsPlayer && tc.Type == "Item" && !string.IsNullOrEmpty(tc.Name))
                             {
-                                var cd = cc.CardData;
-                                if (cd == null || cd.Type.ToString() != "Item") continue;
-                                if (!IsPlayerItem(cc.transform)) continue;
-                                var name = GetCardNameStatic(cd);
-                                if (!string.IsNullOrEmpty(name) && name != "???")
-                                    fresh[name.ToLower()] = cd.Tier.ToString();
-                            }
-                            catch { }
-                        }
-                    }
-                }
-                catch { }
-            }
-            // 3. 合并 game_state.json（含背包）
-            if (_templateIdToName.Count > 0)
-            {
-                try
-                {
-                    var gsPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "BoardData", "game_state.json");
-                    if (File.Exists(gsPath))
-                    {
-                        var gsJson = File.ReadAllText(gsPath, Encoding.UTF8);
-                        var gs = JsonConvert.DeserializeObject<Dictionary<string, object>>(gsJson);
-                        if (gs != null)
-                        {
-                            var ownedItems = gs.ContainsKey("owned_items") ? gs["owned_items"] as Newtonsoft.Json.Linq.JArray : null;
-                            if (ownedItems == null && gs.ContainsKey("owned_cards"))
-                                ownedItems = gs["owned_cards"] as Newtonsoft.Json.Linq.JArray;
-                            if (ownedItems != null)
-                            {
-                                foreach (var item in ownedItems)
-                                {
-                                    try
-                                    {
-                                        var tid = item.Value<string>("template_id");
-                                        var rarity = item.Value<string>("rarity") ?? "Bronze";
-                                        if (!string.IsNullOrEmpty(tid) && _templateIdToName.ContainsKey(tid))
-                                        {
-                                            var key = _templateIdToName[tid].ToLower();
-                                            if (!fresh.ContainsKey(key))
-                                                fresh[key] = rarity;
-                                        }
-                                    }
-                                    catch { }
-                                }
+                                var key = BoardCardName(tc.Name).ToLower();
+                                fallback[key] = tc.Tier ?? "Bronze";
                             }
                         }
                     }
                 }
-                catch { }
+
+                foreach (var kv in fallback)
+                    _ownedBoardItemsCache[kv.Key] = kv.Value;
             }
 
-            // 4. 合并到持久缓存（全部小写 key，统一匹配）
-            foreach (var kv in fresh)
+            _ownedItemsCache.Clear();
+            foreach (var kv in _ownedBoardItemsCache)
+                _ownedItemsCache[kv.Key] = kv.Value;
+            foreach (var kv in _ownedStorageItemsCache)
                 _ownedItemsCache[kv.Key] = kv.Value;
 
-            // 返回缓存中的所有物品
             var result = new List<KeyValuePair<string, string>>();
             foreach (var kv in _ownedItemsCache)
                 result.Add(new KeyValuePair<string, string>(kv.Key, kv.Value));
             return result;
         }
 
+        private Dictionary<string, string> ScanLiveOwnedItemsWithTier()
+        {
+            var owned = new Dictionary<string, string>();
+            _lastLiveBoardItems.Clear();
+            _lastLiveStorageItems.Clear();
+            _lastLiveScanSawStorage = false;
+            _backpackOpen = false;
+
+            try
+            {
+#pragma warning disable 0618
+                var all = UnityEngine.Object.FindObjectsOfType<CardController>();
+#pragma warning restore 0618
+                if (all == null) return owned;
+
+                foreach (var cc in all)
+                {
+                    try
+                    {
+                        if (cc == null || cc.gameObject == null || !cc.gameObject.activeInHierarchy)
+                            continue;
+
+                        var cd = cc.CardData;
+                        if (cd == null || cd.Type.ToString() != "Item")
+                            continue;
+
+                        string section = GetCardSection(cd) ?? "";
+                        string uiCtx = GetUiContext(cc) ?? "";
+                        bool looksShop = section.IndexOf("Shop", StringComparison.OrdinalIgnoreCase) >= 0
+                            || section.IndexOf("Selection", StringComparison.OrdinalIgnoreCase) >= 0
+                            || section.IndexOf("Reward", StringComparison.OrdinalIgnoreCase) >= 0
+                            || uiCtx.IndexOf("Shop", StringComparison.OrdinalIgnoreCase) >= 0
+                            || uiCtx.IndexOf("Merchant", StringComparison.OrdinalIgnoreCase) >= 0
+                            || uiCtx.IndexOf("OpponentItemSocket_", StringComparison.OrdinalIgnoreCase) >= 0;
+                        if (looksShop)
+                            continue;
+
+                        bool isStorage = section.IndexOf("Stash", StringComparison.OrdinalIgnoreCase) >= 0
+                            || section.IndexOf("Storage", StringComparison.OrdinalIgnoreCase) >= 0
+                            || uiCtx.IndexOf("PlayerStorageSocket_", StringComparison.OrdinalIgnoreCase) >= 0
+                            || uiCtx.IndexOf("Stash", StringComparison.OrdinalIgnoreCase) >= 0
+                            || uiCtx.IndexOf("Storage", StringComparison.OrdinalIgnoreCase) >= 0;
+
+                        bool isOwned = false;
+                        try { isOwned = IsPlayerBoardFor(cc); }
+                        catch { }
+                        if (!isOwned)
+                        {
+                            isOwned = section.IndexOf("Hand", StringComparison.OrdinalIgnoreCase) >= 0
+                                || isStorage
+                                || uiCtx.IndexOf("PlayerItemSocket_", StringComparison.OrdinalIgnoreCase) >= 0
+                                || IsPlayerItem(cc.transform);
+                        }
+                        if (!isOwned)
+                            continue;
+
+                        var name = GetCardNameStatic(cd);
+                        if (string.IsNullOrEmpty(name) || name == "???")
+                        {
+                            var templateId = cd.TemplateId != null ? cd.TemplateId.ToString() : "";
+                            name = ResolveCardNameByTemplateId(templateId, cd);
+                        }
+                        if (string.IsNullOrEmpty(name) || name == "???")
+                            continue;
+
+                        var key = BoardCardName(name).ToLower();
+                        var tier = cd.Tier.ToString();
+                        owned[key] = tier;
+                        if (isStorage)
+                        {
+                            _lastLiveScanSawStorage = true;
+                            _backpackOpen = true;
+                            _lastLiveStorageItems[key] = tier;
+                        }
+                        else
+                        {
+                            _lastLiveBoardItems[key] = tier;
+                        }
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+            return owned;
+        }
+
+        private Dictionary<string, string> TryReadOwnedItemsFromGameState()
+        {
+            if (_templateIdToName.Count <= 0) return null;
+
+            try
+            {
+                var gsPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "game_state.json");
+                if (!File.Exists(gsPath))
+                    gsPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "BoardData", "game_state.json");
+                if (!File.Exists(gsPath)) return null;
+
+                var gsJson = File.ReadAllText(gsPath, Encoding.UTF8);
+                var gs = JsonConvert.DeserializeObject<Dictionary<string, object>>(gsJson);
+                if (gs == null) return null;
+
+                var ownedItems = gs.ContainsKey("owned_items") ? gs["owned_items"] as JArray : null;
+                if (ownedItems == null && gs.ContainsKey("owned_cards"))
+                    ownedItems = gs["owned_cards"] as JArray;
+                if (ownedItems == null) return null;
+
+                var owned = new Dictionary<string, string>();
+                foreach (var item in ownedItems)
+                {
+                    try
+                    {
+                        if (!string.Equals(item.Value<string>("card_type"), "Item", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        var tid = item.Value<string>("template_id");
+                        var rarity = item.Value<string>("rarity") ?? "Bronze";
+                        if (!string.IsNullOrEmpty(tid) && _templateIdToName.ContainsKey(tid))
+                        {
+                            var key = _templateIdToName[tid].ToLower();
+                            owned[key] = rarity;
+                        }
+                    }
+                    catch { }
+                }
+                return owned;
+            }
+            catch { return null; }
+        }
         private string BoardCardName(string english)
         {
             // 返回英文名用于阵容匹配
@@ -2120,16 +2228,63 @@ namespace BazaarBoardReader
         }
 
         // 判断卡牌在当前天数是否可能出现在商店
+        // 等级概率权重表
+        private static readonly Dictionary<int, Dictionary<string, float>> TierProbByDay = new Dictionary<int, Dictionary<string, float>>
+        {
+            {1, new Dictionary<string,float>{{"Bronze",1f},{"Silver",0f},{"Gold",0f},{"Diamond",0f}}},
+            {2, new Dictionary<string,float>{{"Bronze",0.9f},{"Silver",0.1f},{"Gold",0f},{"Diamond",0f}}},
+            {3, new Dictionary<string,float>{{"Bronze",0.7f},{"Silver",0.3f},{"Gold",0f},{"Diamond",0f}}},
+            {4, new Dictionary<string,float>{{"Bronze",0.5f},{"Silver",0.5f},{"Gold",0f},{"Diamond",0f}}},
+            {5, new Dictionary<string,float>{{"Bronze",0.25f},{"Silver",0.75f},{"Gold",0f},{"Diamond",0f}}},
+            {6, new Dictionary<string,float>{{"Bronze",0f},{"Silver",0.95f},{"Gold",0.05f},{"Diamond",0f}}},
+            {7, new Dictionary<string,float>{{"Bronze",0f},{"Silver",0.8f},{"Gold",0.2f},{"Diamond",0f}}},
+            {8, new Dictionary<string,float>{{"Bronze",0f},{"Silver",0.45f},{"Gold",0.5f},{"Diamond",0.05f}}},
+            {9, new Dictionary<string,float>{{"Bronze",0f},{"Silver",0.35f},{"Gold",0.55f},{"Diamond",0.1f}}},
+            {10,new Dictionary<string,float>{{"Bronze",0f},{"Silver",0.2f},{"Gold",0.65f},{"Diamond",0.15f}}},
+        };
+
+        private float GetWeightedScore(List<string> items, int baseScore)
+        {
+            float total = 0f;
+            foreach (var item in items)
+            {
+                var key = item.ToLower();
+                CardDataEntry card;
+                if (_cardDb.TryGetValue(key, out card))
+                    total += baseScore * GetCardWeight(card, _currentDay);
+                else
+                    total += baseScore; // 未找到卡牌默认满分
+            }
+            return total;
+        }
+
+        private float GetCardWeight(CardDataEntry card, int day)
+        {
+            if (day < 1 || day > 10) return 1f;
+            if (card.tiers == null || card.tiers.Count == 0) return 0f;
+            var probs = TierProbByDay[day];
+            float bestProb = 0f;
+            foreach (var tier in card.tiers)
+            {
+                float p;
+                if (probs.TryGetValue(tier, out p) && p > bestProb) bestProb = p;
+            }
+            if (bestProb >= 0.5f) return 1f;
+            if (bestProb >= 0.2f) return 0.5f;
+            if (bestProb > 0f) return 0.25f;
+            return 0f;
+        }
+
         private bool CardCanAppearOnDay(CardDataEntry card, int day)
         {
-            if (day < 1) return true; // 天数未知时不限制
-            if (card.tiers == null || card.tiers.Count == 0) return false; // EventEncounter 等非物品
+            if (day < 1) return true;
+            if (card.tiers == null || card.tiers.Count == 0) return false;
             foreach (var tier in card.tiers)
             {
                 int minDay;
                 if (TierMinDay.TryGetValue(tier, out minDay) && day >= minDay) return true;
             }
-            return false; // 所有等级都还没到出现天数
+            return false;
         }
 
         // 根据英文名判断物品能否在当前天数出现
@@ -2190,6 +2345,7 @@ namespace BazaarBoardReader
             MerchantEntry merchant = null;
             _merchants.TryGetValue(key, out merchant);
             if (merchant == null) return null;
+            if (IsSpecialShopWithoutDedicatedRecommendation(shopName) || IsSpecialShopWithoutDedicatedRecommendation(merchant.name)) return null;
             _logger.LogInfo(string.Format("[BoardReader] 匹配: {0} → {1}", shopName, merchant.name));
             if (string.IsNullOrEmpty(_detectedHero)) return null;
 
@@ -2325,25 +2481,31 @@ namespace BazaarBoardReader
                     flexMissing.Add(item);
             }
 
-            if (coreOwned.Count == 0 && coreMissing.Count == 0 && flexOwned.Count == 0 && flexMissing.Count == 0) return null;
+            bool coreEmpty = coreOwned.Count == 0 && coreMissing.Count == 0;
+            bool flexEmpty = flexOwned.Count == 0 && flexMissing.Count == 0;
 
             int totalHits = coreOwned.Count + coreMissing.Count + flexOwned.Count + flexMissing.Count;
             int hitPct = pool.Count > 0 ? (int)(totalHits * 100f / pool.Count) : 0;
-            int score = (coreMissing.Count + coreOwned.Count) * 3 + (flexMissing.Count + flexOwned.Count) * 1;
-            string stars = (score >= 9 ? "★★★" : score >= 6 ? "★★" : "★") + " " + hitPct + "% (" + totalHits + "/" + pool.Count + ")";
+            float score = GetWeightedScore(coreMissing, 3) + GetWeightedScore(coreOwned, 3)
+                        + GetWeightedScore(flexMissing, 1) + GetWeightedScore(flexOwned, 1);
+            string stars;
+            if (totalHits > 0)
+                stars = (score >= 9f ? "★★★" : score >= 6f ? "★★" : "★") + " " + hitPct + "% (" + totalHits + "/" + pool.Count + ")";
+            else
+                stars = "☆☆☆ 0% (0/" + pool.Count + ")";
             var lines = new List<string> { stars };
-            // 核心行：先未拥有(正常) 再已拥有(*前缀=50%透明)，最多4个
             var coreLine = new List<string>();
             coreLine.AddRange(TranslateEach(coreMissing));
             coreLine.AddRange(TranslateEach(coreOwned).Select(s => "*" + s));
-            if (coreLine.Count > 0)
-                lines.Add(string.Join(",", coreLine.Take(4).ToArray()) + (coreLine.Count > 4 ? "……" : ""));
-            // 灵活行：同上
+            lines.Add(coreLine.Count > 0
+                ? string.Join(",", coreLine.Take(4).ToArray()) + (coreLine.Count > 4 ? "……" : "")
+                : "-");
             var flexLine = new List<string>();
             flexLine.AddRange(TranslateEach(flexMissing));
             flexLine.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
-            if (flexLine.Count > 0)
-                lines.Add(string.Join(",", flexLine.Take(4).ToArray()) + (flexLine.Count > 4 ? "……" : ""));
+            lines.Add(flexLine.Count > 0
+                ? string.Join(",", flexLine.Take(4).ToArray()) + (flexLine.Count > 4 ? "……" : "")
+                : "-");
             // 商店推荐文本
             var rec = GetEventRecommendation(shopName);
             if (!string.IsNullOrEmpty(rec))
@@ -2377,6 +2539,236 @@ namespace BazaarBoardReader
             catch (Exception ex) { _logger.LogWarning("[BoardReader] 事件加载: " + ex.Message); }
         }
 
+        private bool IsSpecialShopWithoutDedicatedRecommendation(string name)
+        {
+            var baseName = NormalizeEventBaseName(name);
+            if (baseName == "Gumball Machine"
+                || baseName == "Likit"
+                || baseName == "Eating Contest"
+                || baseName == "Pearl's Dig Site"
+                || baseName == "The Travel Agent")
+                return true;
+            return false;
+        }
+
+        private bool IsSpecialShopWithoutDedicatedRecommendation(Dictionary<string, object> evt, string shopName)
+        {
+            if (IsSpecialShopWithoutDedicatedRecommendation(shopName)) return true;
+            if (evt == null) return false;
+            if (evt.ContainsKey("name") && IsSpecialShopWithoutDedicatedRecommendation(evt["name"] != null ? evt["name"].ToString() : "")) return true;
+            if (evt.ContainsKey("source_internal_name") && IsSpecialShopWithoutDedicatedRecommendation(evt["source_internal_name"] != null ? evt["source_internal_name"].ToString() : "")) return true;
+            return false;
+        }
+        private bool IsLootRewardEvent(Dictionary<string, object> evt, string shopName)
+        {
+            var names = new List<string>();
+            if (!string.IsNullOrEmpty(shopName)) names.Add(shopName);
+            if (evt != null)
+            {
+                if (evt.ContainsKey("name") && evt["name"] != null) names.Add(evt["name"].ToString());
+                if (evt.ContainsKey("source_internal_name") && evt["source_internal_name"] != null) names.Add(evt["source_internal_name"].ToString());
+                if (evt.ContainsKey("notes") && evt["notes"] != null)
+                {
+                    var notes = evt["notes"].ToString();
+                    if (notes.IndexOf("Loot item", StringComparison.OrdinalIgnoreCase) >= 0)
+                        return true;
+                }
+            }
+
+            foreach (var raw in names)
+            {
+                var baseName = NormalizeEventBaseName(raw);
+                if (baseName == "Extract Extract"
+                    || baseName == "Scrap Salvage"
+                    || baseName == "Sharpening Kit"
+                    || baseName == "Moonlit Meadow"
+                    || baseName == "Cinder Chase"
+                    || baseName == "Procure Medkit")
+                    return true;
+            }
+            return false;
+        }
+
+        private string NormalizeEventBaseName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return "";
+            var result = name;
+            if (result.EndsWith("(Clone)", StringComparison.OrdinalIgnoreCase))
+                result = result.Substring(0, result.Length - 7);
+            var dash = result.LastIndexOf(" - ", StringComparison.Ordinal);
+            if (dash >= 0 && dash + 3 < result.Length)
+                result = result.Substring(dash + 3);
+            var paren = result.IndexOf('(');
+            if (paren > 0)
+                result = result.Substring(0, paren);
+            return result.Trim();
+        }
+        private string RateLevelUpReward(string shopName)
+        {
+            if (_cardDb.Count == 0 || string.IsNullOrEmpty(_detectedHero)) return null;
+
+            CardDataEntry evtCard;
+            var eventName = ResolveLevelUpEventName(shopName, out evtCard);
+            if (evtCard == null || string.IsNullOrEmpty(eventName)) return null;
+            if (!string.Equals(evtCard.type, "EventEncounter", StringComparison.OrdinalIgnoreCase)) return null;
+            if (eventName.IndexOf("Level Up", StringComparison.OrdinalIgnoreCase) < 0) return null;
+
+            // Level Up TODO: named rewards such as Adira/Bjorn/Zara are skill-learning rewards,
+            // not item pools. Keep them skipped until the skill recommendation module is added.
+            // Rageforge should map to Burn-tag items when tag-specific Level Up rewards are enabled.
+            bool isFriend = eventName.IndexOf("BeFriend", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool isItemReward = eventName.IndexOf(" item", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool isLootReward = eventName.IndexOf(" Loot", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (!isFriend && !isItemReward && !isLootReward) return null;
+
+            var allowedEventHeroes = evtCard.heroes ?? new List<string>();
+            if (allowedEventHeroes.Count > 0
+                && !allowedEventHeroes.Any(h => h.Equals("Common", StringComparison.OrdinalIgnoreCase))
+                && !allowedEventHeroes.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase)))
+                return null;
+
+            var allowedTiers = GetLevelUpRewardTiers(eventName, evtCard.starting_tier);
+            if (allowedTiers.Count == 0) return null;
+
+            var pool = new List<string>();
+            foreach (var kv in _cardDb)
+            {
+                var card = kv.Value;
+                if (card == null) continue;
+                if (!string.Equals(card.type, "Item", StringComparison.OrdinalIgnoreCase)) continue;
+                if (card.tiers == null || card.tiers.Count == 0) continue;
+                if (card.tiers.Any(t => t.Equals("Legendary", StringComparison.OrdinalIgnoreCase))) continue;
+                if (!allowedTiers.Any(tier => card.tiers.Any(t => t.Equals(tier, StringComparison.OrdinalIgnoreCase)))) continue;
+
+                var ch = card.heroes ?? new List<string>();
+                if (!ch.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
+
+                if (isFriend)
+                {
+                    var allTags = new List<string>();
+                    if (card.tags != null) allTags.AddRange(card.tags);
+                    if (card.hidden_tags != null) allTags.AddRange(card.hidden_tags);
+                    if (!allTags.Any(t => t.Equals("Friend", StringComparison.OrdinalIgnoreCase))) continue;
+                }
+
+                pool.Add(card.internal_name ?? kv.Key);
+            }
+            return RenderBuildPoolRating(pool, null);
+        }
+
+        private string ResolveLevelUpEventName(string shopName, out CardDataEntry evtCard)
+        {
+            evtCard = null;
+            if (string.IsNullOrEmpty(shopName)) return null;
+
+            var candidates = new List<string>();
+            candidates.Add(shopName);
+            if (shopName.EndsWith("(Clone)", StringComparison.OrdinalIgnoreCase))
+                candidates.Add(shopName.Substring(0, shopName.Length - 7));
+
+            string mapped;
+            var lower = shopName.ToLower();
+            if (_tidToName.TryGetValue(shopName, out mapped)) candidates.Add(mapped);
+            if (_tidToName.TryGetValue(lower, out mapped)) candidates.Add(mapped);
+            if (_templateIdToName.TryGetValue(shopName, out mapped)) candidates.Add(mapped);
+            if (_templateIdToName.TryGetValue(lower, out mapped)) candidates.Add(mapped);
+
+            foreach (var raw in candidates)
+            {
+                if (string.IsNullOrEmpty(raw)) continue;
+                var key = raw.ToLower();
+                CardDataEntry card;
+                if (_cardDb.TryGetValue(key, out card)) { evtCard = card; return card.internal_name ?? raw; }
+                if (raw.EndsWith("(Clone)", StringComparison.OrdinalIgnoreCase))
+                {
+                    var noClone = raw.Substring(0, raw.Length - 7).ToLower();
+                    if (_cardDb.TryGetValue(noClone, out card)) { evtCard = card; return card.internal_name ?? raw; }
+                }
+            }
+            return null;
+        }
+
+        private List<string> GetLevelUpRewardTiers(string eventName, string startingTier)
+        {
+            var tiers = new List<string>();
+            if (eventName.IndexOf("Gold or Diamond", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                tiers.Add("Gold"); tiers.Add("Diamond"); return tiers;
+            }
+            foreach (var tier in new[] { "Bronze", "Silver", "Gold", "Diamond" })
+            {
+                if (eventName.IndexOf(tier, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    tiers.Add(tier);
+                    return tiers;
+                }
+            }
+            if (!string.IsNullOrEmpty(startingTier)) tiers.Add(NormalizeTierStr(startingTier));
+            return tiers;
+        }
+
+        private string RenderBuildPoolRating(List<string> pool, string rec)
+        {
+            if (pool == null || pool.Count == 0) return null;
+
+            BuildTemplate bestBuild = null;
+            if (!string.IsNullOrEmpty(_selectedBuildName))
+                bestBuild = _builds.Find(b => b.BuildName == _selectedBuildName);
+            if (bestBuild == null)
+            {
+                var matchResults = MatchBuilds(_detectedHero, GatherAllItemNames());
+                if (matchResults.Count > 0) bestBuild = matchResults[0].Template;
+            }
+            if (bestBuild == null) return null;
+
+            var ownedTiers = new Dictionary<string, string>();
+            foreach (var kv in GatherAllItemsWithTier())
+                ownedTiers[kv.Key.ToLower()] = kv.Value ?? "Bronze";
+
+            var poolLower = new HashSet<string>();
+            foreach (var p in pool) poolLower.Add(p.ToLower());
+            var coreHits = new List<string>(); var coreOwned = new List<string>();
+            var flexHits = new List<string>(); var flexOwned = new List<string>();
+
+            foreach (var item in bestBuild.CoreItems)
+            {
+                if (!poolLower.Contains(item.ToLower())) continue;
+                string tier;
+                if (ownedTiers.TryGetValue(item.ToLower(), out tier) && tier == "Diamond") continue;
+                if (ownedTiers.ContainsKey(item.ToLower())) coreOwned.Add(item);
+                else coreHits.Add(item);
+            }
+            foreach (var item in bestBuild.FlexItems)
+            {
+                if (!poolLower.Contains(item.ToLower())) continue;
+                string tier;
+                if (ownedTiers.TryGetValue(item.ToLower(), out tier) && tier == "Diamond") continue;
+                if (ownedTiers.ContainsKey(item.ToLower())) flexOwned.Add(item);
+                else flexHits.Add(item);
+            }
+
+            int needHits = coreHits.Count + coreOwned.Count + flexHits.Count + flexOwned.Count;
+            int hitPct = pool.Count > 0 ? (int)(needHits * 100f / pool.Count) : 0;
+            float score = GetWeightedScore(coreHits, 3) + GetWeightedScore(coreOwned, 3)
+                        + GetWeightedScore(flexHits, 1) + GetWeightedScore(flexOwned, 1);
+            var lines = new List<string>();
+            if (needHits > 0)
+                lines.Add((score >= 9f ? "★★★" : score >= 6f ? "★★" : "★") + " " + hitPct + "% (" + needHits + "/" + pool.Count + ")");
+            else
+                lines.Add("☆☆☆ 0% (0/" + pool.Count + ")");
+
+            var cl = new List<string>();
+            cl.AddRange(TranslateEach(coreHits));
+            cl.AddRange(TranslateEach(coreOwned).Select(s => "*" + s));
+            lines.Add(cl.Count > 0 ? string.Join(",", cl.Take(4).ToArray()) + (cl.Count > 4 ? "……" : "") : "-");
+
+            var fl = new List<string>();
+            fl.AddRange(TranslateEach(flexHits));
+            fl.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
+            lines.Add(fl.Count > 0 ? string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "……" : "") : "-");
+            if (!string.IsNullOrEmpty(rec)) lines.Add("◆ " + rec);
+            return string.Join("\n", lines.ToArray());
+        }
         private string RateEvent(string shopName)
         {
             if (_eventLookup == null) LoadEventData();
@@ -2387,7 +2779,7 @@ namespace BazaarBoardReader
             var parenIdx = key.IndexOf('(');
             if (parenIdx > 0) key = key.Substring(0, parenIdx).Trim();
             object evtObj = null;
-            // 先按名查，再按 template_id 查
+            // 先按名查，再按 template_id 查；不要用 game_state 全局事件列表兜底，否则会延迟误匹配非当前事件。
             if (!_eventLookup.TryGetValue(key, out evtObj))
             {
                 string mappedName;
@@ -2399,12 +2791,13 @@ namespace BazaarBoardReader
             if (evtObj == null) return null;
             var evt = evtObj as Dictionary<string, object>;
             if (evt == null) return null;
+            if (IsSpecialShopWithoutDedicatedRecommendation(evt, shopName)) return null;
+            if (IsLootRewardEvent(evt, shopName)) return null;
 
             // 只评分 item_reward
             var etype = evt.ContainsKey("event_type") ? evt["event_type"].ToString() : "";
             if (etype != "item_reward") return null;
 
-            // 获取 reward_tags
             var tags = new List<string>();
             if (evt.ContainsKey("reward_tags"))
             {
@@ -2413,14 +2806,22 @@ namespace BazaarBoardReader
                     foreach (var t in tagList) tags.Add(t.ToString());
             }
 
-            // 无标签的事件不构建物品池（仅显示推荐文本）
-            if (tags.Count == 0)
+            bool hasCardReward = false;
+            if (evt.ContainsKey("card_reward"))
             {
-                var recOnly = GetEventRecommendation(shopName);
-                return recOnly != null ? "◆ " + recOnly : null;
+                var cardReward = evt["card_reward"] as Newtonsoft.Json.Linq.JObject;
+                if (cardReward != null)
+                {
+                    bool enabled;
+                    hasCardReward = bool.TryParse((cardReward["enabled"] ?? "").ToString(), out enabled) && enabled;
+                }
             }
 
-            // 构建物品池（按英雄过滤）
+            // Skip events that cannot grant items.
+            if (!hasCardReward && tags.Count == 0)
+                return null;
+
+            // Build the item pool for events that can grant items.
             var pool = new List<string>();
             foreach (var kv in _cardDb)
             {
@@ -2438,9 +2839,12 @@ namespace BazaarBoardReader
                     var allLower = allTags.Select(t => t.ToLower()).ToList();
                     var excludeR = tags.Where(t => t.StartsWith("!")).Select(t => t.Substring(1).ToLower()).ToList();
                     var includeR = tags.Where(t => !t.StartsWith("!")).Select(t => t.ToLower()).ToList();
-                    // 排除：有排除标签 → 跳过
+                    // 尺寸过滤: small/medium/large
+                    string sizeFilter = null;
+                    foreach (var sz in new[]{"small","medium","large"})
+                        if (includeR.Contains(sz)) { sizeFilter = sz; includeR.Remove(sz); break; }
                     if (excludeR.Count > 0 && excludeR.Any(t => allLower.Contains(t))) continue;
-                    // 包含：必须有包含标签
+                    if (sizeFilter != null && (card.size ?? "").ToLower() != sizeFilter) continue;
                     if (includeR.Count > 0 && !includeR.Any(t => allLower.Contains(t))) continue;
                 }
                 pool.Add(card.internal_name ?? kv.Key);
@@ -2458,7 +2862,7 @@ namespace BazaarBoardReader
             }
             var rec = GetEventRecommendation(shopName);
             if (bestBuild == null)
-                return rec != null ? "◆ " + rec : null;
+                return null;
 
             // 收集已拥有物品（与RateShop一致）
             var ownedTiersEvt = new Dictionary<string, string>();
@@ -2491,22 +2895,22 @@ namespace BazaarBoardReader
                     flexHits.Add(item);
             }
             int needHitsEvt = coreHits.Count + coreOwned.Count + flexHits.Count + flexOwned.Count;
-            if (needHitsEvt == 0 && string.IsNullOrEmpty(rec)) return null;
-
             var linesEvt = new List<string>();
             int hitPct = pool.Count > 0 ? (int)(needHitsEvt * 100f / pool.Count) : 0;
-            int score = coreHits.Count * 3 + coreOwned.Count * 3 + flexHits.Count * 1 + flexOwned.Count * 1;
-            linesEvt.Add((score >= 9 ? "★★★" : score >= 6 ? "★★" : "★") + " " + hitPct + "% (" + needHitsEvt + "/" + pool.Count + ")");
-            // 核心行：未拥有+*前缀已拥有
+            float scoreEvt = GetWeightedScore(coreHits, 3) + GetWeightedScore(coreOwned, 3)
+                           + GetWeightedScore(flexHits, 1) + GetWeightedScore(flexOwned, 1);
+            if (needHitsEvt > 0)
+                linesEvt.Add((scoreEvt >= 9f ? "★★★" : scoreEvt >= 6f ? "★★" : "★") + " " + hitPct + "% (" + needHitsEvt + "/" + pool.Count + ")");
+            else
+                linesEvt.Add("☆☆☆ 0% (0/" + pool.Count + ")");
             var cl = new List<string>();
             cl.AddRange(TranslateEach(coreHits));
             cl.AddRange(TranslateEach(coreOwned).Select(s => "*" + s));
-            if (cl.Count > 0) linesEvt.Add(string.Join(",", cl.Take(4).ToArray()) + (cl.Count > 4 ? "……" : ""));
-            // 灵活行
+            linesEvt.Add(cl.Count > 0 ? string.Join(",", cl.Take(4).ToArray()) + (cl.Count > 4 ? "……" : "") : "-");
             var fl = new List<string>();
             fl.AddRange(TranslateEach(flexHits));
             fl.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
-            if (fl.Count > 0) linesEvt.Add(string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "……" : ""));
+            linesEvt.Add(fl.Count > 0 ? string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "……" : "") : "-");
             if (!string.IsNullOrEmpty(rec))
                 linesEvt.Add("◆ " + rec);
             return string.Join("\n", linesEvt.ToArray());
@@ -2623,11 +3027,12 @@ namespace BazaarBoardReader
         }
 
         private int _gsGold = -1, _gsHealth = -1;
+        private List<string> _gsActiveTids = new List<string>();
         private void RefreshGameStateCache()
         {
             try
             {
-                if (Time.frameCount % 120 != 0) return; // 每2秒刷新
+                if (Time.frameCount % 120 != 0) return;
                 var gsPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "game_state.json");
                 if (!File.Exists(gsPath)) return;
                 var json = File.ReadAllText(gsPath, Encoding.UTF8);
@@ -2635,6 +3040,13 @@ namespace BazaarBoardReader
                 if (gs == null) return;
                 if (gs.ContainsKey("gold")) _gsGold = Convert.ToInt32(gs["gold"]);
                 if (gs.ContainsKey("health")) _gsHealth = Convert.ToInt32(gs["health"]);
+                _gsActiveTids.Clear();
+                if (gs.ContainsKey("event_option_template_ids"))
+                {
+                    var tids = gs["event_option_template_ids"] as Newtonsoft.Json.Linq.JArray;
+                    if (tids != null)
+                        foreach (var t in tids) _gsActiveTids.Add(t.ToString());
+                }
             }
             catch { }
         }
@@ -3575,7 +3987,7 @@ namespace BazaarBoardReader
 
     [Serializable]
     public class MerchantEntry { public string name; public string category; public List<string> heroes; public string tier; public List<string> tags; public List<string> exclude_tags; public string size; public bool cross_hero; }
-    public class CardDataEntry { public string internal_name; public string type; public List<string> heroes; public List<string> tags; public List<string> hidden_tags; public string size; public string description; public List<string> tiers; }
+    public class CardDataEntry { public string internal_name; public string display_name; public string type; public List<string> heroes; public List<string> tags; public List<string> hidden_tags; public string size; public string description; public string starting_tier; public List<string> tiers; }
     public class CardsData { public Dictionary<string, CardDataEntry> cards; }
     public class CardDescEntry { public string internal_name; public string description; public string template_id; }
     public class CommunityBuild { public string hero; public string display_name; public List<string> core_cards; public List<string> transition_cards; public List<string> optional_cards; }

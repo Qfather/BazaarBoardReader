@@ -754,19 +754,10 @@ namespace BazaarStateExporter
                     .Where(card => card != null && !string.IsNullOrEmpty(card.id))
                     .Select(card => card.id));
 
+            // Only merge cards that are visible in the current scan. Recent UI captures
+            // can outlive a sold item for a few seconds and make recommendations think
+            // the item is still owned.
             List<CardSnapshot> candidates = RuntimeStateCache.GetCurrentVisibleCards();
-            foreach (CardSnapshot recentCard in RuntimeStateCache.GetCapturedUiCards(8f))
-            {
-                if (recentCard == null || string.IsNullOrEmpty(recentCard.id))
-                {
-                    continue;
-                }
-                if (candidates.Any(card => card != null && card.id == recentCard.id))
-                {
-                    continue;
-                }
-                candidates.Add(recentCard);
-            }
 
             foreach (CardSnapshot card in candidates)
             {

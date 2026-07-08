@@ -5717,6 +5717,17 @@
         "health": 0
       },
       "notes": "Get a Tool"
+    },
+    {
+      "name": "The Lost Crate",
+      "event_type": "item_reward",
+      "event_heroes": [
+        "Common"
+      ],
+      "reward_tags": [
+        "medium"
+      ],
+      "notes": "Get a Medium item"
     }
   ],
   "combat_events": [
