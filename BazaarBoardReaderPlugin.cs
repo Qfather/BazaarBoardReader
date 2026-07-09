@@ -121,12 +121,16 @@ namespace BazaarBoardReader
         private bool _showSliders;
         private bool _showRecommendations;
         private bool _showBuildManager;
+        private bool _showItemSkillLabels = true;
+        private bool _showShopEventLabels = true;
+        private bool _settingsCollapsed = true;
         private bool _recCollapsed;  // 推荐面板收起
-        private bool _mgrCollapsed;  // 管理面板收起
+        private bool _mgrCollapsed;
+        private bool _hideOtherBuilds = true;  // 管理面板收起
 
         private float _lastRefreshTime;
-        private float _itemOffsetY = 30f;
-        private float _skillOffsetY = 20f;
+        private float _itemOffsetY = 100f;
+        private float _skillOffsetY = 30f;
         private float _shopOffsetY = 80f;
         private float _bgOpacity = 0.55f;
         private readonly List<OverlayLabel> _itemLabels = new List<OverlayLabel>();
@@ -135,6 +139,13 @@ namespace BazaarBoardReader
         private GUIStyle _labelStyle;
         private GUIStyle _shopStyle;
         private readonly Dictionary<int, Texture2D> _bgCache = new Dictionary<int, Texture2D>();
+        private const float RecommendationRefreshInterval = 0.5f;
+        private float _lastRecommendationCalcTime = -999f;
+        private int _lastRecommendationCalcFrame = -1;
+        private string _lastRecommendationCalcHero = "";
+        private string _lastRecommendationCalcBuild = "";
+        private BuildTemplate _bestBuildCache;
+        private int _bestBuildCacheFrame = -1;
 
         private readonly Dictionary<string, Color> _tierColors = new Dictionary<string, Color>
         {
@@ -180,10 +191,10 @@ namespace BazaarBoardReader
         private Vector2 _recScroll;
         private string _captureBuildName = "";
         private string _captureHeroInput = "";
+        private string _captureItemsInput = "";
+        private string _captureSkillsInput = "";
         private bool _captureMode;
         private string _newItemInput = "";
-        private string _newBuildNameInput = "";
-        private string _newBuildHeroInput = "";
         private string _selectedBuildForEdit = "";
 
         private Dictionary<string, string> _translations = new Dictionary<string, string>();
@@ -225,35 +236,49 @@ namespace BazaarBoardReader
         private const string CfgRecY = "RecPanelY";
         private const string CfgMgrX = "MgrPanelX";
         private const string CfgMgrY = "MgrPanelY";
+        private const string CfgSettingsX = "SettingsPanelX";
+        private const string CfgSettingsY = "SettingsPanelY";
+        private const string CfgShowItemSkill = "ShowItemSkillLabels";
+        private const string CfgShowShopEvent = "ShowShopEventLabels";
         private const string CfgPanelAlpha = "PanelAlpha";
         private const string CfgBuild = "SelectedBuild";
         private const string CfgSecGeneral = "General";
-        private float _recPanelX, _recPanelY, _mgrPanelX, _mgrPanelY;
-        private float _panelAlpha = 0.8f;
+        private float _recPanelX, _recPanelY, _mgrPanelX, _mgrPanelY, _settingsPanelX, _settingsPanelY;
+        private float _panelAlpha = 0.4f;
         // Ctrl+拖动窗口
-        private bool _draggingRec, _draggingMgr;
+        private bool _draggingRec, _draggingMgr, _draggingSettings;
         private float _dragStartMouseX, _dragStartMouseY;
         private float _dragStartPanelX, _dragStartPanelY;
 
         private void Awake()
         {
             _logger = Logger;
-            _itemOffsetY = Config.Bind(CfgSec, CfgItem, 30f).Value;
-            _skillOffsetY = Config.Bind(CfgSec, CfgSkill, 20f).Value;
-            _shopOffsetY = Config.Bind(CfgSec, CfgShop, 80f).Value;
-            _bgOpacity = Config.Bind(CfgSec, CfgBg, 0.55f).Value;
+            Config.Bind(CfgSec, CfgItem, 100f);
+            Config.Bind(CfgSec, CfgSkill, 30f);
+            Config.Bind(CfgSec, CfgShop, 80f);
+            Config.Bind(CfgSec, CfgBg, 0.55f);
+            _itemOffsetY = 100f;
+            _skillOffsetY = 30f;
+            _shopOffsetY = 80f;
+            _bgOpacity = 0.55f;
             _overlayEnabled = Config.Bind(CfgSecGeneral, CfgOverlay, true).Value;
             _detectedHero = Config.Bind(CfgSecGeneral, CfgHero, "").Value;
             _recPanelX = Config.Bind(CfgSec, CfgRecX, 50f).Value;
             _recPanelY = Config.Bind(CfgSec, CfgRecY, 50f).Value;
             _mgrPanelX = Config.Bind(CfgSec, CfgMgrX, 50f).Value;
             _mgrPanelY = Config.Bind(CfgSec, CfgMgrY, 470f).Value;
-            _panelAlpha = Config.Bind(CfgSec, CfgPanelAlpha, 0.8f).Value;
+            _settingsPanelX = Config.Bind(CfgSec, CfgSettingsX, 50f).Value;
+            _settingsPanelY = Config.Bind(CfgSec, CfgSettingsY, -1f).Value;
+            _showItemSkillLabels = Config.Bind(CfgSecGeneral, CfgShowItemSkill, true).Value;
+            _showShopEventLabels = Config.Bind(CfgSecGeneral, CfgShowShopEvent, true).Value;
+            Config.Bind(CfgSec, CfgPanelAlpha, 0.4f);
+            _panelAlpha = 0.4f;
             _selectedBuildName = Config.Bind(CfgSecGeneral, CfgBuild, "").Value;
             // 默认全部开启
             _showSliders = true;
             _showRecommendations = true;
             _showBuildManager = true;
+            _mgrCollapsed = true;
             _logger.LogInfo(string.Format("[BoardReader] v7.4.0 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
                 (int)_itemOffsetY, (int)_skillOffsetY, (int)_shopOffsetY, _bgOpacity * 100f));
 
@@ -326,12 +351,8 @@ namespace BazaarBoardReader
             }
             try
             {
-                if (name == "f5") return Input.GetKeyDown(KeyCode.F5);
                 if (name == "f6") return Input.GetKeyDown(KeyCode.F6);
                 if (name == "f7") return Input.GetKeyDown(KeyCode.F7);
-                if (name == "f8") return Input.GetKeyDown(KeyCode.F8);
-                if (name == "f9") return Input.GetKeyDown(KeyCode.F9);
-                if (name == "f10") return Input.GetKeyDown(KeyCode.F10);
             }
             catch { }
             return false;
@@ -347,26 +368,21 @@ namespace BazaarBoardReader
                 _showSliders = _overlayEnabled;
                 _showRecommendations = _overlayEnabled;
                 _showBuildManager = _overlayEnabled;
+                _showItemSkillLabels = _overlayEnabled;
+                _showShopEventLabels = _overlayEnabled;
                 Config[CfgSecGeneral, CfgOverlay].BoxedValue = _overlayEnabled;
                 Config.Save();
             }
 
             // 持续尝试读取游戏状态
             if (GameStateDirty) ReadGameStateFromDto();
+            if (Time.frameCount % 300 == 0)
+                RefreshDayFromFile();
 
-            if (IsKeyPressed("f5"))
-            {
-                if (Time.time - _lastExportTime < CooldownSeconds) return;
-                _lastExportTime = Time.time;
-                try { ExportToJson(GatherBoardData()); }
-                catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] 导出: {0}", ex)); }
-            }
 
-            if (IsKeyPressed("f8"))
+            if (IsKeyPressed("f7"))
             {
-                _captureMode = true;
-                _captureBuildName = "";
-                _captureHeroInput = "";
+                StartCaptureMode();
             }
 
             if (Time.frameCount % 300 == 0)
@@ -404,11 +420,14 @@ namespace BazaarBoardReader
                 var cam = Camera.main ?? Camera.current;
                 if (cam != null)
                 {
-                    foreach (var lbl in _itemLabels)
-                    { if (lbl.ScreenPos.z <= 0) continue; DrawLabel(lbl, false); }
-                    foreach (var lbl in _skillLabels)
-                    { if (lbl.ScreenPos.z <= 0) continue; DrawLabel(lbl, false); }
-                    if (!_backpackOpen)
+                    if (_showItemSkillLabels)
+                    {
+                        foreach (var lbl in _itemLabels)
+                        { if (lbl.ScreenPos.z <= 0) continue; DrawLabel(lbl, false); }
+                        foreach (var lbl in _skillLabels)
+                        { if (lbl.ScreenPos.z <= 0) continue; DrawLabel(lbl, false); }
+                    }
+                    if (_showShopEventLabels && !_backpackOpen)
                     {
                         foreach (var lbl in _shopLabels)
                         { if (lbl.ScreenPos.z <= 0) continue; DrawLabel(lbl, true); }
@@ -702,59 +721,144 @@ namespace BazaarBoardReader
 
         private void DrawSlidersPanel()
         {
-            var pw = 270f; var ph = 274f;
-            var px = 50f;
-            var py = Screen.height - ph - 50f;
+            var pw = 270f;
+            const float collapsedH = 28f;
+            const float expandedH = 206f;
+            var ph = _settingsCollapsed ? collapsedH : expandedH;
+            var px = _settingsPanelX;
+            var py = _settingsPanelY < 0f ? Screen.height - ph - 10f : _settingsPanelY;
+            if (px < 10f) px = 10f;
+            if (px + pw > Screen.width) px = Screen.width - pw - 10f;
+            if (py + ph > Screen.height) py = Screen.height - ph - 10f;
+            if (py < 10f) py = 10f;
+            _settingsPanelX = px; _settingsPanelY = py;
+
             DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
+            var titleBar = new Rect(px, py + ph - collapsedH, pw, collapsedH);
+            HandleCtrlDrag(titleBar, ref _settingsPanelX, ref _settingsPanelY, CfgSettingsX, CfgSettingsY, ref _draggingSettings);
+            px = _settingsPanelX; py = _settingsPanelY;
+            titleBar = new Rect(px, py + ph - collapsedH, pw, collapsedH);
 
-            var s = new GUIStyle(_labelStyle) { fontSize = 12 };
+            var s = new GUIStyle(_labelStyle) { fontSize = 12, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
-            float ry = py + 8;
+            var title = new GUIStyle(s) { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft };
+            title.normal.textColor = new Color(0.8f, 0.95f, 1f);
+            var btn = new GUIStyle(GUI.skin.button) { fontSize = 11, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
 
-            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("物品偏移: {0}px", (int)_itemOffsetY), s);
-            _itemOffsetY = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _itemOffsetY, 0f, 300f);
-            ry += 30;
-            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("技能偏移: {0}px", (int)_skillOffsetY), s);
-            _skillOffsetY = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _skillOffsetY, 0f, 300f);
-            ry += 30;
-            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("商店偏移: {0}px", (int)_shopOffsetY), s);
-            _shopOffsetY = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _shopOffsetY, 0f, 300f);
-            ry += 30;
-            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("背景透明度: {0:F0}%", _bgOpacity * 100f), s);
-            _bgOpacity = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _bgOpacity, 0.1f, 0.95f);
-            ry += 30;
-            GUI.Label(new Rect(px + 12, ry, 246, 16), string.Format("面板透明度: {0:F0}%", _panelAlpha * 100f), s);
-            _panelAlpha = GUI.HorizontalSlider(new Rect(px + 12, ry + 14, 246, 10), _panelAlpha, 0.2f, 0.95f);
-            ry += 30;
-
-            var bs = new GUIStyle(GUI.skin.button) { fontSize = 12, fontStyle = FontStyle.Bold };
-            if (GUI.Button(new Rect(px + 20, ry, 48, 24), "保存", bs))
+            if (!_settingsCollapsed)
             {
-                Config[CfgSec, CfgItem].BoxedValue = _itemOffsetY;
-                Config[CfgSec, CfgSkill].BoxedValue = _skillOffsetY;
-                Config[CfgSec, CfgShop].BoxedValue = _shopOffsetY;
-                Config[CfgSec, CfgBg].BoxedValue = _bgOpacity;
-                Config[CfgSec, CfgPanelAlpha].BoxedValue = _panelAlpha;
+                float ry = py + 10f;
+                GUI.Label(new Rect(px + 12, ry, 110, 16), string.Format("\u7269\u54c1 {0}px", (int)_itemOffsetY), s);
+                _itemOffsetY = GUI.HorizontalSlider(new Rect(px + 118, ry + 4, 138, 10), _itemOffsetY, 0f, 300f);
+                ry += 24f;
+                GUI.Label(new Rect(px + 12, ry, 110, 16), string.Format("\u6280\u80fd {0}px", (int)_skillOffsetY), s);
+                _skillOffsetY = GUI.HorizontalSlider(new Rect(px + 118, ry + 4, 138, 10), _skillOffsetY, 0f, 300f);
+                ry += 24f;
+                GUI.Label(new Rect(px + 12, ry, 110, 16), string.Format("\u5546\u5e97 {0}px", (int)_shopOffsetY), s);
+                _shopOffsetY = GUI.HorizontalSlider(new Rect(px + 118, ry + 4, 138, 10), _shopOffsetY, 0f, 300f);
+                ry += 24f;
+                GUI.Label(new Rect(px + 12, ry, 110, 16), string.Format("\u9762\u677f {0:F0}%", _panelAlpha * 100f), s);
+                _panelAlpha = GUI.HorizontalSlider(new Rect(px + 118, ry + 4, 138, 10), _panelAlpha, 0.2f, 0.95f);
+                ry += 28f;
+
+                if (GUI.Button(new Rect(px + 12, ry, 58, 20), "\u4fdd\u5b58", btn))
+                {
+                    Config[CfgSec, CfgItem].BoxedValue = _itemOffsetY;
+                    Config[CfgSec, CfgSkill].BoxedValue = _skillOffsetY;
+                    Config[CfgSec, CfgShop].BoxedValue = _shopOffsetY;
+                    Config[CfgSec, CfgPanelAlpha].BoxedValue = _panelAlpha;
+                    Config[CfgSecGeneral, CfgShowItemSkill].BoxedValue = _showItemSkillLabels;
+                    Config[CfgSecGeneral, CfgShowShopEvent].BoxedValue = _showShopEventLabels;
+                    Config.Save();
+                }
+                if (GUI.Button(new Rect(px + 78, ry, 58, 20), "\u91cd\u7f6e", btn))
+                {
+                    _itemOffsetY = 100f; _skillOffsetY = 30f; _shopOffsetY = 80f; _panelAlpha = 0.4f;
+                }
+                if (GUI.Button(new Rect(px + pw - 70, ry, 58, 20), "\u4e2d/EN", btn))
+                    _useChinese = !_useChinese;
+                ry += 28f;
+
+                GUI.Label(new Rect(px + 12, ry + 2, 36, 18), "\u663e\u9690", s);
+                DrawToggleChip(new Rect(px + 52, ry, 64, 20), "\u7269\u54c1\u6280\u80fd", _showItemSkillLabels, delegate(bool v) { _showItemSkillLabels = v; });
+                DrawToggleChip(new Rect(px + 120, ry, 64, 20), "\u5546\u5e97\u4e8b\u4ef6", _showShopEventLabels, delegate(bool v) { _showShopEventLabels = v; });
+                            }
+
+            GUI.Label(new Rect(px + 10, titleBar.y + 4, 120, 20), "\u8bbe\u7f6e", title);
+            if (GUI.Button(new Rect(px + pw - 58, titleBar.y + 4, 24, 20), _settingsCollapsed ? "^" : "v", btn))
+            {
+                _settingsPanelY += _settingsCollapsed ? -(expandedH - collapsedH) : (expandedH - collapsedH);
+                _settingsCollapsed = !_settingsCollapsed;
+                Config[CfgSec, CfgSettingsY].BoxedValue = _settingsPanelY;
                 Config.Save();
             }
-            if (GUI.Button(new Rect(px + 72, ry, 40, 24), _useChinese ? "中" : "EN", bs))
+            if (GUI.Button(new Rect(px + pw - 30, titleBar.y + 4, 24, 20), "X", btn))
             {
-                _useChinese = !_useChinese;
+                _overlayEnabled = false;
+                _showSliders = false;
+                _showRecommendations = false;
+                _showBuildManager = false;
+                Config[CfgSecGeneral, CfgOverlay].BoxedValue = _overlayEnabled;
+                Config.Save();
             }
-            if (GUI.Button(new Rect(px + 118, ry, 50, 24), "重置", bs))
+        }
+
+        private void DrawToggleChip(Rect rect, string text, bool active, Action<bool> setValue)
+        {
+            var oldColor = GUI.color;
+            GUI.color = active ? Color.white : new Color(1f, 1f, 1f, 0.35f);
+            var style = new GUIStyle(GUI.skin.button) { fontSize = 10, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
+            if (GUI.Button(rect, text, style))
             {
-                _itemOffsetY = 30f; _skillOffsetY = 20f; _shopOffsetY = 80f; _bgOpacity = 0.55f;
+                setValue(!active);
+                Config[CfgSecGeneral, CfgShowItemSkill].BoxedValue = _showItemSkillLabels;
+                Config[CfgSecGeneral, CfgShowShopEvent].BoxedValue = _showShopEventLabels;
+                Config.Save();
             }
+            GUI.color = oldColor;
         }
 
         // ==================== F8 捕获 ====================
 
+        private void StartCaptureMode()
+        {
+            _captureMode = true;
+            _captureBuildName = "";
+            _captureHeroInput = _detectedHero;
+            _captureItemsInput = string.Join(", ", TranslateEach(GatherCurrentBoardItemNames()).ToArray());
+            _captureSkillsInput = string.Join(", ", TranslateEach(GatherPlayerSkillNames()).ToArray());
+        }
+
+        private void StartEmptyCaptureMode()
+        {
+            _captureMode = true;
+            _captureBuildName = "";
+            _captureHeroInput = _detectedHero;
+            _captureItemsInput = "";
+            _captureSkillsInput = "";
+        }
+
+        private List<string> ParseCaptureList(string input)
+        {
+            var result = new List<string>();
+            if (string.IsNullOrEmpty(input)) return result;
+            var parts = input.Split(new[] { ',', '\n', '\uFF0C', '\u3001', ';', '\uFF1B' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var raw in parts)
+            {
+                var name = raw.Trim();
+                if (string.IsNullOrEmpty(name)) continue;
+                var eng = ReverseTranslate(name);
+                if (!result.Contains(eng)) result.Add(eng);
+            }
+            return result;
+        }
+
         private void CaptureCurrentBoardAsBuild()
         {
-            var items = GatherCurrentBoardItemNames();
-            var skills = GatherPlayerSkillNames();
+            var items = ParseCaptureList(_captureItemsInput);
+            var skills = ParseCaptureList(_captureSkillsInput);
             if (items.Count == 0 && skills.Count == 0) return;
-            var hero = string.IsNullOrEmpty(_captureHeroInput) ? _detectedHero : _captureHeroInput;
+            var hero = string.IsNullOrEmpty(_detectedHero) ? _captureHeroInput : _detectedHero;
             _builds.Add(new BuildTemplate
             {
                 HeroName = hero, BuildName = _captureBuildName,
@@ -766,208 +870,331 @@ namespace BazaarBoardReader
 
         private void DrawCaptureDialog()
         {
-            var w = 330f; var h = 200f;
+            var w = 420f; var h = 275f;
             var x = (Screen.width - w) / 2; var y = (Screen.height - h) / 2;
             DrawRoundedRect(new Rect(x, y, w, h), new Color(0.1f, 0.1f, 0.15f, _panelAlpha));
 
-            var s = new GUIStyle(_labelStyle) { fontSize = 14, wordWrap = true };
+            var s = new GUIStyle(_labelStyle) { fontSize = 14, wordWrap = true, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
-            GUI.Label(new Rect(x + 15, y + 10, 300, 22), "捕获当前棋盘阵容", s);
-
-            var boardItems = GatherCurrentBoardItemNames();
-            var boardSkills = GatherPlayerSkillNames();
-            s.fontSize = 12;
-            GUI.Label(new Rect(x + 15, y + 35, 300, 40),
-                string.Format("物品({0}): {1}\n技能({2}): {3}",
-                    boardItems.Count, string.Join(", ", boardItems.ToArray()),
-                    boardSkills.Count, string.Join(", ", boardSkills.ToArray())), s);
+            GUI.Label(new Rect(x + 15, y + 10, 360, 22), "\u6355\u83b7\u5f53\u524d\u68cb\u76d8\u6784\u7b51", s);
 
             s.fontSize = 13;
-            GUI.Label(new Rect(x + 15, y + 85, 60, 22), "阵容名:", s);
-            _captureBuildName = GUI.TextField(new Rect(x + 80, y + 85, 160, 22), _captureBuildName ?? "", 30);
+            GUI.Label(new Rect(x + 15, y + 42, 70, 22), "\u6784\u7b51\u540d:", s);
+            _captureBuildName = GUI.TextField(new Rect(x + 82, y + 40, 170, 22), _captureBuildName ?? "", 30);
 
-            GUI.Label(new Rect(x + 15, y + 115, 60, 22), "英雄:", s);
-            var hp = string.IsNullOrEmpty(_captureHeroInput) ? (string.IsNullOrEmpty(_detectedHero) ? "手动输入" : _detectedHero) : _captureHeroInput;
-            _captureHeroInput = GUI.TextField(new Rect(x + 80, y + 115, 160, 22), hp, 30);
+            GUI.Label(new Rect(x + 265, y + 42, 50, 22), "\u82f1\u96c4:", s);
+            var hero = string.IsNullOrEmpty(_detectedHero) ? "\u672a\u77e5" : _detectedHero;
+            GUI.Label(new Rect(x + 310, y + 42, 90, 22), hero, s);
+            _captureHeroInput = hero;
+
+            GUI.Label(new Rect(x + 15, y + 74, 80, 20), "\u7269\u54c1:", s);
+            _captureItemsInput = GUI.TextArea(new Rect(x + 15, y + 96, 390, 55), _captureItemsInput ?? "", 500);
+
+            GUI.Label(new Rect(x + 15, y + 158, 80, 20), "\u6280\u80fd:", s);
+            _captureSkillsInput = GUI.TextArea(new Rect(x + 15, y + 180, 390, 55), _captureSkillsInput ?? "", 500);
 
             var bs = new GUIStyle(GUI.skin.button) { fontSize = 13, fontStyle = FontStyle.Bold };
-            if (GUI.Button(new Rect(x + 20, y + 150, 90, 28), "保存", bs))
+            if (GUI.Button(new Rect(x + 215, y + 242, 90, 26), "\u4fdd\u5b58", bs))
             { if (!string.IsNullOrEmpty(_captureBuildName)) { CaptureCurrentBoardAsBuild(); _captureMode = false; } }
-            if (GUI.Button(new Rect(x + 120, y + 150, 90, 28), "取消", bs)) _captureMode = false;
-            if (GUI.Button(new Rect(x + 220, y + 150, 90, 28), "保存+管理", bs))
-            { if (!string.IsNullOrEmpty(_captureBuildName)) { CaptureCurrentBoardAsBuild(); _captureMode = false; _showBuildManager = true; } }
+            if (GUI.Button(new Rect(x + 315, y + 242, 90, 26), "\u53d6\u6d88", bs)) _captureMode = false;
         }
 
         // ==================== F9 推荐面板 ====================
 
+        private void OpenPreviewer()
+        {
+            try
+            {
+                var root = Path.Combine(Paths.GameRootPath, "BazaarBoardReader");
+                var script = Path.Combine(root, "scripts", "shop_browser.py");
+                var psi = new System.Diagnostics.ProcessStartInfo();
+                if (File.Exists(script))
+                {
+                    psi.FileName = "pythonw.exe";
+                    psi.Arguments = "\"" + script + "\"";
+                    psi.UseShellExecute = false;
+                    psi.CreateNoWindow = true;
+                    psi.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                }
+                else
+                {
+                    psi.FileName = Path.Combine(root, "\u9884\u89c8\u5668.bat");
+                    psi.UseShellExecute = true;
+                    psi.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                }
+                psi.WorkingDirectory = root;
+                System.Diagnostics.Process.Start(psi);
+            }
+            catch (Exception ex) { _logger.LogError("[BoardReader] OpenPreviewer: " + ex); }
+        }
+
+        private Color WithAlpha(Color c, float alpha)
+        {
+            return new Color(c.r, c.g, c.b, c.a * alpha);
+        }
+
+        private void InvalidateRecommendationCache()
+        {
+            _lastRecommendationCalcFrame = -1;
+            _lastRecommendationCalcTime = -999f;
+            _bestBuildCache = null;
+            _bestBuildCacheFrame = -1;
+        }
+
+        private void RefreshRecommendationMatchesIfDue(bool force = false)
+        {
+            if (!force
+                && _lastRecommendationCalcFrame == Time.frameCount
+                && _lastRecommendationCalcHero == _detectedHero
+                && _lastRecommendationCalcBuild == _selectedBuildName)
+                return;
+            if (!force && Time.time - _lastRecommendationCalcTime < RecommendationRefreshInterval)
+                return;
+            _lastRecommendationCalcFrame = Time.frameCount;
+            _lastRecommendationCalcTime = Time.time;
+            _lastRecommendationCalcHero = _detectedHero;
+            _lastRecommendationCalcBuild = _selectedBuildName;
+            try
+            {
+                _matchResults = MatchBuilds(_detectedHero, GatherAllItemNames());
+            }
+            catch { _matchResults = new List<BuildMatchResult>(); }
+        }
+
+        private List<BuildMatchResult> GetDisplayMatchResults()
+        {
+            var results = _matchResults != null ? new List<BuildMatchResult>(_matchResults) : new List<BuildMatchResult>();
+            if (!string.IsNullOrEmpty(_selectedBuildName))
+            {
+                int idx = results.FindIndex(r => r.Template != null && r.Template.BuildName == _selectedBuildName);
+                if (idx > 0)
+                {
+                    var selected = results[idx];
+                    results.RemoveAt(idx);
+                    results.Insert(0, selected);
+                }
+            }
+            return results;
+        }
+
         private void DrawRecommendationPanel()
         {
             var px = _recPanelX; var py = _recPanelY; var pw = 350f;
-            var ph = _recCollapsed ? 28f : Mathf.Min(400f, Screen.height - py - 10f);
-            DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
-            // Ctrl+拖动标题栏
-            HandleCtrlDrag(new Rect(px, py, pw, 28f), ref _recPanelX, ref _recPanelY, CfgRecX, CfgRecY, ref _draggingRec);
-            px = _recPanelX; py = _recPanelY;
-
             var s = new GUIStyle(_labelStyle) { fontSize = 13, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
 
+            RefreshRecommendationMatchesIfDue();
+            var displayResults = GetDisplayMatchResults();
+            bool canHideOtherBuilds = displayResults.Count > 1;
+            var visibleResults = GetVisibleMatchResults(displayResults);
+
+            var heroes = GetVisibleHeroNames();
+            float heroRows = CountHeroRows(heroes, pw, s);
+            float contentYRel = 70f;
+            float bottomControlsH = 32f;
+            float contentH = EstimateRecommendationContentHeight(visibleResults, pw - 30f);
+            float maxPanelH = Mathf.Max(96f, Mathf.Min(Screen.height * 0.5f, Screen.height - py - 10f));
+            var ph = _recCollapsed ? 28f : Mathf.Clamp(contentYRel + contentH + bottomControlsH, 96f, maxPanelH);
+
+            DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
+            HandleCtrlDrag(new Rect(px, py, pw, 28f), ref _recPanelX, ref _recPanelY, CfgRecX, CfgRecY, ref _draggingRec);
+            px = _recPanelX; py = _recPanelY;
+            if (py + ph > Screen.height) py = Screen.height - ph - 10;
+            if (py < 10) py = 10;
+
             var ts = new GUIStyle(s) { fontSize = 15, fontStyle = FontStyle.Bold };
             ts.normal.textColor = new Color(1f, 0.8f, 0.2f);
-            GUI.Label(new Rect(px + 10, py + 5, pw - 50, 22), string.Format("阵容推荐 D{0} (F6)", _currentDay > 0 ? _currentDay.ToString() : "?"), ts);
-            // 折叠按钮
+            GUI.Label(new Rect(px + 10, py + 5, pw - 120, 22), "\u6784\u7b51\u63a8\u8350", ts);
+
+            var smallBtn = new GUIStyle(GUI.skin.button) { fontSize = 11, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
+            GUI.enabled = canHideOtherBuilds;
+            if (GUI.Button(new Rect(px + pw - 86, py + 4, 50, 20), _hideOtherBuilds ? "\u5168\u90e8" : "\u53ea\u663e", smallBtn))
+                _hideOtherBuilds = !_hideOtherBuilds;
+            GUI.enabled = true;
+
             var foldBtn = new GUIStyle(GUI.skin.button) { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
-            if (GUI.Button(new Rect(px + pw - 30, py + 2, 24, 22), _recCollapsed ? "▼" : "▲", foldBtn))
+            if (GUI.Button(new Rect(px + pw - 30, py + 2, 24, 22), _recCollapsed ? "v" : "^", foldBtn))
                 _recCollapsed = !_recCollapsed;
             if (_recCollapsed) return;
 
-            // 英雄按钮（简写+颜色+换行）
-            var heroes = CollectHeroNames();
-            float hx = px + 10; float hy = py + 46;
-            foreach (var h in heroes)
-            {
-                var abbrev = GetHeroAbbrev(h);
-                var hbw = s.CalcSize(new GUIContent(abbrev)).x + 8;
-                if (hx + hbw > px + pw - 10) { hx = px + 10; hy += 20; }
-                var isActive = _detectedHero == h;
-                var hbs = new GUIStyle(GUI.skin.button) { fontSize = 10, fontStyle = FontStyle.Bold };
-                hbs.normal.textColor = GetHeroColor(h);
-                if (isActive) GUI.DrawTexture(new Rect(hx, hy, hbw, 18), WhiteTex());
-                if (GUI.Button(new Rect(hx, hy, hbw, 18), abbrev, hbs))
-                {
-                    _detectedHero = (_detectedHero == h) ? "" : h;
-                    Config[CfgSecGeneral, CfgHero].BoxedValue = _detectedHero;
-                    Config.Save();
-                }
-                hx += hbw + 1;
-            }
+            var heroText = heroes.Count > 0 ? GetHeroAbbrev(heroes[0]) : "?";
+            var hs = new GUIStyle(s) { fontSize = 20, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperLeft };
+            hs.normal.textColor = heroes.Count > 0 ? GetHeroColor(heroes[0]) : Color.white;
+            GUI.Label(new Rect(px + 10, py + 36, pw - 20, 28), string.Format("{0}     {1}", FormatHeroDisplayName(heroes.Count > 0 ? heroes[0] : ""), FormatDayLabel(_currentDay)), hs);
 
-            var currentItems = GatherAllItemNames();
-            var shopItems = GatherShopItemNames();
-            _matchResults = MatchBuilds(_detectedHero, currentItems);
-            foreach (var mr in _matchResults)
-            {
-                mr.ShopCoreMatches = mr.CoreMissing.FindAll(n => shopItems.Contains(n));
-                mr.ShopFlexMatches = mr.FlexMissing.FindAll(n => shopItems.Contains(n));
-            }
-
-            var contentY = hy + 22; // 英雄按钮下方
-            _recScroll = GUI.BeginScrollView(new Rect(px + 5, contentY, pw - 10, py + ph - contentY - 10), _recScroll,
-                new Rect(0, 0, pw - 30, _matchResults.Count * 90 + 10));
+            var contentY = py + contentYRel;
+            var scrollH = Mathf.Max(24f, py + ph - contentY - bottomControlsH);
+            _recScroll = GUI.BeginScrollView(new Rect(px + 5, contentY, pw - 10, scrollH), _recScroll,
+                new Rect(0, 0, pw - 30, contentH));
 
             float ry = 5;
             float barMaxW = pw - 75;
-            for (int i = 0; i < _matchResults.Count && i < 10; i++)
+            int drawCount = Mathf.Min(visibleResults.Count, 10);
+            for (int i = 0; i < drawCount; i++)
             {
-                var mr = _matchResults[i];
+                var mr = visibleResults[i];
                 var score = mr.MatchScore * 100f;
 
                 bool isSelected = _selectedBuildName == mr.Template.BuildName;
+                bool dimOtherBuild = !string.IsNullOrEmpty(_selectedBuildName) && !isSelected;
+                float rowAlpha = dimOtherBuild ? 0.35f : 1f;
                 var cs = new GUIStyle(s) { fontSize = 13 };
-                cs.normal.textColor = isSelected ? new Color(0.2f, 1f, 0.4f) :
+                var titleColor = isSelected ? new Color(0.2f, 1f, 0.4f) :
                     (i == 0 && string.IsNullOrEmpty(_selectedBuildName)) ? new Color(1f, 0.8f, 0.2f) : Color.white;
-                var nameRect = new Rect(10, ry, pw - 30, 18);
-                GUI.Label(nameRect, string.Format("{0}. {1}", i + 1, Translate(mr.Template.BuildName)), cs);
+                cs.normal.textColor = WithAlpha(titleColor, rowAlpha);
+                GUI.Label(new Rect(10, ry, pw - 30, 18), string.Format("{0}. {1}", i + 1, Translate(mr.Template.BuildName)), cs);
                 ry += 20;
 
-                // 选择按钮在百分比条上方
                 var selBtnRect = new Rect(10 + barMaxW - 32, ry - 18, 30, 16);
-                if (GUI.Button(selBtnRect, isSelected ? "✓" : "+", GUI.skin.button))
+                if (GUI.Button(selBtnRect, isSelected ? "-" : "+", GUI.skin.button))
                 {
                     _selectedBuildName = isSelected ? "" : mr.Template.BuildName;
                     Config[CfgSecGeneral, CfgBuild].BoxedValue = _selectedBuildName;
                     Config.Save();
+                    InvalidateRecommendationCache();
                 }
                 var barH = 16f;
-                DrawRect(new Rect(10, ry, barMaxW, barH), new Color(0.15f, 0.15f, 0.15f, 0.8f));
+                DrawRect(new Rect(10, ry, barMaxW, barH), new Color(0.15f, 0.15f, 0.15f, 0.8f * rowAlpha));
                 var barFillW = barMaxW * (score / 100f);
                 if (barFillW > 0)
                 {
                     var fc = score >= 70f ? new Color(0.1f, 0.9f, 0.2f) : score >= 40f ? new Color(0.8f, 0.8f, 0.1f) : new Color(0.8f, 0.3f, 0.1f);
-                    DrawRect(new Rect(10, ry, barFillW, barH), fc);
+                    DrawRect(new Rect(10, ry, barFillW, barH), WithAlpha(fc, rowAlpha));
                 }
-                // 百分比写在进度条内右侧
                 var ps2 = new GUIStyle(s) { fontSize = 11, alignment = TextAnchor.MiddleRight };
-                ps2.normal.textColor = Color.white;
+                ps2.normal.textColor = WithAlpha(Color.white, rowAlpha);
                 GUI.Label(new Rect(10, ry, barMaxW - 4, barH), string.Format("{0:F0}%", score), ps2);
                 ry += barH + 4;
 
-                // 按构筑原始顺序合并 owned+missing，构建不可用集合
                 var coreOwnedSet = new HashSet<string>(mr.CoreOwned);
                 var coreMissingSet = new HashSet<string>(mr.CoreMissing);
                 var coreUnavailSet = new HashSet<string>();
-                var coreOrdered = new List<string>();
-                foreach (var item in mr.Template.CoreItems)
-                {
-                    if (coreOwnedSet.Contains(item)) coreOrdered.Add(item);
-                    else if (coreMissingSet.Contains(item))
-                    {
-                        coreOrdered.Add(item);
-                        if (!ItemCanAppearOnDay(item, _currentDay)) coreUnavailSet.Add(item);
-                    }
-                }
+                var coreOrdered = BuildOrderedRecommendationItems(mr.Template.CoreItems, coreOwnedSet, coreMissingSet, coreUnavailSet);
                 var flexOwnedSet = new HashSet<string>(mr.FlexOwned);
                 var flexMissingSet = new HashSet<string>(mr.FlexMissing);
                 var flexUnavailSet = new HashSet<string>();
-                var flexOrdered = new List<string>();
-                foreach (var item in mr.Template.FlexItems)
-                {
-                    if (flexOwnedSet.Contains(item)) flexOrdered.Add(item);
-                    else if (flexMissingSet.Contains(item))
-                    {
-                        flexOrdered.Add(item);
-                        if (!ItemCanAppearOnDay(item, _currentDay)) flexUnavailSet.Add(item);
-                    }
-                }
+                var flexOrdered = BuildOrderedRecommendationItems(mr.Template.FlexItems, flexOwnedSet, flexMissingSet, flexUnavailSet);
                 var scOwnedSet = new HashSet<string>(mr.SkillCoreOwned);
                 var scMissingSet = new HashSet<string>(mr.SkillCoreMissing);
                 var scUnavailSet = new HashSet<string>();
-                var scOrdered = new List<string>();
-                foreach (var item in mr.Template.CoreSkills)
-                {
-                    if (scOwnedSet.Contains(item)) scOrdered.Add(item);
-                    else if (scMissingSet.Contains(item))
-                    {
-                        scOrdered.Add(item);
-                        if (!ItemCanAppearOnDay(item, _currentDay)) scUnavailSet.Add(item);
-                    }
-                }
+                var scOrdered = BuildOrderedRecommendationItems(mr.Template.CoreSkills, scOwnedSet, scMissingSet, scUnavailSet);
                 var sfOwnedSet = new HashSet<string>(mr.SkillFlexOwned);
                 var sfMissingSet = new HashSet<string>(mr.SkillFlexMissing);
                 var sfUnavailSet = new HashSet<string>();
-                var sfOrdered = new List<string>();
-                foreach (var item in mr.Template.FlexSkills)
-                {
-                    if (sfOwnedSet.Contains(item)) sfOrdered.Add(item);
-                    else if (sfMissingSet.Contains(item))
-                    {
-                        sfOrdered.Add(item);
-                        if (!ItemCanAppearOnDay(item, _currentDay)) sfUnavailSet.Add(item);
-                    }
-                }
+                var sfOrdered = BuildOrderedRecommendationItems(mr.Template.FlexSkills, sfOwnedSet, sfMissingSet, sfUnavailSet);
 
                 if (coreOrdered.Count > 0)
-                    DrawItemsLine(15, ref ry, pw - 30, "", coreOrdered, coreOwnedSet, mr.ShopCoreMatches, coreUnavailSet, new Color(0.2f, 1f, 0.3f), new Color(0.2f, 1f, 0.5f));
+                    DrawItemsLine(15, ref ry, pw - 30, "", coreOrdered, coreOwnedSet, mr.ShopCoreMatches, coreUnavailSet, WithAlpha(new Color(0.2f, 1f, 0.3f), rowAlpha), WithAlpha(new Color(0.2f, 1f, 0.5f), rowAlpha));
                 if (flexOrdered.Count > 0)
-                    DrawItemsLine(15, ref ry, pw - 30, "", flexOrdered, flexOwnedSet, mr.ShopFlexMatches, flexUnavailSet, new Color(1f, 0.7f, 0.3f), new Color(0.5f, 1f, 0.5f));
+                    DrawItemsLine(15, ref ry, pw - 30, "", flexOrdered, flexOwnedSet, mr.ShopFlexMatches, flexUnavailSet, WithAlpha(new Color(1f, 0.7f, 0.3f), rowAlpha), WithAlpha(new Color(0.5f, 1f, 0.5f), rowAlpha));
                 if (scOrdered.Count > 0)
-                    DrawItemsLine(15, ref ry, pw - 30, "", scOrdered, scOwnedSet, new List<string>(), scUnavailSet, new Color(0.4f, 0.5f, 1f), new Color(0.5f, 1f, 0.5f));
+                    DrawItemsLine(15, ref ry, pw - 30, "", scOrdered, scOwnedSet, new List<string>(), scUnavailSet, WithAlpha(new Color(0.4f, 0.5f, 1f), rowAlpha), WithAlpha(new Color(0.5f, 1f, 0.5f), rowAlpha));
                 if (sfOrdered.Count > 0)
-                    DrawItemsLine(15, ref ry, pw - 30, "", sfOrdered, sfOwnedSet, new List<string>(), sfUnavailSet, new Color(0.3f, 1f, 0.5f), new Color(0.5f, 1f, 0.5f));
+                    DrawItemsLine(15, ref ry, pw - 30, "", sfOrdered, sfOwnedSet, new List<string>(), sfUnavailSet, WithAlpha(new Color(0.3f, 1f, 0.5f), rowAlpha), WithAlpha(new Color(0.5f, 1f, 0.5f), rowAlpha));
                 ry += 5;
             }
 
-            if (_matchResults.Count == 0)
-            { s.normal.textColor = Color.gray; GUI.Label(new Rect(10, ry, 300, 18), "暂无匹配阵容 (F10添加)", s); }
+            if (visibleResults.Count == 0)
+            { s.normal.textColor = Color.gray; GUI.Label(new Rect(10, ry, 300, 18), "\u6682\u65e0\u5339\u914d\u6784\u7b51", s); }
             GUI.EndScrollView();
 
-            if (GUI.Button(new Rect(px + 10, py + ph - 25, 55, 20), "F6捕获", GUI.skin.button)) _captureMode = true;
-            if (GUI.Button(new Rect(px + 70, py + ph - 25, 55, 20), "F6管理", GUI.skin.button)) _showBuildManager = true;
-            if (GUI.Button(new Rect(px + 130, py + ph - 25, 55, 20), "F5", GUI.skin.button))
-            { try { ExportToJson(GatherBoardData()); } catch { } }
+            if (GUI.Button(new Rect(px + pw - 125, py + ph - 25, 55, 20), "F7\u6355\u83b7", GUI.skin.button)) StartCaptureMode();
+            if (GUI.Button(new Rect(px + pw - 65, py + ph - 25, 55, 20), "\u9884\u89c8\u5668", GUI.skin.button)) OpenPreviewer();
         }
 
-        // 按构筑原始顺序统一渲染（已拥有=30%透明 / 缺失可刷=100% / 缺失不可刷=30%灰 / 商店有=闪烁★）
+        private List<BuildMatchResult> GetVisibleMatchResults(List<BuildMatchResult> displayResults)
+        {
+            if (_hideOtherBuilds && displayResults.Count > 1)
+                return displayResults.Take(1).ToList();
+            return displayResults;
+        }
+
+        private List<string> GetVisibleHeroNames()
+        {
+            var result = new List<string>();
+            if (!string.IsNullOrEmpty(_detectedHero))
+            {
+                result.Add(_detectedHero);
+                return result;
+            }
+            var heroes = CollectHeroNames();
+            if (heroes.Count > 0) result.Add(heroes[0]);
+            return result;
+        }
+
+        private float CountHeroRows(List<string> heroes, float panelWidth, GUIStyle style)
+        {
+            if (heroes == null || heroes.Count == 0) return 1f;
+            float rows = 1f;
+            float hx = 10f;
+            foreach (var h in heroes)
+            {
+                var abbrev = GetHeroAbbrev(h);
+                var hbw = style.CalcSize(new GUIContent(abbrev)).x + 8;
+                if (hx + hbw > panelWidth - 10f) { hx = 10f; rows += 1f; }
+                hx += hbw + 1f;
+            }
+            return rows;
+        }
+
+        private List<string> BuildOrderedRecommendationItems(List<string> templateItems, HashSet<string> ownedSet, HashSet<string> missingSet, HashSet<string> unavailableSet)
+        {
+            var ordered = new List<string>();
+            if (templateItems == null) return ordered;
+            foreach (var item in templateItems)
+            {
+                if (ownedSet.Contains(item)) ordered.Add(item);
+                else if (missingSet.Contains(item))
+                {
+                    ordered.Add(item);
+                    if (!ItemCanAppearOnDay(item, _currentDay)) unavailableSet.Add(item);
+                }
+            }
+            return ordered;
+        }
+
+        private float EstimateRecommendationContentHeight(List<BuildMatchResult> results, float maxW)
+        {
+            if (results == null || results.Count == 0) return 28f;
+            var ms = new GUIStyle(_labelStyle) { fontSize = 11, alignment = TextAnchor.UpperLeft };
+            float height = 5f;
+            int count = Mathf.Min(results.Count, 10);
+            for (int i = 0; i < count; i++)
+            {
+                var mr = results[i];
+                height += 20f + 16f + 4f;
+                var coreUnavail = new HashSet<string>();
+                var flexUnavail = new HashSet<string>();
+                var scUnavail = new HashSet<string>();
+                var sfUnavail = new HashSet<string>();
+                var core = BuildOrderedRecommendationItems(mr.Template.CoreItems, new HashSet<string>(mr.CoreOwned), new HashSet<string>(mr.CoreMissing), coreUnavail);
+                var flex = BuildOrderedRecommendationItems(mr.Template.FlexItems, new HashSet<string>(mr.FlexOwned), new HashSet<string>(mr.FlexMissing), flexUnavail);
+                var sc = BuildOrderedRecommendationItems(mr.Template.CoreSkills, new HashSet<string>(mr.SkillCoreOwned), new HashSet<string>(mr.SkillCoreMissing), scUnavail);
+                var sf = BuildOrderedRecommendationItems(mr.Template.FlexSkills, new HashSet<string>(mr.SkillFlexOwned), new HashSet<string>(mr.SkillFlexMissing), sfUnavail);
+                height += EstimateItemsLineHeight(core, maxW, ms);
+                height += EstimateItemsLineHeight(flex, maxW, ms);
+                height += EstimateItemsLineHeight(sc, maxW, ms);
+                height += EstimateItemsLineHeight(sf, maxW, ms);
+                height += 5f;
+            }
+            return height + 8f;
+        }
+
+        private float EstimateItemsLineHeight(List<string> orderedItems, float maxW, GUIStyle style)
+        {
+            if (orderedItems == null || orderedItems.Count == 0) return 0f;
+            float cx = 20f;
+            float h = 16f;
+            for (int i = 0; i < orderedItems.Count; i++)
+            {
+                var text = Translate(orderedItems[i]) + (i < orderedItems.Count - 1 ? " " : "");
+                var sz = style.CalcSize(new GUIContent(text));
+                cx += sz.x + 2f;
+                if (cx > maxW - 10f) { cx = 20f; h += 16f; }
+            }
+            return h;
+        }
+
         private void DrawItemsLine(float x, ref float y, float maxW, string prefix,
             List<string> orderedItems, HashSet<string> ownedSet, List<string> inShop, HashSet<string> unavailable,
             Color lineColor, Color shopColor)
@@ -999,7 +1226,7 @@ namespace BazaarBoardReader
                 {
                     var ss = new GUIStyle(ms) { fontSize = 10 };
                     ss.normal.textColor = new Color(1f, 0.9f, 0.1f);
-                    GUI.Label(new Rect(cx + sz.x - 2, y - 2, 20, 16), "★", ss);
+                    GUI.Label(new Rect(cx + sz.x - 2, y - 2, 20, 16), "*", ss);
                 }
                 cx += sz.x + 2;
                 if (cx > x + maxW - 10) { cx = x + 5; y += 16; }
@@ -1014,10 +1241,8 @@ namespace BazaarBoardReader
             var px = _mgrPanelX; var py = _mgrPanelY; var pw = 380f;
             var ph = _mgrCollapsed ? 28f : 400f;
             DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
-            // Ctrl+拖动标题栏
             HandleCtrlDrag(new Rect(px, py, pw, 28f), ref _mgrPanelX, ref _mgrPanelY, CfgMgrX, CfgMgrY, ref _draggingMgr);
             px = _mgrPanelX; py = _mgrPanelY;
-            // 边界修正
             if (py + ph > Screen.height) py = Screen.height - ph - 10;
             if (py < 10) py = 10;
 
@@ -1026,50 +1251,36 @@ namespace BazaarBoardReader
             var ts = new GUIStyle(s) { fontSize = 14, fontStyle = FontStyle.Bold };
             ts.normal.textColor = new Color(0.3f, 0.8f, 1f);
 
-            GUI.Label(new Rect(px + 10, py + 5, pw - 90, 22), "阵容管理 (F6)", ts);
-            // 折叠按钮
+            GUI.Label(new Rect(px + 10, py + 5, pw - 90, 22), "\u6784\u7b51\u7ba1\u7406", ts);
             var foldBtn = new GUIStyle(GUI.skin.button) { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
-            if (GUI.Button(new Rect(px + pw - 30, py + 2, 24, 22), _mgrCollapsed ? "▼" : "▲", foldBtn))
+            if (GUI.Button(new Rect(px + pw - 30, py + 2, 24, 22), _mgrCollapsed ? "v" : "^", foldBtn))
                 _mgrCollapsed = !_mgrCollapsed;
             if (_mgrCollapsed) return;
 
-            if (GUI.Button(new Rect(px + pw - 84, py + 5, 50, 20), "导入"))
+            if (GUI.Button(new Rect(px + pw - 140, py + 5, 50, 20), "\u65b0\u5efa"))
+            {
+                StartEmptyCaptureMode();
+            }
+            if (GUI.Button(new Rect(px + pw - 84, py + 5, 50, 20), "\u5bfc\u5165"))
             {
                 ImportCommunityBuilds();
             }
-            GUI.Label(new Rect(px + 10, py + 28, pw - 20, 18),
-                string.Format("英雄: {0} | {1} 阵容", string.IsNullOrEmpty(_detectedHero) ? "?" : _detectedHero, _builds.Count), s);
-
             var heroBuilds = string.IsNullOrEmpty(_detectedHero)
                 ? _builds : _builds.FindAll(b => b.HeroName == _detectedHero || string.IsNullOrEmpty(b.HeroName));
             if (heroBuilds.Count == 0) heroBuilds = _builds;
+            GUI.Label(new Rect(px + 10, py + 28, pw - 20, 18),
+                string.Format("\u82f1\u96c4: {0} | {1}/{2} \u6784\u7b51", string.IsNullOrEmpty(_detectedHero) ? "?" : _detectedHero, heroBuilds.Count, _builds.Count), s);
 
             float listY = py + 48;
-            GUI.Label(new Rect(px + 10, listY, 45, 18), "新建:", s);
-            _newBuildNameInput = GUI.TextField(new Rect(px + 50, listY, 110, 20), _newBuildNameInput ?? "", 20);
-            GUI.Label(new Rect(px + 165, listY, 30, 18), "英雄:", s);
-            _newBuildHeroInput = GUI.TextField(new Rect(px + 195, listY, 80, 20), _newBuildHeroInput ?? _detectedHero, 20);
-            if (GUI.Button(new Rect(px + 280, listY, 40, 20), "创建"))
-            {
-                if (!string.IsNullOrEmpty(_newBuildNameInput))
-                {
-                    _builds.Add(new BuildTemplate
-                    {
-                        HeroName = string.IsNullOrEmpty(_newBuildHeroInput) ? _detectedHero : _newBuildHeroInput,
-                        BuildName = _newBuildNameInput
-                    });
-                    SaveBuildsAtomic();
-                    _newBuildNameInput = ""; _newBuildHeroInput = "";
-                }
-            }
-            listY += 26;
 
+            var visibleBuilds = string.IsNullOrEmpty(_selectedBuildForEdit)
+                ? heroBuilds : heroBuilds.FindAll(b => b.BuildName == _selectedBuildForEdit);
             float scrollH = ph - (listY - py) - 30;
             _buildListScroll = GUI.BeginScrollView(new Rect(px + 5, listY, pw - 15, scrollH), _buildListScroll,
-                new Rect(0, 0, pw - 35, heroBuilds.Count * 200 + 10));
+                new Rect(0, 0, pw - 35, visibleBuilds.Count * 360 + 10));
 
             float ry = 5;
-            foreach (var build in heroBuilds)
+            foreach (var build in visibleBuilds)
             {
                 var isSelected = _selectedBuildForEdit == build.BuildName;
                 var expandH = isSelected ? 330f : 22f;
@@ -1077,26 +1288,26 @@ namespace BazaarBoardReader
                     isSelected ? new Color(0.15f, 0.15f, 0.25f, 0.7f) : new Color(0.1f, 0.1f, 0.15f, 0.5f));
 
                 GUI.Label(new Rect(5, ry + 2, 120, 18), string.Format("{0} ({1})", Translate(build.BuildName), build.HeroName), s);
-                if (GUI.Button(new Rect(250, ry + 1, 35, 18), isSelected ? "收起" : "编辑"))
+                if (GUI.Button(new Rect(250, ry + 1, 35, 18), isSelected ? "\u6536\u8d77" : "\u7f16\u8f91"))
                     _selectedBuildForEdit = isSelected ? "" : build.BuildName;
-                if (GUI.Button(new Rect(290, ry + 1, 35, 18), "删除"))
+                if (GUI.Button(new Rect(290, ry + 1, 35, 18), "\u5220\u9664"))
                 { _builds.Remove(build); SaveBuildsAtomic(); _selectedBuildForEdit = ""; break; }
 
                 if (isSelected)
                 {
                     var ns = new GUIStyle(s) { fontSize = 11 };
                     ns.normal.textColor = new Color(1f, 0.5f, 0.5f);
-                    GUI.Label(new Rect(15, ry + 26, 330, 16), "核心物品:", ns);
+                    GUI.Label(new Rect(15, ry + 26, 330, 16), "\u6838\u5fc3\u7269\u54c1:", ns);
                     float iy = ry + 42;
                     DrawItemRow(build.CoreItems, build.FlexItems, ref iy, ns);
                     ns.normal.textColor = new Color(1f, 0.7f, 0.3f);
-                    GUI.Label(new Rect(15, iy, 330, 16), "灵活物品:", ns);
+                    GUI.Label(new Rect(15, iy, 330, 16), "\u7075\u6d3b\u7269\u54c1:", ns);
                     iy += 16;
                     DrawItemRowReverse(build.FlexItems, build.CoreItems, ref iy, ns);
 
-                    GUI.Label(new Rect(15, iy, 50, 18), "加物:", s);
+                    GUI.Label(new Rect(15, iy, 50, 18), "\u52a0\u7269:", s);
                     _newItemInput = GUI.TextField(new Rect(55, iy, 140, 20), _newItemInput ?? "", 30);
-                    if (GUI.Button(new Rect(198, iy, 35, 20), "核心"))
+                    if (GUI.Button(new Rect(198, iy, 35, 20), "\u6838\u5fc3"))
                     {
                         if (!string.IsNullOrEmpty(_newItemInput))
                         {
@@ -1104,7 +1315,7 @@ namespace BazaarBoardReader
                             if (!build.CoreItems.Contains(eng)) { build.CoreItems.Add(eng); SaveBuildsAtomic(); _newItemInput = ""; }
                         }
                     }
-                    if (GUI.Button(new Rect(236, iy, 35, 20), "灵活"))
+                    if (GUI.Button(new Rect(236, iy, 35, 20), "\u7075\u6d3b"))
                     {
                         if (!string.IsNullOrEmpty(_newItemInput))
                         {
@@ -1115,17 +1326,17 @@ namespace BazaarBoardReader
                     iy += 22;
 
                     ns.normal.textColor = new Color(0.4f, 0.5f, 1f);
-                    GUI.Label(new Rect(15, iy, 330, 16), "核心技能:", ns);
+                    GUI.Label(new Rect(15, iy, 330, 16), "\u6838\u5fc3\u6280\u80fd:", ns);
                     iy += 16;
                     DrawItemRow(build.CoreSkills, build.FlexSkills, ref iy, ns);
                     ns.normal.textColor = new Color(0.5f, 0.6f, 1f);
-                    GUI.Label(new Rect(15, iy, 330, 16), "灵活技能:", ns);
+                    GUI.Label(new Rect(15, iy, 330, 16), "\u7075\u6d3b\u6280\u80fd:", ns);
                     iy += 16;
                     DrawItemRowReverse(build.FlexSkills, build.CoreSkills, ref iy, ns);
 
-                    GUI.Label(new Rect(15, iy, 50, 18), "加技:", s);
+                    GUI.Label(new Rect(15, iy, 50, 18), "\u52a0\u6280:", s);
                     _newItemInput = GUI.TextField(new Rect(55, iy, 140, 20), _newItemInput ?? "", 30);
-                    if (GUI.Button(new Rect(198, iy, 35, 20), "核心"))
+                    if (GUI.Button(new Rect(198, iy, 35, 20), "\u6838\u5fc3"))
                     {
                         if (!string.IsNullOrEmpty(_newItemInput))
                         {
@@ -1133,7 +1344,7 @@ namespace BazaarBoardReader
                             if (!build.CoreSkills.Contains(eng)) { build.CoreSkills.Add(eng); SaveBuildsAtomic(); _newItemInput = ""; }
                         }
                     }
-                    if (GUI.Button(new Rect(236, iy, 35, 20), "灵活"))
+                    if (GUI.Button(new Rect(236, iy, 35, 20), "\u7075\u6d3b"))
                     {
                         if (!string.IsNullOrEmpty(_newItemInput))
                         {
@@ -1152,7 +1363,7 @@ namespace BazaarBoardReader
             for (int i = 0; i < src.Count; i++)
             {
                 GUI.Label(new Rect(25, iy, 160, 16), Translate(src[i]), ns);
-                if (GUI.Button(new Rect(195, iy, 25, 15), "↓")) { dst.Add(src[i]); src.RemoveAt(i); SaveBuildsAtomic(); }
+                if (GUI.Button(new Rect(195, iy, 25, 15), ">")) { dst.Add(src[i]); src.RemoveAt(i); SaveBuildsAtomic(); }
                 if (GUI.Button(new Rect(222, iy, 25, 15), "X")) { src.RemoveAt(i); SaveBuildsAtomic(); }
                 iy += 17;
             }
@@ -1163,7 +1374,7 @@ namespace BazaarBoardReader
             for (int i = 0; i < src.Count; i++)
             {
                 GUI.Label(new Rect(25, iy, 160, 16), Translate(src[i]), ns);
-                if (GUI.Button(new Rect(195, iy, 25, 15), "↑")) { dst.Add(src[i]); src.RemoveAt(i); SaveBuildsAtomic(); }
+                if (GUI.Button(new Rect(195, iy, 25, 15), ">")) { dst.Add(src[i]); src.RemoveAt(i); SaveBuildsAtomic(); }
                 if (GUI.Button(new Rect(222, iy, 25, 15), "X")) { src.RemoveAt(i); SaveBuildsAtomic(); }
                 iy += 17;
             }
@@ -1244,7 +1455,7 @@ namespace BazaarBoardReader
                             {
                                 if (!IsPlayerSkillTransform(cc.transform, cam)) continue;
                                 sp.y -= _skillOffsetY;
-                                _skillLabels.Add(new OverlayLabel { Text = GetCardName(cd), Tier = cd.Tier.ToString(), ScreenPos = sp });
+                                _skillLabels.Add(new OverlayLabel { Text = GetCardName(cd), Tier = cd.Tier.ToString(), ScreenPos = sp, IsItem = true });
                             }
                         }
                         catch { }
@@ -1275,7 +1486,7 @@ namespace BazaarBoardReader
                                     if (!IsPlayerSkillTransform(r.transform, cam)) continue;
                                     var sp = cam.WorldToScreenPoint(r.transform.position);
                                     sp.y -= _skillOffsetY;
-                                    _skillLabels.Add(new OverlayLabel { Text = GetCardName(r.Card), Tier = r.Card.Tier.ToString(), ScreenPos = sp });
+                                    _skillLabels.Add(new OverlayLabel { Text = GetCardName(r.Card), Tier = r.Card.Tier.ToString(), ScreenPos = sp, IsItem = true });
                                 }
                                 catch { }
                             }
@@ -1375,6 +1586,34 @@ namespace BazaarBoardReader
             if (h.Contains("jules")) return "JUL";
             if (h.Contains("karnok")) return "KAR";
             return hero.Length > 3 ? hero.Substring(0, 3).ToUpper() : hero.ToUpper();
+        }
+        private string FormatHeroDisplayName(string hero)
+        {
+            var abbr = string.IsNullOrEmpty(hero) ? "?" : GetHeroAbbrev(hero);
+            if (!_useChinese) return abbr;
+            if (abbr == "VAN") return "\u6d77\u5c0f\u59b9";
+            if (abbr == "PYG") return "\u732a\u732a";
+            if (abbr == "DOO") return "\u9e21\u7172";
+            if (abbr == "KAR") return "\u5361\u5361";
+            if (abbr == "STE") return "\u9ed1\u59b9";
+            if (abbr == "JUL") return "\u53a8\u5a18";
+            if (abbr == "MAK") return "\u9a6c\u514b";
+            return abbr;
+        }
+
+        private string FormatDayLabel(int day)
+        {
+            if (day < 1) return "?";
+            return _useChinese ? ToChineseNumber(day) + "\u5929" : "Day " + day;
+        }
+
+        private string ToChineseNumber(int n)
+        {
+            string[] nums = { "", "\u4e00", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d", "\u4e03", "\u516b", "\u4e5d" };
+            if (n <= 10) return n == 10 ? "\u7b2c\u5341" : "\u7b2c" + nums[n];
+            if (n < 20) return "\u7b2c\u5341" + nums[n - 10];
+            if (n == 20) return "\u7b2c\u4e8c\u5341";
+            return "\u7b2c" + n.ToString();
         }
         private Color GetHeroColor(string hero)
         {
@@ -1914,7 +2153,7 @@ namespace BazaarBoardReader
                 removed += b.CoreSkills.RemoveAll(i => i.Contains("包裹"));
                 removed += b.FlexSkills.RemoveAll(i => i.Contains("包裹"));
             }
-            if (removed > 0) { SaveBuildsAtomic(); _logger.LogInfo(string.Format("[BoardReader] 清理包裹物品: {0} 个", removed)); }
+            if (removed > 0) { SaveBuildsAtomic(); _logger.LogInfo(string.Format("[BoardReader] Clean package items: {0}", removed)); }
         }
 
         private void SaveBuildsAtomic()
@@ -1957,7 +2196,7 @@ namespace BazaarBoardReader
                     imported++;
                 }
                 SaveBuildsAtomic();
-                _logger.LogInfo(string.Format("[BoardReader] 导入社区阵容: {0} 个", imported));
+                _logger.LogInfo(string.Format("[BoardReader] Import community builds: {0}", imported));
             }
             catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] 导入失败: {0}", ex)); }
         }
@@ -2017,33 +2256,26 @@ namespace BazaarBoardReader
         private List<string> GatherPlayerSkillNames()
         {
             var result = new List<string>();
+            var seen = new HashSet<string>();
+            var cam = Camera.main ?? Camera.current;
             try
             {
-                if (_skillListField != null)
-                {
 #pragma warning disable 0618
-                    var spm = UnityEngine.Object.FindObjectsOfType<TheBazaar.SkillPresentationManager>();
+                var renderers = UnityEngine.Object.FindObjectsOfType<TheBazaar.SkillProxyRenderer>();
 #pragma warning restore 0618
-                    if (spm != null && spm.Length > 0)
+                if (renderers != null)
+                {
+                    foreach (var r in renderers)
                     {
-                        var list = _skillListField.GetValue(spm[0]) as IList;
-                        if (list != null)
+                        try
                         {
-                            foreach (var obj in list)
-                            {
-                                try
-                                {
-                                    var r = obj as TheBazaar.SkillProxyRenderer;
-                                    if (r == null || r.Card == null) continue;
-                                    // 过滤对手/商店技能：只保留玩家自己 BoardManager.Instance 下的技能
-                                    var bm = r.transform.GetComponentInParent<BoardManager>();
-                                    if (bm == null || bm != BoardManager.Instance) continue;
-                                    var name = GetCardNameStatic(r.Card);
-                                    if (!string.IsNullOrEmpty(name) && name != "???") result.Add(name);
-                                }
-                                catch { }
-                            }
+                            if (r == null || r.Card == null) continue;
+                            if (!IsPlayerSkillTransform(r.transform, cam)) continue;
+                            var name = GetCardNameStatic(r.Card);
+                            if (string.IsNullOrEmpty(name) || name == "???") continue;
+                            if (seen.Add(name)) result.Add(name);
                         }
+                        catch { }
                     }
                 }
             }
@@ -2051,7 +2283,7 @@ namespace BazaarBoardReader
             return result;
         }
 
-        // ==================== 翻译 ====================
+        // ==================== ??? ====================
 
         private static bool IsChineseChar(char c) { return c >= 0x4e00 && c <= 0x9fff; }
         private static bool HasChinese(string s) { foreach (var c in s) if (IsChineseChar(c)) return true; return false; }
@@ -2079,10 +2311,10 @@ namespace BazaarBoardReader
                             if (!string.IsNullOrEmpty(kv.Value) && !_reverseTranslations.ContainsKey(kv.Value))
                                 _reverseTranslations[kv.Value] = kv.Key;
                         }
-                        _logger.LogInfo(string.Format("[BoardReader] 翻译加载: {0} 条, 反向: {1} 条", _translations.Count, _reverseTranslations.Count));
+                        _logger.LogInfo(string.Format("[BoardReader] translations loaded: {0}, reverse: {1}", _translations.Count, _reverseTranslations.Count));
                     }
                 }
-                else _logger.LogWarning("[BoardReader] translations_zh_cn.json 未找到");
+                else _logger.LogWarning("[BoardReader] translations_zh_cn.json not found");
             }
             catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] 翻译失败: {0}", ex)); }
         }
@@ -2488,28 +2720,25 @@ namespace BazaarBoardReader
             int hitPct = pool.Count > 0 ? (int)(totalHits * 100f / pool.Count) : 0;
             float score = GetWeightedScore(coreMissing, 3) + GetWeightedScore(coreOwned, 3)
                         + GetWeightedScore(flexMissing, 1) + GetWeightedScore(flexOwned, 1);
-            string stars;
-            if (totalHits > 0)
-                stars = (score >= 9f ? "★★★" : score >= 6f ? "★★" : "★") + " " + hitPct + "% (" + totalHits + "/" + pool.Count + ")";
-            else
-                stars = "☆☆☆ 0% (0/" + pool.Count + ")";
+            if (totalHits <= 0) return null;
+            string stars = (score >= 9f ? "\u2605\u2605\u2605" : score >= 6f ? "\u2605\u2605" : "\u2605") + " " + hitPct + "% (" + totalHits + "/" + pool.Count + ")";
             var lines = new List<string> { stars };
             var coreLine = new List<string>();
             coreLine.AddRange(TranslateEach(coreMissing));
             coreLine.AddRange(TranslateEach(coreOwned).Select(s => "*" + s));
             lines.Add(coreLine.Count > 0
-                ? string.Join(",", coreLine.Take(4).ToArray()) + (coreLine.Count > 4 ? "……" : "")
+                ? string.Join(",", coreLine.Take(4).ToArray()) + (coreLine.Count > 4 ? "..." : "")
                 : "-");
             var flexLine = new List<string>();
             flexLine.AddRange(TranslateEach(flexMissing));
             flexLine.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
             lines.Add(flexLine.Count > 0
-                ? string.Join(",", flexLine.Take(4).ToArray()) + (flexLine.Count > 4 ? "……" : "")
+                ? string.Join(",", flexLine.Take(4).ToArray()) + (flexLine.Count > 4 ? "..." : "")
                 : "-");
             // 商店推荐文本
             var rec = GetEventRecommendation(shopName);
             if (!string.IsNullOrEmpty(rec))
-                lines.Add("◆ " + rec);
+                lines.Add("◆" + rec);
             return string.Join("\n", lines.ToArray());
         }
 
@@ -2534,7 +2763,7 @@ namespace BazaarBoardReader
                                 _eventLookup[name.ToLower()] = evt;
                         }
                 }
-                _logger.LogInfo(string.Format("[BoardReader] 事件数据: {0} 条", _eventLookup.Count));
+                _logger.LogInfo(string.Format("[BoardReader] event data loaded: {0}", _eventLookup.Count));
             }
             catch (Exception ex) { _logger.LogWarning("[BoardReader] 事件加载: " + ex.Message); }
         }
@@ -2752,21 +2981,19 @@ namespace BazaarBoardReader
             float score = GetWeightedScore(coreHits, 3) + GetWeightedScore(coreOwned, 3)
                         + GetWeightedScore(flexHits, 1) + GetWeightedScore(flexOwned, 1);
             var lines = new List<string>();
-            if (needHits > 0)
-                lines.Add((score >= 9f ? "★★★" : score >= 6f ? "★★" : "★") + " " + hitPct + "% (" + needHits + "/" + pool.Count + ")");
-            else
-                lines.Add("☆☆☆ 0% (0/" + pool.Count + ")");
+            if (needHits <= 0) return null;
+            lines.Add((score >= 9f ? "\u2605\u2605\u2605" : score >= 6f ? "\u2605\u2605" : "\u2605") + " " + hitPct + "% (" + needHits + "/" + pool.Count + ")");
 
             var cl = new List<string>();
             cl.AddRange(TranslateEach(coreHits));
             cl.AddRange(TranslateEach(coreOwned).Select(s => "*" + s));
-            lines.Add(cl.Count > 0 ? string.Join(",", cl.Take(4).ToArray()) + (cl.Count > 4 ? "……" : "") : "-");
+            lines.Add(cl.Count > 0 ? string.Join(",", cl.Take(4).ToArray()) + (cl.Count > 4 ? "..." : "") : "-");
 
             var fl = new List<string>();
             fl.AddRange(TranslateEach(flexHits));
             fl.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
-            lines.Add(fl.Count > 0 ? string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "……" : "") : "-");
-            if (!string.IsNullOrEmpty(rec)) lines.Add("◆ " + rec);
+            lines.Add(fl.Count > 0 ? string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "..." : "") : "-");
+            lines.Add("◆" + rec);
             return string.Join("\n", lines.ToArray());
         }
         private string RateEvent(string shopName)
@@ -2899,20 +3126,18 @@ namespace BazaarBoardReader
             int hitPct = pool.Count > 0 ? (int)(needHitsEvt * 100f / pool.Count) : 0;
             float scoreEvt = GetWeightedScore(coreHits, 3) + GetWeightedScore(coreOwned, 3)
                            + GetWeightedScore(flexHits, 1) + GetWeightedScore(flexOwned, 1);
-            if (needHitsEvt > 0)
-                linesEvt.Add((scoreEvt >= 9f ? "★★★" : scoreEvt >= 6f ? "★★" : "★") + " " + hitPct + "% (" + needHitsEvt + "/" + pool.Count + ")");
-            else
-                linesEvt.Add("☆☆☆ 0% (0/" + pool.Count + ")");
+            if (needHitsEvt <= 0) return null;
+            linesEvt.Add((scoreEvt >= 9f ? "\u2605\u2605\u2605" : scoreEvt >= 6f ? "\u2605\u2605" : "\u2605") + " " + hitPct + "% (" + needHitsEvt + "/" + pool.Count + ")");
             var cl = new List<string>();
             cl.AddRange(TranslateEach(coreHits));
             cl.AddRange(TranslateEach(coreOwned).Select(s => "*" + s));
-            linesEvt.Add(cl.Count > 0 ? string.Join(",", cl.Take(4).ToArray()) + (cl.Count > 4 ? "……" : "") : "-");
+            linesEvt.Add(cl.Count > 0 ? string.Join(",", cl.Take(4).ToArray()) + (cl.Count > 4 ? "..." : "") : "-");
             var fl = new List<string>();
             fl.AddRange(TranslateEach(flexHits));
             fl.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
-            linesEvt.Add(fl.Count > 0 ? string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "……" : "") : "-");
+            linesEvt.Add(fl.Count > 0 ? string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "..." : "") : "-");
             if (!string.IsNullOrEmpty(rec))
-                linesEvt.Add("◆ " + rec);
+                linesEvt.Add("◆" + rec);
             return string.Join("\n", linesEvt.ToArray());
         }
 
@@ -2995,7 +3220,7 @@ namespace BazaarBoardReader
             foreach (var line in lines)
             {
                 var ci = line.IndexOf(':');
-                if (ci < 0) ci = line.IndexOf('：'); // 中文冒号
+                if (ci < 0) ci = line.IndexOf('?');
                 if (ci < 0) continue;
                 var cond = line.Substring(0, ci).Trim().TrimStart('[').TrimEnd(']');
                 var text = line.Substring(ci + 1).Trim();
@@ -3981,7 +4206,7 @@ namespace BazaarBoardReader
 
     // ==================== 数据类 ====================
 
-    internal class OverlayLabel { public string Text; public string Tier; public Vector3 ScreenPos; public string SubText; public string HoverData; }
+    internal class OverlayLabel { public string Text; public string Tier; public Vector3 ScreenPos; public string SubText; public string HoverData; public bool IsItem; public bool Blink; }
 
     public class TrackedCard { public string Name; public string Type; public bool IsPlayer; public float LastSeen; public string Tier; }
 
