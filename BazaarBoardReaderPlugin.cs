@@ -103,7 +103,7 @@ namespace BazaarBoardReader
     {
         private const string PluginGuid = "com.bazaar.boardreader";
         private const string PluginName = "BazaarBoardReader";
-        private const string PluginVersion = "7.6.3";
+        private const string PluginVersion = "7.6.5";
 
         internal static ManualLogSource _logger;
         private float _lastExportTime;
@@ -144,8 +144,13 @@ namespace BazaarBoardReader
         private int _lastRecommendationCalcFrame = -1;
         private string _lastRecommendationCalcHero = "";
         private string _lastRecommendationCalcBuild = "";
+        private int _lastRecommendationCalcBuildsVersion = -1;
         private BuildTemplate _bestBuildCache;
         private int _bestBuildCacheFrame = -1;
+        private string _bestBuildCacheHero = "";
+        private string _bestBuildCacheBuild = "";
+        private int _bestBuildCacheBuildsVersion = -1;
+        private int _buildsVersion = 0;
 
         private readonly Dictionary<string, Color> _tierColors = new Dictionary<string, Color>
         {
@@ -176,6 +181,8 @@ namespace BazaarBoardReader
         private Dictionary<string, string> _ownedStorageItemsCache = new Dictionary<string, string>();
         private Dictionary<string, string> _lastLiveBoardItems = new Dictionary<string, string>();
         private Dictionary<string, string> _lastLiveStorageItems = new Dictionary<string, string>();
+        private List<KeyValuePair<string, string>> _ownedItemsResultCache = new List<KeyValuePair<string, string>>();
+        private int _ownedItemsResultCacheFrame = -1;
         private bool _lastLiveScanSawStorage;
         private bool _backpackOpen;
         private int _currentGold = 0;
@@ -279,7 +286,7 @@ namespace BazaarBoardReader
             _showRecommendations = true;
             _showBuildManager = true;
             _mgrCollapsed = true;
-            _logger.LogInfo(string.Format("[BoardReader] v7.6.3 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
+            _logger.LogInfo(string.Format("[BoardReader] v7.6.5 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
                 (int)_itemOffsetY, (int)_skillOffsetY, (int)_shopOffsetY, _bgOpacity * 100f));
 
             _labelStyle = new GUIStyle { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter, wordWrap = false };
@@ -290,7 +297,7 @@ namespace BazaarBoardReader
             _sIsPlayerBoardProp = _isPlayerBoardProp;
             _skillListField = typeof(TheBazaar.SkillPresentationManager).GetField("_skillList", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            _buildsPath = Path.Combine(Paths.ConfigPath, "BazaarBoardReader_Builds.json");
+            _buildsPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "builds.json");
             LoadBuilds();
             CleanBuilds();
             LoadTranslations();
@@ -972,8 +979,19 @@ namespace BazaarBoardReader
         {
             _lastRecommendationCalcFrame = -1;
             _lastRecommendationCalcTime = -999f;
+            _lastRecommendationCalcBuildsVersion = -1;
             _bestBuildCache = null;
             _bestBuildCacheFrame = -1;
+            _bestBuildCacheHero = "";
+            _bestBuildCacheBuild = "";
+            _bestBuildCacheBuildsVersion = -1;
+            _ownedItemsResultCacheFrame = -1;
+        }
+
+        private void MarkBuildsChanged()
+        {
+            _buildsVersion++;
+            InvalidateRecommendationCache();
         }
 
         private void SetDetectedHero(string hero)
@@ -993,7 +1011,8 @@ namespace BazaarBoardReader
             if (!force
                 && _lastRecommendationCalcFrame == Time.frameCount
                 && _lastRecommendationCalcHero == _detectedHero
-                && _lastRecommendationCalcBuild == _selectedBuildName)
+                && _lastRecommendationCalcBuild == _selectedBuildName
+                && _lastRecommendationCalcBuildsVersion == _buildsVersion)
                 return;
             if (!force && Time.time - _lastRecommendationCalcTime < RecommendationRefreshInterval)
                 return;
@@ -1001,6 +1020,7 @@ namespace BazaarBoardReader
             _lastRecommendationCalcTime = Time.time;
             _lastRecommendationCalcHero = _detectedHero;
             _lastRecommendationCalcBuild = _selectedBuildName;
+            _lastRecommendationCalcBuildsVersion = _buildsVersion;
             try
             {
                 _matchResults = MatchBuilds(_detectedHero, GatherAllItemNames());
@@ -1314,13 +1334,9 @@ namespace BazaarBoardReader
             DrawTitleHint(px + 10, py + 6, "\u6784\u7b51\u7ba1\u7406", ts);
             if (_mgrCollapsed) return;
 
-            if (GUI.Button(new Rect(px + pw - 140, py + 5, 50, 20), "\u65b0\u5efa"))
+            if (GUI.Button(new Rect(px + pw - 84, py + 5, 50, 20), "\u65b0\u5efa"))
             {
                 StartEmptyCaptureMode();
-            }
-            if (GUI.Button(new Rect(px + pw - 84, py + 5, 50, 20), "\u5bfc\u5165"))
-            {
-                ImportCommunityBuilds();
             }
             var heroBuilds = string.IsNullOrEmpty(_detectedHero)
                 ? _builds : _builds.FindAll(b => b.HeroName == _detectedHero || string.IsNullOrEmpty(b.HeroName));
@@ -1690,20 +1706,6 @@ namespace BazaarBoardReader
             var heroes = new HashSet<string>();
             foreach (var b in _builds)
                 if (!string.IsNullOrEmpty(b.HeroName)) heroes.Add(b.HeroName);
-            // 加入社区阵容英雄
-            try
-            {
-                var path = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "community_builds.json");
-                if (File.Exists(path))
-                {
-                    var cb = JsonConvert.DeserializeObject<Dictionary<string, CommunityBuild>>(File.ReadAllText(path, Encoding.UTF8));
-                    if (cb != null)
-                        foreach (var kv in cb)
-                            if (kv.Value != null && !string.IsNullOrEmpty(kv.Value.hero))
-                                heroes.Add(kv.Value.hero);
-                }
-            }
-            catch { }
             var list = new List<string>(heroes);
             list.Sort();
             return list;
@@ -1964,12 +1966,17 @@ namespace BazaarBoardReader
             _ownedStorageItemsCache.Clear();
             _lastLiveBoardItems.Clear();
             _lastLiveStorageItems.Clear();
+            _ownedItemsResultCache.Clear();
+            _ownedItemsResultCacheFrame = -1;
             _lastLiveScanSawStorage = false;
             _backpackOpen = false;
         }
 
         private List<KeyValuePair<string, string>> GatherAllItemsWithTier()
         {
+            if (_ownedItemsResultCacheFrame == Time.frameCount)
+                return new List<KeyValuePair<string, string>>(_ownedItemsResultCache);
+
             var fresh = ScanLiveOwnedItemsWithTier();
             if (fresh != null && fresh.Count > 0)
             {
@@ -2017,6 +2024,8 @@ namespace BazaarBoardReader
             var result = new List<KeyValuePair<string, string>>();
             foreach (var kv in _ownedItemsCache)
                 result.Add(new KeyValuePair<string, string>(kv.Key, kv.Value));
+            _ownedItemsResultCache = new List<KeyValuePair<string, string>>(result);
+            _ownedItemsResultCacheFrame = Time.frameCount;
             return result;
         }
 
@@ -2193,68 +2202,113 @@ namespace BazaarBoardReader
         {
             try
             {
+                EnsureBuildsDatabaseFile();
                 if (File.Exists(_buildsPath))
-                    _builds = JsonConvert.DeserializeObject<List<BuildTemplate>>(File.ReadAllText(_buildsPath, Encoding.UTF8)) ?? new List<BuildTemplate>();
+                    _builds = ReadBuildTemplatesFromFile(_buildsPath);
+                else
+                    _builds = new List<BuildTemplate>();
+                NormalizeBuilds();
+                MarkBuildsChanged();
             }
-            catch { _builds = new List<BuildTemplate>(); }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format("[BoardReader] Load builds failed: {0}", ex));
+                _builds = new List<BuildTemplate>();
+            }
+        }
+
+        private void EnsureBuildsDatabaseFile()
+        {
+            var dir = Path.GetDirectoryName(_buildsPath);
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            if (File.Exists(_buildsPath)) return;
+
+            var legacyCommunityPath = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "community_builds.json");
+            if (File.Exists(legacyCommunityPath))
+            {
+                var migrated = ReadBuildTemplatesFromFile(legacyCommunityPath);
+                WriteJsonAtomic(_buildsPath, JsonConvert.SerializeObject(migrated, Formatting.Indented));
+                _logger.LogInfo(string.Format("[BoardReader] Migrated community builds to builds.json: {0}", migrated.Count));
+                return;
+            }
+
+            var legacyConfigPath = Path.Combine(Paths.ConfigPath, "BazaarBoardReader_Builds.json");
+            if (File.Exists(legacyConfigPath))
+            {
+                var migrated = ReadBuildTemplatesFromFile(legacyConfigPath);
+                WriteJsonAtomic(_buildsPath, JsonConvert.SerializeObject(migrated, Formatting.Indented));
+                _logger.LogInfo(string.Format("[BoardReader] Migrated config builds to builds.json: {0}", migrated.Count));
+            }
+        }
+
+        private List<BuildTemplate> ReadBuildTemplatesFromFile(string path)
+        {
+            var json = File.ReadAllText(path, Encoding.UTF8);
+            var trimmed = (json ?? "").TrimStart();
+            if (trimmed.StartsWith("["))
+                return JsonConvert.DeserializeObject<List<BuildTemplate>>(json) ?? new List<BuildTemplate>();
+
+            var community = JsonConvert.DeserializeObject<Dictionary<string, CommunityBuild>>(json);
+            return ConvertCommunityBuilds(community);
+        }
+
+        private List<BuildTemplate> ConvertCommunityBuilds(Dictionary<string, CommunityBuild> builds)
+        {
+            var result = new List<BuildTemplate>();
+            if (builds == null) return result;
+            foreach (var kv in builds)
+            {
+                var cb = kv.Value;
+                if (cb == null) continue;
+                result.Add(new BuildTemplate
+                {
+                    HeroName = cb.hero ?? "",
+                    BuildName = cb.display_name ?? kv.Key,
+                    CoreItems = cb.core_cards ?? new List<string>(),
+                    FlexItems = (cb.transition_cards ?? new List<string>()).Concat(cb.optional_cards ?? new List<string>()).ToList(),
+                    CoreSkills = new List<string>(),
+                    FlexSkills = new List<string>()
+                });
+            }
+            return result;
+        }
+
+        private void NormalizeBuilds()
+        {
+            foreach (var b in _builds)
+            {
+                if (b.CoreItems == null) b.CoreItems = new List<string>();
+                if (b.FlexItems == null) b.FlexItems = new List<string>();
+                if (b.CoreSkills == null) b.CoreSkills = new List<string>();
+                if (b.FlexSkills == null) b.FlexSkills = new List<string>();
+                if (b.HeroName == null) b.HeroName = "";
+                if (b.BuildName == null) b.BuildName = "";
+            }
         }
 
         private void CleanBuilds()
         {
+            NormalizeBuilds();
             int removed = 0;
             foreach (var b in _builds)
             {
-                removed += b.CoreItems.RemoveAll(i => i.Contains("包裹"));
-                removed += b.FlexItems.RemoveAll(i => i.Contains("包裹"));
-                removed += b.CoreSkills.RemoveAll(i => i.Contains("包裹"));
-                removed += b.FlexSkills.RemoveAll(i => i.Contains("包裹"));
+                removed += b.CoreItems.RemoveAll(i => string.IsNullOrEmpty(i));
+                removed += b.FlexItems.RemoveAll(i => string.IsNullOrEmpty(i));
+                removed += b.CoreSkills.RemoveAll(i => string.IsNullOrEmpty(i));
+                removed += b.FlexSkills.RemoveAll(i => string.IsNullOrEmpty(i));
             }
-            if (removed > 0) { SaveBuildsAtomic(); _logger.LogInfo(string.Format("[BoardReader] Clean package items: {0}", removed)); }
+            if (removed > 0) { SaveBuildsAtomic(); _logger.LogInfo(string.Format("[BoardReader] Clean empty build entries: {0}", removed)); }
         }
 
         private void SaveBuildsAtomic()
         {
-            try { WriteJsonAtomic(_buildsPath, JsonConvert.SerializeObject(_builds, Formatting.Indented)); }
-            catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] 保存失败: {0}", ex)); }
-        }
-
-        private void ImportCommunityBuilds()
-        {
             try
             {
-                var path = Path.Combine(Paths.GameRootPath, "BazaarBoardReader", "data", "community_builds.json");
-                if (!File.Exists(path))
-                {
-                    _logger.LogWarning("[BoardReader] 未找到 community_builds.json");
-                    return;
-                }
-                var json = File.ReadAllText(path, Encoding.UTF8);
-                var builds = JsonConvert.DeserializeObject<Dictionary<string, CommunityBuild>>(json);
-                if (builds == null) return;
-                int imported = 0;
-                foreach (var kv in builds)
-                {
-                    var cb = kv.Value;
-                    if (cb == null) continue;
-                    // 检查是否已存在同名
-                    if (_builds.Exists(b => b.BuildName == cb.display_name)) continue;
-                    var bt = new BuildTemplate
-                    {
-                        HeroName = cb.hero ?? "",
-                        BuildName = cb.display_name ?? kv.Key,
-                        CoreItems = cb.core_cards ?? new List<string>(),
-                        FlexItems = (cb.transition_cards ?? new List<string>())
-                            .Concat(cb.optional_cards ?? new List<string>()).ToList(),
-                        CoreSkills = new List<string>(),
-                        FlexSkills = new List<string>()
-                    };
-                    _builds.Add(bt);
-                    imported++;
-                }
-                SaveBuildsAtomic();
-                _logger.LogInfo(string.Format("[BoardReader] Import community builds: {0}", imported));
+                NormalizeBuilds();
+                WriteJsonAtomic(_buildsPath, JsonConvert.SerializeObject(_builds, Formatting.Indented));
+                MarkBuildsChanged();
             }
-            catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] 导入失败: {0}", ex)); }
+            catch (Exception ex) { _logger.LogError(string.Format("[BoardReader] Save builds failed: {0}", ex)); }
         }
 
         private static void WriteJsonAtomic(string path, string json)
@@ -2263,6 +2317,37 @@ namespace BazaarBoardReader
             File.WriteAllText(tmp, json, Encoding.UTF8);
             if (File.Exists(path)) File.Delete(path);
             File.Move(tmp, path);
+        }
+
+        private BuildTemplate GetBestBuildTemplate()
+        {
+            if (_bestBuildCacheFrame == Time.frameCount
+                && _bestBuildCacheHero == _detectedHero
+                && _bestBuildCacheBuild == _selectedBuildName
+                && _bestBuildCacheBuildsVersion == _buildsVersion)
+                return _bestBuildCache;
+
+            BuildTemplate bestBuild = null;
+            if (!string.IsNullOrEmpty(_selectedBuildName))
+                bestBuild = _builds.Find(b => b.BuildName == _selectedBuildName);
+            if (bestBuild == null)
+            {
+                RefreshRecommendationMatchesIfDue();
+                if (_matchResults != null && _matchResults.Count > 0)
+                    bestBuild = _matchResults[0].Template;
+            }
+            if (bestBuild == null)
+            {
+                var matchResults = MatchBuilds(_detectedHero, GatherAllItemNames());
+                if (matchResults.Count > 0) bestBuild = matchResults[0].Template;
+            }
+
+            _bestBuildCache = bestBuild;
+            _bestBuildCacheFrame = Time.frameCount;
+            _bestBuildCacheHero = _detectedHero;
+            _bestBuildCacheBuild = _selectedBuildName;
+            _bestBuildCacheBuildsVersion = _buildsVersion;
+            return bestBuild;
         }
 
         private List<BuildMatchResult> MatchBuilds(string heroName, List<string> currentItems)
@@ -2713,18 +2798,7 @@ namespace BazaarBoardReader
             }
             if (pool.Count == 0) return null;
 
-            // 选阵容：优先手动选择，否则取匹配度最高
-            BuildTemplate bestBuild = null;
-            if (!string.IsNullOrEmpty(_selectedBuildName))
-            {
-                bestBuild = _builds.Find(b => b.BuildName == _selectedBuildName);
-            }
-            if (bestBuild == null)
-            {
-                var currentItems = GatherAllItemNames();
-                var matchResults = MatchBuilds(_detectedHero, currentItems);
-                if (matchResults.Count > 0) bestBuild = matchResults[0].Template;
-            }
+            var bestBuild = GetBestBuildTemplate();
             if (bestBuild == null) return null;
 
             // 构建小写物品池，统计阵容物品在该商店的占比
@@ -2773,7 +2847,9 @@ namespace BazaarBoardReader
             bool flexEmpty = flexOwned.Count == 0 && flexMissing.Count == 0;
 
             int totalHits = coreOwned.Count + coreMissing.Count + flexOwned.Count + flexMissing.Count;
-            int hitPct = pool.Count > 0 ? (int)(totalHits * 100f / pool.Count) : 0;
+            var hitItems = new List<string>();
+            hitItems.AddRange(coreOwned); hitItems.AddRange(coreMissing); hitItems.AddRange(flexOwned); hitItems.AddRange(flexMissing);
+            int hitPct = CalculateWeightedHitPercent(pool, hitItems, false);
             float score = GetWeightedScore(coreMissing, 3) + GetWeightedScore(coreOwned, 3)
                         + GetWeightedScore(flexMissing, 1) + GetWeightedScore(flexOwned, 1);
             var rec = GetEventRecommendation(shopName);
@@ -2946,7 +3022,7 @@ namespace BazaarBoardReader
 
                 pool.Add(card.internal_name ?? kv.Key);
             }
-            return RenderBuildPoolRating(pool, null);
+            return RenderBuildPoolRating(pool, null, true);
         }
 
         private List<string> GetLevelUpRewardTags(string eventName, CardDataEntry evtCard)
@@ -3033,6 +3109,94 @@ namespace BazaarBoardReader
             return tiers;
         }
 
+        private CardDataEntry FindCardEntryByName(string itemName)
+        {
+            if (string.IsNullOrEmpty(itemName)) return null;
+            CardDataEntry card;
+            if (_cardDb.TryGetValue(itemName.ToLower(), out card)) return card;
+            foreach (var kv in _cardDb)
+            {
+                var c = kv.Value;
+                if (c != null && !string.IsNullOrEmpty(c.internal_name)
+                    && c.internal_name.Equals(itemName, StringComparison.OrdinalIgnoreCase)) return c;
+            }
+            return null;
+        }
+
+        private float GetRatingWeight(string itemName, bool fixedWeights)
+        {
+            if (fixedWeights) return 1f;
+            var card = FindCardEntryByName(itemName);
+            if (card == null) return 1f;
+            var w = GetCardWeight(card, _currentDay);
+            return w > 0f ? w : 0f;
+        }
+
+        private int CalculateWeightedHitPercent(List<string> pool, List<string> hitItems, bool fixedWeights)
+        {
+            if (pool == null || pool.Count == 0) return 0;
+            var hitSet = new HashSet<string>(hitItems ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
+            float totalWeight = 0f;
+            float hitWeight = 0f;
+            foreach (var item in pool)
+            {
+                var w = GetRatingWeight(item, fixedWeights);
+                totalWeight += w;
+                if (hitSet.Contains(item)) hitWeight += w;
+            }
+            if (totalWeight <= 0f)
+                return hitItems != null && pool.Count > 0 ? (int)(hitItems.Count * 100f / pool.Count) : 0;
+            return Mathf.Clamp((int)(hitWeight * 100f / totalWeight), 0, 100);
+        }
+
+        private bool IsExcavationName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return false;
+            return NormalizeEventBaseName(name).Equals("Excavation", StringComparison.OrdinalIgnoreCase)
+                || name.IndexOf("\u6316\u6398\u884c\u52a8", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private void AddRewardTag(List<string> tags, string tag)
+        {
+            if (tags == null || string.IsNullOrEmpty(tag)) return;
+            if (!tags.Any(t => t.Equals(tag, StringComparison.OrdinalIgnoreCase))) tags.Add(tag);
+        }
+
+        private void AddRewardTagsFromNotes(List<string> tags, string notes)
+        {
+            if (string.IsNullOrEmpty(notes)) return;
+            var lower = notes.ToLowerInvariant();
+            if (lower.Contains("relic") || notes.Contains("\u9057\u7269")) AddRewardTag(tags, "Relic");
+            if (lower.Contains("tool") || notes.Contains("\u5de5\u5177")) AddRewardTag(tags, "Tool");
+            if (lower.Contains("weapon") || notes.Contains("\u6b66\u5668")) AddRewardTag(tags, "Weapon");
+            if (lower.Contains("friend") || notes.Contains("\u4f19\u4f34") || notes.Contains("\u670b\u53cb")) AddRewardTag(tags, "Friend");
+            if (lower.Contains("potion") || notes.Contains("\u836f\u6c34")) AddRewardTag(tags, "Potion");
+            if (lower.Contains("food") || notes.Contains("\u98df\u7269")) AddRewardTag(tags, "Food");
+            if (lower.Contains("aquatic") || notes.Contains("\u6c34\u7cfb")) AddRewardTag(tags, "Aquatic");
+            if (lower.Contains("tech") || notes.Contains("\u79d1\u6280")) AddRewardTag(tags, "Tech");
+        }
+
+        private bool IsAnyHeroReward(Dictionary<string, object> evt, string shopName)
+        {
+            if (IsExcavationName(shopName)) return true;
+            if (evt != null)
+            {
+                if (evt.ContainsKey("name") && IsExcavationName(evt["name"] != null ? evt["name"].ToString() : "")) return true;
+                if (evt.ContainsKey("notes") && evt["notes"] != null)
+                {
+                    var notes = evt["notes"].ToString().ToLowerInvariant();
+                    if (notes.Contains("from any hero") || notes.Contains("any hero")) return true;
+                }
+            }
+            return false;
+        }
+
+        private string GetEventName(Dictionary<string, object> evt)
+        {
+            if (evt != null && evt.ContainsKey("name") && evt["name"] != null) return evt["name"].ToString();
+            return "";
+        }
+
         private string BuildNoMatchRating(int poolCount, string rec)
         {
             var lines = new List<string>();
@@ -3054,18 +3218,11 @@ namespace BazaarBoardReader
             return null;
         }
 
-        private string RenderBuildPoolRating(List<string> pool, string rec)
+        private string RenderBuildPoolRating(List<string> pool, string rec, bool fixedWeights = false)
         {
             if (pool == null || pool.Count == 0) return null;
 
-            BuildTemplate bestBuild = null;
-            if (!string.IsNullOrEmpty(_selectedBuildName))
-                bestBuild = _builds.Find(b => b.BuildName == _selectedBuildName);
-            if (bestBuild == null)
-            {
-                var matchResults = MatchBuilds(_detectedHero, GatherAllItemNames());
-                if (matchResults.Count > 0) bestBuild = matchResults[0].Template;
-            }
+            var bestBuild = GetBestBuildTemplate();
             if (bestBuild == null) return null;
 
             var ownedTiers = new Dictionary<string, string>();
@@ -3095,7 +3252,9 @@ namespace BazaarBoardReader
             }
 
             int needHits = coreHits.Count + coreOwned.Count + flexHits.Count + flexOwned.Count;
-            int hitPct = pool.Count > 0 ? (int)(needHits * 100f / pool.Count) : 0;
+            var hitItems = new List<string>();
+            hitItems.AddRange(coreHits); hitItems.AddRange(coreOwned); hitItems.AddRange(flexHits); hitItems.AddRange(flexOwned);
+            int hitPct = CalculateWeightedHitPercent(pool, hitItems, fixedWeights);
             float score = GetWeightedScore(coreHits, 3) + GetWeightedScore(coreOwned, 3)
                         + GetWeightedScore(flexHits, 1) + GetWeightedScore(flexOwned, 1);
             var lines = new List<string>();
@@ -3120,18 +3279,27 @@ namespace BazaarBoardReader
             if (_eventLookup == null || _eventLookup.Count == 0) return null;
             if (_cardDb.Count == 0 || string.IsNullOrEmpty(_detectedHero)) return null;
 
-            var key = shopName.ToLower();
-            var parenIdx = key.IndexOf('(');
-            if (parenIdx > 0) key = key.Substring(0, parenIdx).Trim();
+            var rawKey = (shopName ?? "").ToLower();
+            var key = rawKey;
             object evtObj = null;
-            // 先按名查，再按 template_id 查；不要用 game_state 全局事件列表兜底，否则会延迟误匹配非当前事件。
-            if (!_eventLookup.TryGetValue(key, out evtObj))
+            if (!_eventLookup.TryGetValue(rawKey, out evtObj))
             {
                 string mappedName;
                 if (_tidToName.TryGetValue(shopName, out mappedName))
                     _eventLookup.TryGetValue(mappedName.ToLower(), out evtObj);
-                if (evtObj == null && _tidToName.TryGetValue(key, out mappedName))
+                if (evtObj == null && _tidToName.TryGetValue(rawKey, out mappedName))
                     _eventLookup.TryGetValue(mappedName.ToLower(), out evtObj);
+            }
+            if (evtObj == null)
+            {
+                var parenIdx = key.IndexOf('(');
+                if (parenIdx > 0) key = key.Substring(0, parenIdx).Trim();
+                if (!_eventLookup.TryGetValue(key, out evtObj))
+                {
+                    string mappedName;
+                    if (_tidToName.TryGetValue(key, out mappedName))
+                        _eventLookup.TryGetValue(mappedName.ToLower(), out evtObj);
+                }
             }
             if (evtObj == null) return null;
             var evt = evtObj as Dictionary<string, object>;
@@ -3139,17 +3307,21 @@ namespace BazaarBoardReader
             if (IsSpecialShopWithoutDedicatedRecommendation(evt, shopName)) return null;
             if (IsLootRewardEvent(evt, shopName)) return null;
 
-            // 只评分 item_reward
+            var eventName = GetEventName(evt);
+            bool isExcavation = IsExcavationName(shopName) || IsExcavationName(eventName);
             var etype = evt.ContainsKey("event_type") ? evt["event_type"].ToString() : "";
-            if (etype != "item_reward") return null;
+            if (etype != "item_reward" && !isExcavation) return null;
 
             var tags = new List<string>();
             if (evt.ContainsKey("reward_tags"))
             {
                 var tagList = evt["reward_tags"] as Newtonsoft.Json.Linq.JArray;
                 if (tagList != null)
-                    foreach (var t in tagList) tags.Add(t.ToString());
+                    foreach (var t in tagList) AddRewardTag(tags, t.ToString());
             }
+            if (evt.ContainsKey("notes") && evt["notes"] != null)
+                AddRewardTagsFromNotes(tags, evt["notes"].ToString());
+            if (isExcavation) AddRewardTag(tags, "Relic");
 
             bool hasCardReward = false;
             if (evt.ContainsKey("card_reward"))
@@ -3159,23 +3331,29 @@ namespace BazaarBoardReader
                 {
                     bool enabled;
                     hasCardReward = bool.TryParse((cardReward["enabled"] ?? "").ToString(), out enabled) && enabled;
+                    var rewardTags = cardReward["reward_tags"] as Newtonsoft.Json.Linq.JArray;
+                    if (rewardTags != null)
+                        foreach (var t in rewardTags) AddRewardTag(tags, t.ToString());
                 }
             }
+            if (!hasCardReward && tags.Count == 0 && !isExcavation) return null;
 
-            // Skip events that cannot grant items.
-            if (!hasCardReward && tags.Count == 0)
-                return null;
+            bool anyHero = IsAnyHeroReward(evt, shopName);
+            var forcedTier = ExtractTierFromText(shopName);
+            if (string.IsNullOrEmpty(forcedTier)) forcedTier = ExtractTierFromText(eventName);
+            bool fixedTier = !string.IsNullOrEmpty(forcedTier);
 
-            // Build the item pool for events that can grant items.
             var pool = new List<string>();
             foreach (var kv in _cardDb)
             {
                 var card = kv.Value;
+                if (card == null) continue;
+                if (!string.Equals(card.type, "Item", StringComparison.OrdinalIgnoreCase)) continue;
                 if (card.tiers != null && card.tiers.Contains("Legendary")) continue;
                 var ch = card.heroes ?? new List<string>();
                 bool cardIsNeutral = ch.Any(h => h.Equals("Common", StringComparison.OrdinalIgnoreCase));
-                if (!cardIsNeutral && !ch.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
-                var forcedTier = ExtractTierFromText(shopName);
+                if (!anyHero && !cardIsNeutral && !ch.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
+
                 if (!string.IsNullOrEmpty(forcedTier))
                 {
                     if (card.tiers == null || !card.tiers.Any(t => t.Equals(forcedTier, StringComparison.OrdinalIgnoreCase))) continue;
@@ -3190,7 +3368,6 @@ namespace BazaarBoardReader
                     var allLower = allTags.Select(t => t.ToLower()).ToList();
                     var excludeR = tags.Where(t => t.StartsWith("!")).Select(t => t.Substring(1).ToLower()).ToList();
                     var includeR = tags.Where(t => !t.StartsWith("!")).Select(t => t.ToLower()).ToList();
-                    // 尺寸过滤: small/medium/large
                     string sizeFilter = null;
                     foreach (var sz in new[]{"small","medium","large"})
                         if (includeR.Contains(sz)) { sizeFilter = sz; includeR.Remove(sz); break; }
@@ -3202,25 +3379,14 @@ namespace BazaarBoardReader
             }
             if (pool.Count == 0) return null;
 
-            // 选阵容
-            BuildTemplate bestBuild = null;
-            if (!string.IsNullOrEmpty(_selectedBuildName))
-                bestBuild = _builds.Find(b => b.BuildName == _selectedBuildName);
-            if (bestBuild == null)
-            {
-                var matchResults = MatchBuilds(_detectedHero, GatherAllItemNames());
-                if (matchResults.Count > 0) bestBuild = matchResults[0].Template;
-            }
+            var bestBuild = GetBestBuildTemplate();
             var rec = GetEventRecommendation(shopName);
-            if (bestBuild == null)
-                return null;
+            if (bestBuild == null) return null;
 
-            // 收集已拥有物品（与RateShop一致）
             var ownedTiersEvt = new Dictionary<string, string>();
             foreach (var kv in GatherAllItemsWithTier())
                 ownedTiersEvt[kv.Key.ToLower()] = kv.Value ?? "Bronze";
 
-            // 分核心/灵活，已拥有半透明（与RateShop一致）
             var poolLower = new HashSet<string>();
             foreach (var p in pool) poolLower.Add(p.ToLower());
             var coreHits = new List<string>(); var coreOwned = new List<string>();
@@ -3230,38 +3396,35 @@ namespace BazaarBoardReader
                 if (!poolLower.Contains(item.ToLower())) continue;
                 string tier;
                 if (ownedTiersEvt.TryGetValue(item.ToLower(), out tier) && tier == "Diamond") continue;
-                if (ownedTiersEvt.ContainsKey(item.ToLower()))
-                    coreOwned.Add(item);
-                else
-                    coreHits.Add(item);
+                if (ownedTiersEvt.ContainsKey(item.ToLower())) coreOwned.Add(item);
+                else coreHits.Add(item);
             }
             foreach (var item in bestBuild.FlexItems)
             {
                 if (!poolLower.Contains(item.ToLower())) continue;
                 string tier;
                 if (ownedTiersEvt.TryGetValue(item.ToLower(), out tier) && tier == "Diamond") continue;
-                if (ownedTiersEvt.ContainsKey(item.ToLower()))
-                    flexOwned.Add(item);
-                else
-                    flexHits.Add(item);
+                if (ownedTiersEvt.ContainsKey(item.ToLower())) flexOwned.Add(item);
+                else flexHits.Add(item);
             }
             int needHitsEvt = coreHits.Count + coreOwned.Count + flexHits.Count + flexOwned.Count;
             var linesEvt = new List<string>();
-            int hitPct = pool.Count > 0 ? (int)(needHitsEvt * 100f / pool.Count) : 0;
+            var hitItems = new List<string>();
+            hitItems.AddRange(coreHits); hitItems.AddRange(coreOwned); hitItems.AddRange(flexHits); hitItems.AddRange(flexOwned);
+            int hitPct = CalculateWeightedHitPercent(pool, hitItems, fixedTier);
             float scoreEvt = GetWeightedScore(coreHits, 3) + GetWeightedScore(coreOwned, 3)
                            + GetWeightedScore(flexHits, 1) + GetWeightedScore(flexOwned, 1);
             if (needHitsEvt <= 0) return BuildNoMatchRating(pool.Count, rec);
             linesEvt.Add((scoreEvt >= 9f ? "\u2605\u2605\u2605" : scoreEvt >= 6f ? "\u2605\u2605" : "\u2605") + " " + hitPct + "% (" + needHitsEvt + "/" + pool.Count + ")");
             var cl = new List<string>();
             cl.AddRange(TranslateEach(coreHits));
-            cl.AddRange(TranslateEach(coreOwned).Select(s => "*" + s));
+            cl.AddRange(TranslateEach(coreOwned).Select(si => "*" + si));
             linesEvt.Add(cl.Count > 0 ? string.Join(",", cl.Take(4).ToArray()) + (cl.Count > 4 ? "..." : "") : "-");
             var fl = new List<string>();
             fl.AddRange(TranslateEach(flexHits));
-            fl.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
+            fl.AddRange(TranslateEach(flexOwned).Select(si => "*" + si));
             linesEvt.Add(fl.Count > 0 ? string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "..." : "") : "-");
-            if (!string.IsNullOrEmpty(rec))
-                linesEvt.Add("\u25c6 " + rec);
+            if (!string.IsNullOrEmpty(rec)) linesEvt.Add("\u25c6 " + rec);
             return string.Join("\n", linesEvt.ToArray());
         }
 

@@ -1,0 +1,1540 @@
+[
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "五中（前）",
+    "CoreItems": [
+      "Dog",
+      "Regal Blade",
+      "Abacus",
+      "Lethargy"
+    ],
+    "FlexItems": [
+      "Briefcase",
+      "Pitchfork",
+      "Boomerang",
+      "Lumboars",
+      "Crook",
+      "Pinata",
+      "Flail",
+      "Piggles",
+      "Jabalian Recurve Bow",
+      "Atlas Stone",
+      "Pawn Shop",
+      "Luxury Kiuas",
+      "Hatchet",
+      "Atlatl",
+      "Grindstone"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "五中（中）",
+    "CoreItems": [
+      "Dog",
+      "Regal Blade",
+      "Gumball Machine",
+      "Lifting",
+      "Grindstone",
+      "VIP Pass",
+      "Abacus",
+      "Lethargy"
+    ],
+    "FlexItems": [
+      "Cash Cannon",
+      "Crook",
+      "Atlatl"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "广告牌财源炮",
+    "CoreItems": [
+      "Cash Cannon",
+      "Gramophone",
+      "Second Wind"
+    ],
+    "FlexItems": [
+      "Billboard",
+      "Icicle",
+      "Booby Trap",
+      "Lethargy",
+      "Yo-Yo",
+      "Model Ship",
+      "Piggles Board",
+      "[DEBUG] Speedrunner"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "肉猪（后）",
+    "CoreItems": [
+      "Belt",
+      "Gramophone",
+      "Bootstraps",
+      "Lion Cane",
+      "Double Whammy",
+      "Vengeance"
+    ],
+    "FlexItems": [
+      "Booby Trap",
+      "Regal Blade",
+      "Dog",
+      "Pitchfork",
+      "Boomerang"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "养炉子（前）",
+    "CoreItems": [
+      "Money Furnace",
+      "Luxury Kiuas",
+      "Money Tree",
+      "Cash Register",
+      "Pitchfork",
+      "Abacus"
+    ],
+    "FlexItems": [
+      "Premium Piggles",
+      "Matchbox",
+      "Heirlooms",
+      "Signet Ring",
+      "Briefcase"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "养炉子（中）",
+    "CoreItems": [
+      "Money Furnace",
+      "Luxury Kiuas",
+      "Pitchfork",
+      "Abacus",
+      "Fire Claw"
+    ],
+    "FlexItems": [
+      "Cash Cannon",
+      "Private Hot Springs",
+      "Briefcase",
+      "Regal Blade",
+      "Gumball Machine"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "养炉子（后）",
+    "CoreItems": [
+      "Luxury Kiuas",
+      "Pitchfork",
+      "Abacus",
+      "Fire Claw"
+    ],
+    "FlexItems": [
+      "Textiles",
+      "Cash Cannon",
+      "Private Hot Springs",
+      "Luxury Tents"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "风车钥匙串",
+    "CoreItems": [
+      "Windmill",
+      "Keychain",
+      "Gramophone",
+      "Second Wind"
+    ],
+    "FlexItems": [
+      "Lion Cane",
+      "Double Whammy"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "玩具",
+    "CoreItems": [
+      "Yo-Yo",
+      "Model Ship",
+      "Piggles Board",
+      "[DEBUG] Speedrunner",
+      "Streaming Setup",
+      "Abacus",
+      "Boar Market",
+      "Pitchfork"
+    ],
+    "FlexItems": [
+      "Piggles",
+      "Spark Plug",
+      "Ledger"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "驼兽",
+    "CoreItems": [
+      "Gramophone",
+      "Beast of Burden",
+      "Abacus",
+      "Pitchfork"
+    ],
+    "FlexItems": [
+      "Private Runabout",
+      "Open Sign",
+      "Pyg's Gym",
+      "Boar Market",
+      "Atlatl"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "温泉",
+    "CoreItems": [
+      "Private Hot Springs",
+      "Cold Room",
+      "Conflagration"
+    ],
+    "FlexItems": [
+      "Piggles Board",
+      "Snow Globe",
+      "Gramophone",
+      "Icicle",
+      "Growth Spurt"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "吊床果篮（前）",
+    "CoreItems": [
+      "Hammock",
+      "Bushel",
+      "Robe",
+      "Succulents",
+      "Abacus",
+      "Burning Shield"
+    ],
+    "FlexItems": [
+      "Matchbox",
+      "Bandages",
+      "Pitchfork",
+      "Tusked Helm"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Pygmalien",
+    "BuildName": "吊床果篮（中）",
+    "CoreItems": [
+      "Hammock",
+      "Bushel",
+      "Robe",
+      "Succulents",
+      "Display Case",
+      "Abacus"
+    ],
+    "FlexItems": [
+      "Matchbox",
+      "Bandages",
+      "Pitchfork",
+      "Textiles",
+      "Burning Shield"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Karnok",
+    "BuildName": "大剑（后）",
+    "CoreItems": [
+      "Caracal",
+      "Hunter's Pack",
+      "Flying Squirrel",
+      "Runic Claymore"
+    ],
+    "FlexItems": [
+      "Messenger Sparrow",
+      "Flare",
+      "Great Eagle",
+      "Hidden Lake",
+      "Waterskin"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Karnok",
+    "BuildName": "野熊（后）",
+    "CoreItems": [
+      "Wild Bear",
+      "Hunter's Pack",
+      "Caracal",
+      "Flying Squirrel",
+      "Waystones"
+    ],
+    "FlexItems": [
+      "Messenger Sparrow",
+      "Assault Sigil"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Karnok",
+    "BuildName": "动物园（前中）",
+    "CoreItems": [
+      "Spear",
+      "Flying Squirrel",
+      "Hunting Hawk"
+    ],
+    "FlexItems": [
+      "Bat",
+      "Caracal",
+      "Messenger Sparrow",
+      "Runed Amulet",
+      "Hunting Knife"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Karnok",
+    "BuildName": "陷阱藤（后）",
+    "CoreItems": [
+      "Trapvine",
+      "Hunter's Pack"
+    ],
+    "FlexItems": [
+      "Bat",
+      "Log Trap",
+      "Hunting Knife",
+      "Boa Constrictor",
+      "Enervating Sigil",
+      "Trail Markers"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Karnok",
+    "BuildName": "大蛇（中后）",
+    "CoreItems": [
+      "Anaconda",
+      "Flying Squirrel",
+      "Assault Sigil",
+      "Messenger Sparrow"
+    ],
+    "FlexItems": [
+      "Outlands Terror",
+      "Wild Bear",
+      "Beast Tooth"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Karnok",
+    "BuildName": "缓速武器（前中）",
+    "CoreItems": [
+      "Chains",
+      "Waystones"
+    ],
+    "FlexItems": [
+      "Boa Constrictor",
+      "Worry Wart"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Karnok",
+    "BuildName": "举重刃甲臂缠（前中）",
+    "CoreItems": [
+      "Lifting Stones",
+      "Bladed Armor",
+      "Waterskin",
+      "Hunting Knife"
+    ],
+    "FlexItems": [
+      "Caracal",
+      "Runed Amulet",
+      "Infused Arm Wraps"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Vanessa",
+    "BuildName": "武器（前中）",
+    "CoreItems": [
+      "Sharkclaws",
+      "Wetware",
+      "Pet Rock"
+    ],
+    "FlexItems": [
+      "Handaxe",
+      "Cove",
+      "Astrolabe",
+      "Star Chart",
+      "Tropical Island",
+      "Fishing Net",
+      "Wanted Poster",
+      "Grenade",
+      "Switchblade",
+      "Concealed Dagger",
+      "Marlon",
+      "Shoe Blade",
+      "Grapeshot",
+      "Revolver",
+      "Zoarcid",
+      "Narwhal"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Vanessa",
+    "BuildName": "火开（前中）",
+    "CoreItems": [
+      "Volcanic Vents",
+      "Bonfire",
+      "Goggles",
+      "Zoarcid",
+      "Burnacuda"
+    ],
+    "FlexItems": [
+      "Arbalest",
+      "Trebuchet",
+      "Astrolabe",
+      "Star Chart",
+      "Tropical Island",
+      "Fishing Net",
+      "Wanted Poster",
+      "Cannon",
+      "Lighter",
+      "Pop Snappers",
+      "Chum",
+      "Port"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Vanessa",
+    "BuildName": "水产（前中）",
+    "CoreItems": [
+      "Burnacuda",
+      "Coral",
+      "Coral Armor",
+      "Seaweed",
+      "Seadog's Saloon",
+      "Elemental Depth Charge"
+    ],
+    "FlexItems": [
+      "Chum",
+      "Sea Shell",
+      "Figurehead",
+      "Jellyfish",
+      "Yeti Crab",
+      "IllusoRay",
+      "Mantis Shrimp",
+      "Astrolabe",
+      "Star Chart",
+      "Tropical Island",
+      "Fishing Net",
+      "Wanted Poster",
+      "Catfish",
+      "Torpedo",
+      "Zoarcid"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Vanessa",
+    "BuildName": "梭子鱼相关阵容",
+    "CoreItems": [
+      "Captain's Quarters",
+      "Flagship",
+      "Burnacuda"
+    ],
+    "FlexItems": [
+      "Chum",
+      "Zoarcid",
+      "Lighter",
+      "Korxena Crest",
+      "Grapeshot",
+      "Handaxe",
+      "Revolver",
+      "Switchblade"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Vanessa",
+    "BuildName": "宠物石相关阵容",
+    "CoreItems": [
+      "Pet Rock",
+      "Cyber-Sai",
+      "Scimitar of the Deep",
+      "Holsters",
+      "Throwing Knives"
+    ],
+    "FlexItems": [
+      "Sharkclaws",
+      "Handaxe",
+      "Shoe Blade",
+      "Grenade",
+      "Revolver",
+      "Switchblade",
+      "Shuriken"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Vanessa",
+    "BuildName": "毒刀（后期）",
+    "CoreItems": [
+      "Pet Rock",
+      "Scimitar of the Deep",
+      "Holsters"
+    ],
+    "FlexItems": [
+      "Cyber-Sai",
+      "Throwing Knives",
+      "Shuriken"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Vanessa",
+    "BuildName": "旗舰",
+    "CoreItems": [
+      "Burnacuda",
+      "Korxena Crest",
+      "Flagship",
+      "Swash Buckle",
+      "Crow's Nest"
+    ],
+    "FlexItems": [
+      "Dive Weights",
+      "Throwing Knives",
+      "Figurehead"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Vanessa",
+    "BuildName": "多武器火",
+    "CoreItems": [
+      "Burnacuda",
+      "Holsters",
+      "Incendiary Rounds",
+      "Cannonade",
+      "Powder Keg",
+      "Blunderbuss"
+    ],
+    "FlexItems": [
+      "Pop Snappers",
+      "Lighter",
+      "Slumbering Primordial",
+      "Swash Buckle",
+      "Zoarcid",
+      "Repeater",
+      "Shuriken",
+      "Ramrod"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Vanessa",
+    "BuildName": "龟龟",
+    "CoreItems": [
+      "Burnacuda",
+      "Holsters",
+      "Tortuga",
+      "Shipwreck"
+    ],
+    "FlexItems": [
+      "Sharkray",
+      "Pesky Pete",
+      "Zoarcid",
+      "IllusoRay",
+      "Starfish",
+      "Jellyfish",
+      "Pufferfish",
+      "Narwhal"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Vanessa",
+    "BuildName": "克总",
+    "CoreItems": [
+      "Burnacuda",
+      "Holsters",
+      "Incendiary Rounds",
+      "Slumbering Primordial",
+      "Shipwreck",
+      "Iceberg"
+    ],
+    "FlexItems": [
+      "Elemental Depth Charge",
+      "Seadog's Saloon",
+      "Weather Glass",
+      "Jellyfish",
+      "Pufferfish",
+      "IllusoRay"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "药水流",
+    "CoreItems": [
+      "Boiling Flask",
+      "Flying Potion"
+    ],
+    "FlexItems": [
+      "Atmospheric Sampler",
+      "Bottled Explosion",
+      "Recycling Bin",
+      "Caustic Solvent",
+      "Strength Potion",
+      "Scales"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "再生任务",
+    "CoreItems": [
+      "Life Conduit",
+      "Soulstone"
+    ],
+    "FlexItems": [
+      "Atmospheric Sampler",
+      "Soul Ring",
+      "Blank Slate",
+      "Flying Potion",
+      "Tomb of the Ancients",
+      "Sunlight Spear",
+      "Smelling Salts"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "缓速任务",
+    "CoreItems": [
+      "Smelling Salts",
+      "Sands of Time"
+    ],
+    "FlexItems": [
+      "Refractor",
+      "Magnus' Femur",
+      "Atmospheric Sampler",
+      "Blank Slate",
+      "Makroscope",
+      "Runic Potion",
+      "Earrings"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "牛匕首",
+    "CoreItems": [
+      "Staff of the Moose",
+      "Ritual Dagger"
+    ],
+    "FlexItems": [
+      "Atmospheric Sampler",
+      "Flying Potion",
+      "Soul Ring",
+      "Runic Potion"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "大锅中锅",
+    "CoreItems": [
+      "Vat of Acid",
+      "Boiling Flask",
+      "Cauldron"
+    ],
+    "FlexItems": [
+      "Strength Potion",
+      "Smelling Salts",
+      "Energy Potion"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "符文剑",
+    "CoreItems": [
+      "Runic Blade",
+      "Flying Potion"
+    ],
+    "FlexItems": [
+      "Orly",
+      "Bottled Explosion",
+      "Scalpel",
+      "Runic Great Axe"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "火任务",
+    "CoreItems": [
+      "Eternal Torch",
+      "Blank Slate"
+    ],
+    "FlexItems": [
+      "Library",
+      "Palanquin",
+      "Laboratory",
+      "Smelling Salts",
+      "Earrings",
+      "Soulstone"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "毒任务",
+    "CoreItems": [
+      "Blank Slate",
+      "Rapid Injection System",
+      "Adrenal Converter",
+      "Idol of Decay"
+    ],
+    "FlexItems": [
+      "Library",
+      "Plague Glaive",
+      "Palanquin",
+      "Laboratory",
+      "Smelling Salts",
+      "Earrings",
+      "Soulstone"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "永冻冰",
+    "CoreItems": [
+      "Blank Slate",
+      "Earrings",
+      "Black Ice"
+    ],
+    "FlexItems": [
+      "Smelling Salts",
+      "Ice Claw",
+      "Frost Totem",
+      "Atmospheric Sampler",
+      "Flying Potion",
+      "Library",
+      "Tomb of the Ancients"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "棱镜",
+    "CoreItems": [
+      "Refractor",
+      "Smelling Salts",
+      "Blank Slate"
+    ],
+    "FlexItems": [],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "毒任务（前）",
+    "CoreItems": [
+      "Smelling Salts",
+      "Emerald",
+      "Blank Slate",
+      "Idol of Decay"
+    ],
+    "FlexItems": [
+      "Rainbow Potion"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "毒任务（中）",
+    "CoreItems": [
+      "Smelling Salts",
+      "Blank Slate",
+      "Idol of Decay",
+      "Rapid Injection System"
+    ],
+    "FlexItems": [
+      "Emerald",
+      "Adrenal Converter"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "火任务（前）",
+    "CoreItems": [
+      "Eternal Torch",
+      "Ruby",
+      "Smelling Salts",
+      "Blank Slate"
+    ],
+    "FlexItems": [
+      "Thurible",
+      "Rainbow Potion"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Mak",
+    "BuildName": "火任务（中）",
+    "CoreItems": [
+      "Eternal Torch",
+      "Smelling Salts",
+      "Blank Slate"
+    ],
+    "FlexItems": [
+      "Ruby",
+      "Thurible"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Dooley",
+    "BuildName": "狂暴模块（后期）",
+    "CoreItems": [
+      "RAMPage Module",
+      "Dooley's Scarf",
+      "Flamethrower",
+      "Icicle"
+    ],
+    "FlexItems": [
+      "Cryosphere",
+      "Fiber Optics",
+      "Power Drill",
+      "Cooling Fan",
+      "Monitor Lizard",
+      "Lens"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Dooley",
+    "BuildName": "暴击核",
+    "CoreItems": [
+      "Critical Core",
+      "Tesla Coil",
+      "Arc Blaster",
+      "SMG",
+      "Temporal Navigator",
+      "Memory Card"
+    ],
+    "FlexItems": [
+      "Fiber Optics",
+      "Metronome"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Dooley",
+    "BuildName": "暴击核（前）",
+    "CoreItems": [
+      "Critical Core",
+      "Tesla Coil",
+      "Arc Blaster",
+      "SMG",
+      "Temporal Navigator"
+    ],
+    "FlexItems": [
+      "Pulse Rifle"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Dooley",
+    "BuildName": "弱点",
+    "CoreItems": [
+      "Weakpoint Detector",
+      "Duct Tape",
+      "Plasma Grenade",
+      "The Core",
+      "Cool LEDs"
+    ],
+    "FlexItems": [
+      "Barbed Wire",
+      "Hammlet",
+      "Critical Core"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Dooley",
+    "BuildName": "前期打工（第一二天专用）",
+    "CoreItems": [
+      "Temporal Navigator",
+      "Duct Tape"
+    ],
+    "FlexItems": [
+      "Sat-Comm",
+      "Tesla Coil",
+      "Micro Dave",
+      "Power Drill",
+      "Pulse Rifle",
+      "Weakpoint Detector"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Dooley",
+    "BuildName": "恐龙鞍",
+    "CoreItems": [
+      "Dino Saddle",
+      "Micro Mach",
+      "Fiber Optics",
+      "Thrusters"
+    ],
+    "FlexItems": [
+      "Charging Station",
+      "The Core",
+      "Weaponized Core"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Dooley",
+    "BuildName": "盾核",
+    "CoreItems": [
+      "Armored Core",
+      "Duct Tape",
+      "Welding Torch"
+    ],
+    "FlexItems": [
+      "Chaff",
+      "Pyrocarbon",
+      "Remote Control"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Dooley",
+    "BuildName": "狂暴模块（中期）",
+    "CoreItems": [
+      "RAMPage Module",
+      "Power Drill",
+      "Flamethrower"
+    ],
+    "FlexItems": [
+      "Fiber Optics",
+      "Cooling Fan",
+      "Monitor Lizard",
+      "Lens",
+      "Icicle",
+      "Spark Plug"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "无人机车公式摧毁（后期）",
+    "CoreItems": [
+      "Drone Crusher",
+      "Targeting Drone",
+      "Parts Picker"
+    ],
+    "FlexItems": [
+      "Oblivion Cannon",
+      "LavaRoller",
+      "Hydrogen Tank",
+      "Boosted Saucer",
+      "Fire Bomb",
+      "Firecrackers",
+      "Flare Gun"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "永飞",
+    "CoreItems": [
+      "Private Runabout",
+      "Ornithopter",
+      "Launch Pad",
+      "Jetpack"
+    ],
+    "FlexItems": [
+      "Skyliner",
+      "Squirrel Suit",
+      "Goggles",
+      "Tugboat",
+      "Headset",
+      "Tool Fight",
+      "Targeting Drone",
+      "Binoculars",
+      "It's a Drone",
+      "Darts"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "起降",
+    "CoreItems": [
+      "Hang Glider",
+      "MagShield",
+      "Ornithopter",
+      "Freefall Simulator",
+      "Headset"
+    ],
+    "FlexItems": [
+      "Daggerwing",
+      "Pogo Stick"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "mbb（前期）",
+    "CoreItems": [
+      "Molten Ball Blaster",
+      "Precision Calipers",
+      "Targeting Drone",
+      "Toolbox",
+      "Goggles"
+    ],
+    "FlexItems": [
+      "Steam Washer",
+      "Blow Torch",
+      "Recycler Bot",
+      "Inertial Dampener",
+      "Ornithopter",
+      "Rocket Drone",
+      "Pressure Heater"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "永飞（中期）",
+    "CoreItems": [
+      "Private Runabout",
+      "Squirrel Suit",
+      "Goggles"
+    ],
+    "FlexItems": [
+      "Tugboat",
+      "Headset",
+      "Darts",
+      "Ornithopter",
+      "Launch Pad"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "机炮（前期）",
+    "CoreItems": [
+      "Aerial Turret",
+      "Caracara",
+      "Targeting Drone",
+      "Lightning Butterfly"
+    ],
+    "FlexItems": [
+      "Ornithopter",
+      "Gyro Gunsight",
+      "Darts",
+      "Clockwork Disc",
+      "Precision Calipers",
+      "Headset",
+      "Airplane Glue",
+      "Binoculars"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "气枪（前期）",
+    "CoreItems": [
+      "Air-Pressure Rifle",
+      "Targeting Drone",
+      "Goggles",
+      "Orbital Polisher",
+      "Darts",
+      "Airplane Glue"
+    ],
+    "FlexItems": [
+      "Bird Cage",
+      "Headset",
+      "Precision Calipers",
+      "Ornithopter",
+      "Squirrel Suit",
+      "Clockwork Disc"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "起降（前期）",
+    "CoreItems": [
+      "Hang Glider",
+      "Targeting Drone",
+      "Goggles",
+      "Orbital Polisher",
+      "Darts",
+      "Airplane Glue"
+    ],
+    "FlexItems": [
+      "Daggerwing",
+      "Rocket Drone",
+      "Marshalling Lights",
+      "Headset",
+      "Precision Calipers",
+      "Ornithopter",
+      "Squirrel Suit",
+      "Clockwork Disc"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "摧毁（中期）",
+    "CoreItems": [
+      "Drone Crusher",
+      "Targeting Drone",
+      "Parts Picker"
+    ],
+    "FlexItems": [
+      "Oblivion Cannon",
+      "LavaRoller",
+      "Goggles",
+      "Boosted Saucer",
+      "Fire Bomb",
+      "Firecrackers",
+      "Flare Gun",
+      "Precision Calipers",
+      "Flashbang",
+      "Hydrogen Tank"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "缓速（中期）",
+    "CoreItems": [
+      "Trained (monster skill)",
+      "Sky Anchor",
+      "Inertial Dampener",
+      "Ornithopter"
+    ],
+    "FlexItems": [
+      "Cruise Ship",
+      "Flare Gun",
+      "Sirens",
+      "Weather Machine",
+      "Ni-Kola",
+      "Goggles",
+      "Fire Hose"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "西瓜虫（中期）",
+    "CoreItems": [
+      "Goggles",
+      "Sirens",
+      "Pillbuggy",
+      "Ornithopter"
+    ],
+    "FlexItems": [
+      "Lowroller",
+      "Targeting Drone",
+      "Observatory",
+      "Jetpack"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "西瓜虫",
+    "CoreItems": [
+      "Goggles",
+      "Pillbuggy"
+    ],
+    "FlexItems": [
+      "Sirens",
+      "Ornithopter",
+      "Lowroller",
+      "Stelle's Workshop",
+      "Radar Dome",
+      "Observatory",
+      "Hydrogen Tank"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Stelle",
+    "BuildName": "鲨鱼导弹",
+    "CoreItems": [
+      "Buster",
+      "Freefall Simulator",
+      "Ornithopter",
+      "Pogo Stick",
+      "Repair Drone",
+      "Lightning Butterfly",
+      "Headset"
+    ],
+    "FlexItems": [
+      "MagShield",
+      "Ignition",
+      "Ni-Kola"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "工作台（前期）",
+    "CoreItems": [
+      "Prep Station",
+      "Knife Sharpener",
+      "Microwave",
+      "Bread Knife",
+      "Instant Noodles",
+      "Pasta Maker"
+    ],
+    "FlexItems": [
+      "Mouse Trap",
+      "Spatula",
+      "Oven Mitts",
+      "Scorchpepper",
+      "LauLau",
+      "Banu Leaves",
+      "Pasta",
+      "Sorbet",
+      "Zarlic",
+      "Honeycomb",
+      "Skewer",
+      "Azakan Stew",
+      "Strawberries",
+      "Coffee"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "吐司机（慎用）",
+    "CoreItems": [
+      "Toaster",
+      "Instant Noodles",
+      "Coffee",
+      "Knife Sharpener",
+      "Pasta Maker"
+    ],
+    "FlexItems": [
+      "Banu Leaves",
+      "Baked Potato",
+      "Cookies",
+      "Pancakes",
+      "Skillet",
+      "Black Pepper",
+      "Honeycomb",
+      "Sushi Boat"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "南瓜（前期）",
+    "CoreItems": [
+      "Pumpkin",
+      "Coffee",
+      "Pasta",
+      "Eggs",
+      "Strawberries",
+      "Pasta Maker"
+    ],
+    "FlexItems": [
+      "Sushi Boat",
+      "Baked Potato",
+      "Pancakes",
+      "Microwave",
+      "Azakan Stew"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "面包（中期）",
+    "CoreItems": [
+      "Bread",
+      "Coffee",
+      "Microwave",
+      "Pasta",
+      "Bread Knife",
+      "Refrigerator",
+      "Pasta Maker"
+    ],
+    "FlexItems": [
+      "Black Pepper",
+      "Food Truck",
+      "Instant Noodles",
+      "Mouse Trap"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "蛋糕糊（中期）",
+    "CoreItems": [
+      "Cake Batter",
+      "Bread Knife",
+      "Zarlic",
+      "Refrigerator"
+    ],
+    "FlexItems": [
+      "Oven Mitts",
+      "Laurel's Fortress",
+      "Mouse Trap",
+      "Building Crescendo",
+      "Static Acceleration",
+      "Tracer Fire",
+      "Reaching the Summit",
+      "Meat Tenderizer",
+      "Whisk",
+      "Eggs",
+      "Giant Sub",
+      "Gingerbread House"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "冰箱",
+    "CoreItems": [
+      "Coffee",
+      "Pumpkin",
+      "Pasta",
+      "Cake Batter",
+      "Pasta Maker",
+      "Instant Noodles",
+      "Bread Knife",
+      "Ice Swan",
+      "Refrigerator"
+    ],
+    "FlexItems": [
+      "Banu Leaves",
+      "Strawberries",
+      "Scorchpepper",
+      "LauLau"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "冰箱（中期）",
+    "CoreItems": [
+      "Coffee",
+      "Pumpkin",
+      "Pasta",
+      "Bread Knife",
+      "Zarlic",
+      "Ice Swan",
+      "Cake Batter",
+      "Pasta Maker",
+      "Instant Noodles",
+      "Refrigerator"
+    ],
+    "FlexItems": [
+      "Banu Leaves",
+      "Strawberries",
+      "Building Crescendo",
+      "Static Acceleration",
+      "Tracer Fire",
+      "Scorchpepper",
+      "LauLau"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "市场冰箱（市场）",
+    "CoreItems": [
+      "Zarlic",
+      "Froyo Cart",
+      "Farmer's Market",
+      "Pasta",
+      "Bread Knife",
+      "Refrigerator",
+      "Sorbet",
+      "Ice Swan"
+    ],
+    "FlexItems": [
+      "Building Crescendo",
+      "Static Acceleration",
+      "Tracer Fire"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "瓜治",
+    "CoreItems": [
+      "Giant Sub",
+      "Mouse Trap",
+      "Dragonmelon",
+      "Bread Knife"
+    ],
+    "FlexItems": [
+      "Farmer's Market",
+      "Pasta",
+      "Durian",
+      "Meat Tenderizer"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "菜市场",
+    "CoreItems": [
+      "Zarlic",
+      "Farmer's Market",
+      "Pasta",
+      "Bread Knife",
+      "Veggie Garden"
+    ],
+    "FlexItems": [
+      "Building Crescendo",
+      "Static Acceleration",
+      "Tracer Fire",
+      "Meat Tenderizer",
+      "Mouse Trap",
+      "Poke"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "调料架",
+    "CoreItems": [
+      "Zarlic",
+      "Ice Swan",
+      "Sorbet",
+      "Instant Noodles",
+      "Salt"
+    ],
+    "FlexItems": [
+      "Building Crescendo",
+      "Static Acceleration",
+      "Tracer Fire",
+      "Meat Tenderizer",
+      "LauLau",
+      "Scorchpepper",
+      "Black Pepper"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  },
+  {
+    "HeroName": "Jules",
+    "BuildName": "永冻酸奶",
+    "CoreItems": [
+      "Sorbet",
+      "Ice Swan",
+      "Froyo Cart",
+      "Farmer's Market",
+      "Meat Tenderizer",
+      "Refrigerator"
+    ],
+    "FlexItems": [
+      "Caviar",
+      "Pasta"
+    ],
+    "CoreSkills": [],
+    "FlexSkills": []
+  }
+]
