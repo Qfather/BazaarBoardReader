@@ -267,8 +267,8 @@ namespace BazaarBoardReader
             _recPanelY = Config.Bind(CfgSec, CfgRecY, 50f).Value;
             _mgrPanelX = Config.Bind(CfgSec, CfgMgrX, 50f).Value;
             _mgrPanelY = Config.Bind(CfgSec, CfgMgrY, 470f).Value;
-            _settingsPanelX = Config.Bind(CfgSec, CfgSettingsX, 50f).Value;
-            _settingsPanelY = Config.Bind(CfgSec, CfgSettingsY, -1f).Value;
+            _settingsPanelX = Config.Bind(CfgSec, CfgSettingsX, 16f).Value;
+            _settingsPanelY = Config.Bind(CfgSec, CfgSettingsY, 1021f).Value;
             _showItemSkillLabels = Config.Bind(CfgSecGeneral, CfgShowItemSkill, true).Value;
             _showShopEventLabels = Config.Bind(CfgSecGeneral, CfgShowShopEvent, true).Value;
             Config.Bind(CfgSec, CfgPanelAlpha, 0.4f);
@@ -282,7 +282,7 @@ namespace BazaarBoardReader
             _logger.LogInfo(string.Format("[BoardReader] v7.4.0 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
                 (int)_itemOffsetY, (int)_skillOffsetY, (int)_shopOffsetY, _bgOpacity * 100f));
 
-            _labelStyle = new GUIStyle { fontSize = 18, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter, wordWrap = false };
+            _labelStyle = new GUIStyle { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter, wordWrap = false };
             _shopStyle = new GUIStyle { fontSize = 15, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter, wordWrap = false };
 
             _playerCardsOnBoardField = typeof(BoardManager).GetField("_playerCardsOnBoard", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -477,7 +477,7 @@ namespace BazaarBoardReader
                         GUI.Label(new Rect(tr.x + dx, tr.y + dy, w, sz.y), lbl.Text, os);
 
             // 无匹配时整体30%透明度
-            bool isEmpty = subLines.Length > 0 && subLines[0].StartsWith("☆☆☆");
+            bool isEmpty = subLines.Length > 0 && subLines[0].StartsWith("\u2606\u2606\u2606");
             float masterAlpha = isEmpty ? 0.3f : 1f;
 
             // 主文字颜色
@@ -489,7 +489,7 @@ namespace BazaarBoardReader
 
             // 多行副文字
             float subY = r.y + 3 + sz.y + 1;
-            bool isShopRating = subLines.Length > 0 && (subLines[0].StartsWith("★") || subLines[0].StartsWith("☆") || subLines[0].StartsWith("◆"));
+            bool isShopRating = subLines.Length > 0 && (subLines[0].StartsWith("\u2605") || subLines[0].StartsWith("\u2606") || subLines[0].StartsWith("\u25c6"));
             if (!isShopRating && subLines.Length == 1)
             {
                 // 暴击文本：根据数值动态颜色(白→红)和大小(50%→150%)
@@ -514,9 +514,9 @@ namespace BazaarBoardReader
                 for (int i = 0; i < subLines.Length; i++)
                 {
                     var line = subLines[i];
-                    if (line.StartsWith("★★") || line.StartsWith("★"))
+                    if (line.StartsWith("\u2605") || line.StartsWith("\u2606"))
                         subStyle.normal.textColor = new Color(1f, 0.85f, 0.2f);
-                    else if (line.StartsWith("◆"))
+                    else if (line.StartsWith("\u25c6"))
                         subStyle.normal.textColor = new Color(1f, 0.85f, 0.2f); // 推荐文本=金色
                     else if (i == 1)
                         subStyle.normal.textColor = new Color(1f, 0.25f, 0.2f);       // 核心=红色
@@ -611,7 +611,7 @@ namespace BazaarBoardReader
             if (_bgCache.TryGetValue(key, out tex)) return tex;
             tex = new Texture2D(w, h);
             var rad = Mathf.Min(6, w / 4, h / 4);
-            var bg = new Color(0, 0, 0, _bgOpacity);
+            var bg = new Color(0, 0, 0, _bgOpacity * 0.7f);
             for (int x = 0; x < w; x++)
                 for (int y = 0; y < h; y++)
                 {
@@ -719,6 +719,22 @@ namespace BazaarBoardReader
             }
         }
 
+        private bool IsTitleDoubleClicked(Rect titleBar)
+        {
+            var e = Event.current;
+            if (e == null || e.type != EventType.MouseDown || e.button != 0 || e.clickCount < 2) return false;
+            if (!titleBar.Contains(e.mousePosition)) return false;
+            e.Use();
+            return true;
+        }
+
+        private float ClampPanelY(float y, float h)
+        {
+            if (y + h > Screen.height) y = Screen.height - h - 10f;
+            if (y < 10f) y = 10f;
+            return y;
+        }
+
         private void DrawSlidersPanel()
         {
             var pw = 270f;
@@ -726,18 +742,34 @@ namespace BazaarBoardReader
             const float expandedH = 206f;
             var ph = _settingsCollapsed ? collapsedH : expandedH;
             var px = _settingsPanelX;
-            var py = _settingsPanelY < 0f ? Screen.height - ph - 10f : _settingsPanelY;
+            var py = _settingsPanelY < 0f ? Screen.height - ph - 40f : _settingsPanelY;
             if (px < 10f) px = 10f;
             if (px + pw > Screen.width) px = Screen.width - pw - 10f;
-            if (py + ph > Screen.height) py = Screen.height - ph - 10f;
-            if (py < 10f) py = 10f;
+            py = ClampPanelY(py, ph);
             _settingsPanelX = px; _settingsPanelY = py;
 
-            DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
+            var panelRect = new Rect(px, py, pw, ph);
+            DrawRoundedRect(panelRect, GetPanelBgColor());
             var titleBar = new Rect(px, py + ph - collapsedH, pw, collapsedH);
-            HandleCtrlDrag(titleBar, ref _settingsPanelX, ref _settingsPanelY, CfgSettingsX, CfgSettingsY, ref _draggingSettings);
+            HandleCtrlDrag(panelRect, ref _settingsPanelX, ref _settingsPanelY, CfgSettingsX, CfgSettingsY, ref _draggingSettings);
             px = _settingsPanelX; py = _settingsPanelY;
             titleBar = new Rect(px, py + ph - collapsedH, pw, collapsedH);
+            if (IsTitleDoubleClicked(titleBar))
+            {
+                if (_settingsCollapsed)
+                {
+                    _settingsPanelY = ClampPanelY(titleBar.y + collapsedH - expandedH, expandedH);
+                    _settingsCollapsed = false;
+                }
+                else
+                {
+                    _settingsPanelY = ClampPanelY(titleBar.y, collapsedH);
+                    _settingsCollapsed = true;
+                }
+                Config[CfgSec, CfgSettingsY].BoxedValue = _settingsPanelY;
+                Config.Save();
+                return;
+            }
 
             var s = new GUIStyle(_labelStyle) { fontSize = 12, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
@@ -785,13 +817,7 @@ namespace BazaarBoardReader
                             }
 
             GUI.Label(new Rect(px + 10, titleBar.y + 4, 120, 20), "\u8bbe\u7f6e", title);
-            if (GUI.Button(new Rect(px + pw - 58, titleBar.y + 4, 24, 20), _settingsCollapsed ? "^" : "v", btn))
-            {
-                _settingsPanelY += _settingsCollapsed ? -(expandedH - collapsedH) : (expandedH - collapsedH);
-                _settingsCollapsed = !_settingsCollapsed;
-                Config[CfgSec, CfgSettingsY].BoxedValue = _settingsPanelY;
-                Config.Save();
-            }
+            DrawTitleHint(px + 10, titleBar.y + 5, "\u8bbe\u7f6e", title);
             if (GUI.Button(new Rect(px + pw - 30, titleBar.y + 4, 24, 20), "X", btn))
             {
                 _overlayEnabled = false;
@@ -933,12 +959,33 @@ namespace BazaarBoardReader
             return new Color(c.r, c.g, c.b, c.a * alpha);
         }
 
+        private void DrawTitleHint(float x, float y, string titleText, GUIStyle titleStyle)
+        {
+            var hintStyle = new GUIStyle(titleStyle) { fontSize = Math.Max(9, titleStyle.fontSize - 4), fontStyle = FontStyle.Normal };
+            var tc = titleStyle.normal.textColor;
+            hintStyle.normal.textColor = new Color(tc.r, tc.g, tc.b, tc.a * 0.5f);
+            var titleW = titleStyle.CalcSize(new GUIContent(titleText)).x;
+            GUI.Label(new Rect(x + titleW + 8f, y, 180f, 20f), "ctrl:移动 双击:开合", hintStyle);
+        }
+
         private void InvalidateRecommendationCache()
         {
             _lastRecommendationCalcFrame = -1;
             _lastRecommendationCalcTime = -999f;
             _bestBuildCache = null;
             _bestBuildCacheFrame = -1;
+        }
+
+        private void SetDetectedHero(string hero)
+        {
+            if (string.IsNullOrEmpty(hero) || hero == _detectedHero) return;
+            _detectedHero = hero;
+            _selectedBuildName = "";
+            Config[CfgSecGeneral, CfgHero].BoxedValue = _detectedHero;
+            Config[CfgSecGeneral, CfgBuild].BoxedValue = _selectedBuildName;
+            Config.Save();
+            ClearOwnedItemCaches();
+            InvalidateRecommendationCache();
         }
 
         private void RefreshRecommendationMatchesIfDue(bool force = false)
@@ -996,15 +1043,23 @@ namespace BazaarBoardReader
             float maxPanelH = Mathf.Max(96f, Mathf.Min(Screen.height * 0.5f, Screen.height - py - 10f));
             var ph = _recCollapsed ? 28f : Mathf.Clamp(contentYRel + contentH + bottomControlsH, 96f, maxPanelH);
 
-            DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
-            HandleCtrlDrag(new Rect(px, py, pw, 28f), ref _recPanelX, ref _recPanelY, CfgRecX, CfgRecY, ref _draggingRec);
-            px = _recPanelX; py = _recPanelY;
-            if (py + ph > Screen.height) py = Screen.height - ph - 10;
-            if (py < 10) py = 10;
+            py = ClampPanelY(py, ph);
+            _recPanelX = px; _recPanelY = py;
+            var recRect = new Rect(px, py, pw, ph);
+            DrawRoundedRect(recRect, GetPanelBgColor());
+            HandleCtrlDrag(recRect, ref _recPanelX, ref _recPanelY, CfgRecX, CfgRecY, ref _draggingRec);
+            px = _recPanelX; py = ClampPanelY(_recPanelY, ph);
+            var recTitleBar = new Rect(px, py, pw, 28f);
+            if (IsTitleDoubleClicked(recTitleBar))
+            {
+                _recCollapsed = !_recCollapsed;
+                return;
+            }
 
             var ts = new GUIStyle(s) { fontSize = 15, fontStyle = FontStyle.Bold };
             ts.normal.textColor = new Color(1f, 0.8f, 0.2f);
             GUI.Label(new Rect(px + 10, py + 5, pw - 120, 22), "\u6784\u7b51\u63a8\u8350", ts);
+            DrawTitleHint(px + 10, py + 6, "\u6784\u7b51\u63a8\u8350", ts);
 
             var smallBtn = new GUIStyle(GUI.skin.button) { fontSize = 11, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
             GUI.enabled = canHideOtherBuilds;
@@ -1012,9 +1067,6 @@ namespace BazaarBoardReader
                 _hideOtherBuilds = !_hideOtherBuilds;
             GUI.enabled = true;
 
-            var foldBtn = new GUIStyle(GUI.skin.button) { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
-            if (GUI.Button(new Rect(px + pw - 30, py + 2, 24, 22), _recCollapsed ? "v" : "^", foldBtn))
-                _recCollapsed = !_recCollapsed;
             if (_recCollapsed) return;
 
             var heroText = heroes.Count > 0 ? GetHeroAbbrev(heroes[0]) : "?";
@@ -1240,11 +1292,18 @@ namespace BazaarBoardReader
         {
             var px = _mgrPanelX; var py = _mgrPanelY; var pw = 380f;
             var ph = _mgrCollapsed ? 28f : 400f;
-            DrawRoundedRect(new Rect(px, py, pw, ph), GetPanelBgColor());
-            HandleCtrlDrag(new Rect(px, py, pw, 28f), ref _mgrPanelX, ref _mgrPanelY, CfgMgrX, CfgMgrY, ref _draggingMgr);
-            px = _mgrPanelX; py = _mgrPanelY;
-            if (py + ph > Screen.height) py = Screen.height - ph - 10;
-            if (py < 10) py = 10;
+            py = ClampPanelY(py, ph);
+            _mgrPanelX = px; _mgrPanelY = py;
+            var mgrRect = new Rect(px, py, pw, ph);
+            DrawRoundedRect(mgrRect, GetPanelBgColor());
+            HandleCtrlDrag(mgrRect, ref _mgrPanelX, ref _mgrPanelY, CfgMgrX, CfgMgrY, ref _draggingMgr);
+            px = _mgrPanelX; py = ClampPanelY(_mgrPanelY, ph);
+            var mgrTitleBar = new Rect(px, py, pw, 28f);
+            if (IsTitleDoubleClicked(mgrTitleBar))
+            {
+                _mgrCollapsed = !_mgrCollapsed;
+                return;
+            }
 
             var s = new GUIStyle(_labelStyle) { fontSize = 12, alignment = TextAnchor.UpperLeft };
             s.normal.textColor = Color.white;
@@ -1252,9 +1311,7 @@ namespace BazaarBoardReader
             ts.normal.textColor = new Color(0.3f, 0.8f, 1f);
 
             GUI.Label(new Rect(px + 10, py + 5, pw - 90, 22), "\u6784\u7b51\u7ba1\u7406", ts);
-            var foldBtn = new GUIStyle(GUI.skin.button) { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
-            if (GUI.Button(new Rect(px + pw - 30, py + 2, 24, 22), _mgrCollapsed ? "v" : "^", foldBtn))
-                _mgrCollapsed = !_mgrCollapsed;
+            DrawTitleHint(px + 10, py + 6, "\u6784\u7b51\u7ba1\u7406", ts);
             if (_mgrCollapsed) return;
 
             if (GUI.Button(new Rect(px + pw - 140, py + 5, 50, 20), "\u65b0\u5efa"))
@@ -1672,8 +1729,7 @@ namespace BazaarBoardReader
                         if ((newDay < _currentDay && _currentDay > 0) || (!string.IsNullOrEmpty(newHero) && !string.IsNullOrEmpty(_detectedHero) && newHero != _detectedHero))
                             ClearOwnedItemCaches();
                         _currentDay = newDay;
-                        if (!string.IsNullOrEmpty(newHero) && string.IsNullOrEmpty(_detectedHero))
-                            _detectedHero = newHero;
+                        SetDetectedHero(newHero);
                         _logger.LogInfo(string.Format("[BoardReader] Day from game_state.json: {0}", _currentDay));
                         return;
                     }
@@ -1687,8 +1743,8 @@ namespace BazaarBoardReader
                     if (bl != null && bl.ContainsKey("Day"))
                     {
                         _currentDay = Convert.ToInt32(bl["Day"]);
-                        if (bl.ContainsKey("Hero") && string.IsNullOrEmpty(_detectedHero))
-                            _detectedHero = bl["Hero"]?.ToString() ?? "";
+                        var newHero = bl.ContainsKey("Hero") ? bl["Hero"]?.ToString() ?? "" : "";
+                        SetDetectedHero(newHero);
                         _logger.LogInfo(string.Format("[BoardReader] Day from board_latest.json: {0}", _currentDay));
                         return;
                     }
@@ -1713,7 +1769,7 @@ namespace BazaarBoardReader
                 if (run != null) { var v = GetField(run, "Day"); if (v != null) _currentDay = Convert.ToInt32(v); }
                 // Player.Hero
                 var player = GetField(dto, "Player");
-                if (player != null) { var v = GetField(player, "Hero"); if (v != null && !string.IsNullOrEmpty(v.ToString())) _detectedHero = v.ToString(); }
+                if (player != null) { var v = GetField(player, "Hero"); if (v != null && !string.IsNullOrEmpty(v.ToString())) SetDetectedHero(v.ToString()); }
                 // Player.Attributes → 两遍法：先精确匹配，再模糊匹配回退
                 if (player != null)
                 {
@@ -2720,7 +2776,8 @@ namespace BazaarBoardReader
             int hitPct = pool.Count > 0 ? (int)(totalHits * 100f / pool.Count) : 0;
             float score = GetWeightedScore(coreMissing, 3) + GetWeightedScore(coreOwned, 3)
                         + GetWeightedScore(flexMissing, 1) + GetWeightedScore(flexOwned, 1);
-            if (totalHits <= 0) return null;
+            var rec = GetEventRecommendation(shopName);
+            if (totalHits <= 0) return BuildNoMatchRating(pool.Count, rec);
             string stars = (score >= 9f ? "\u2605\u2605\u2605" : score >= 6f ? "\u2605\u2605" : "\u2605") + " " + hitPct + "% (" + totalHits + "/" + pool.Count + ")";
             var lines = new List<string> { stars };
             var coreLine = new List<string>();
@@ -2736,9 +2793,8 @@ namespace BazaarBoardReader
                 ? string.Join(",", flexLine.Take(4).ToArray()) + (flexLine.Count > 4 ? "..." : "")
                 : "-");
             // 商店推荐文本
-            var rec = GetEventRecommendation(shopName);
             if (!string.IsNullOrEmpty(rec))
-                lines.Add("◆" + rec);
+                lines.Add("\u25c6 " + rec);
             return string.Join("\n", lines.ToArray());
         }
 
@@ -2842,13 +2898,20 @@ namespace BazaarBoardReader
             if (!string.Equals(evtCard.type, "EventEncounter", StringComparison.OrdinalIgnoreCase)) return null;
             if (eventName.IndexOf("Level Up", StringComparison.OrdinalIgnoreCase) < 0) return null;
 
-            // Level Up TODO: named rewards such as Adira/Bjorn/Zara are skill-learning rewards,
-            // not item pools. Keep them skipped until the skill recommendation module is added.
-            // Rageforge should map to Burn-tag items when tag-specific Level Up rewards are enabled.
+            // 升级奖励里的战利品不显示构筑推荐。
+            if (eventName.IndexOf(" Loot", StringComparison.OrdinalIgnoreCase) >= 0
+                || eventName.IndexOf("Loot ", StringComparison.OrdinalIgnoreCase) >= 0
+                || ((evtCard.display_name ?? "").IndexOf("战利品", StringComparison.OrdinalIgnoreCase) >= 0))
+                return null;
+
+            // Named rewards such as Adira/Bjorn/Zara are skill-learning rewards; keep them skipped
+            // until the skill recommendation module is added.
             bool isFriend = eventName.IndexOf("BeFriend", StringComparison.OrdinalIgnoreCase) >= 0;
             bool isItemReward = eventName.IndexOf(" item", StringComparison.OrdinalIgnoreCase) >= 0;
-            bool isLootReward = eventName.IndexOf(" Loot", StringComparison.OrdinalIgnoreCase) >= 0;
-            if (!isFriend && !isItemReward && !isLootReward) return null;
+            var rewardTags = GetLevelUpRewardTags(eventName, evtCard);
+            if (isFriend && !rewardTags.Any(t => t.Equals("Friend", StringComparison.OrdinalIgnoreCase)))
+                rewardTags.Add("Friend");
+            if (!isFriend && !isItemReward && rewardTags.Count == 0) return null;
 
             var allowedEventHeroes = evtCard.heroes ?? new List<string>();
             if (allowedEventHeroes.Count > 0
@@ -2872,17 +2935,51 @@ namespace BazaarBoardReader
                 var ch = card.heroes ?? new List<string>();
                 if (!ch.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
 
-                if (isFriend)
+                if (rewardTags.Count > 0)
                 {
                     var allTags = new List<string>();
                     if (card.tags != null) allTags.AddRange(card.tags);
                     if (card.hidden_tags != null) allTags.AddRange(card.hidden_tags);
-                    if (!allTags.Any(t => t.Equals("Friend", StringComparison.OrdinalIgnoreCase))) continue;
+                    if (!rewardTags.Any(tag => allTags.Any(t => t.Equals(tag, StringComparison.OrdinalIgnoreCase)
+                        || t.Equals(tag + "Reference", StringComparison.OrdinalIgnoreCase)))) continue;
                 }
 
                 pool.Add(card.internal_name ?? kv.Key);
             }
             return RenderBuildPoolRating(pool, null);
+        }
+
+        private List<string> GetLevelUpRewardTags(string eventName, CardDataEntry evtCard)
+        {
+            var tags = new List<string>();
+            Action<string> add = delegate(string tag)
+            {
+                if (!string.IsNullOrEmpty(tag) && !tags.Any(t => t.Equals(tag, StringComparison.OrdinalIgnoreCase))) tags.Add(tag);
+            };
+            var text = ((eventName ?? "") + " " + (evtCard.display_name ?? "") + " " + (evtCard.description ?? "")).ToLowerInvariant();
+
+            if (text.Contains("tool up") || text.Contains("tool") || text.Contains("工具")) add("Tool");
+            if (text.Contains("rageforge") || text.Contains("burn") || text.Contains("灼烧")) add("Burn");
+            if (text.Contains("arms locker") || text.Contains("weapon") || text.Contains("武器")) add("Weapon");
+            if (text.Contains("potion rack") || text.Contains("potion") || text.Contains("药水")) add("Potion");
+            if (text.Contains("reagent shelf") || text.Contains("reagent") || text.Contains("原料") || text.Contains("试剂")) add("Reagent");
+            if (text.Contains("ammo cache") || text.Contains("ammo") || text.Contains("弹药")) add("Ammo");
+            if (text.Contains("meal prep") || text.Contains("food") || text.Contains("食物")) add("Food");
+            if (text.Contains("go fishing") || text.Contains("aquatic") || text.Contains("水系")) add("Aquatic");
+            if (text.Contains("take flight") || text.Contains("flying") || text.Contains("飞行")) add("Flying");
+            if (text.Contains("coin collector") || text.Contains("economic") || text.Contains("经济")) add("Economic");
+            if (text.Contains("candy collector") || text.Contains("toy") || text.Contains("玩具")) add("Toy");
+            if (text.Contains("befriend") || text.Contains("friend") || text.Contains("朋友") || text.Contains("伙伴")) add("Friend");
+            if (text.Contains("property") || text.Contains("地产")) add("Property");
+            if (text.Contains("shield") || text.Contains("护盾")) add("Shield");
+            if (text.Contains("poison") || text.Contains("毒")) add("Poison");
+            if (text.Contains("freeze") || text.Contains("冻结")) add("Freeze");
+            if (text.Contains("haste") || text.Contains("加速")) add("Haste");
+            if (text.Contains("slow") || text.Contains("减速")) add("Slow");
+            if (text.Contains("heal") || text.Contains("治疗")) add("Heal");
+            if (text.Contains("regen") || text.Contains("回复")) add("Regen");
+            if (text.Contains("tech") || text.Contains("科技")) add("Tech");
+            return tags;
         }
 
         private string ResolveLevelUpEventName(string shopName, out CardDataEntry evtCard)
@@ -2936,6 +3033,27 @@ namespace BazaarBoardReader
             return tiers;
         }
 
+        private string BuildNoMatchRating(int poolCount, string rec)
+        {
+            var lines = new List<string>();
+            lines.Add("\u2606\u2606\u2606 0% (0/" + Math.Max(0, poolCount) + ")");
+            lines.Add("-");
+            lines.Add("-");
+            if (!string.IsNullOrEmpty(rec)) lines.Add("\u25c6 " + rec);
+            return string.Join("\n", lines.ToArray());
+        }
+
+        private string ExtractTierFromText(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return null;
+            var lower = text.ToLowerInvariant();
+            if (lower.Contains("bronze") || text.Contains("\u94dc") || text.Contains("\u9752\u94dc")) return "Bronze";
+            if (lower.Contains("silver") || text.Contains("\u94f6") || text.Contains("\u767d\u94f6")) return "Silver";
+            if (lower.Contains("gold") || text.Contains("\u91d1") || text.Contains("\u9ec4\u91d1")) return "Gold";
+            if (lower.Contains("diamond") || text.Contains("\u94bb") || text.Contains("\u94bb\u77f3")) return "Diamond";
+            return null;
+        }
+
         private string RenderBuildPoolRating(List<string> pool, string rec)
         {
             if (pool == null || pool.Count == 0) return null;
@@ -2981,7 +3099,7 @@ namespace BazaarBoardReader
             float score = GetWeightedScore(coreHits, 3) + GetWeightedScore(coreOwned, 3)
                         + GetWeightedScore(flexHits, 1) + GetWeightedScore(flexOwned, 1);
             var lines = new List<string>();
-            if (needHits <= 0) return null;
+            if (needHits <= 0) return BuildNoMatchRating(pool.Count, rec);
             lines.Add((score >= 9f ? "\u2605\u2605\u2605" : score >= 6f ? "\u2605\u2605" : "\u2605") + " " + hitPct + "% (" + needHits + "/" + pool.Count + ")");
 
             var cl = new List<string>();
@@ -2993,7 +3111,7 @@ namespace BazaarBoardReader
             fl.AddRange(TranslateEach(flexHits));
             fl.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
             lines.Add(fl.Count > 0 ? string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "..." : "") : "-");
-            lines.Add("◆" + rec);
+            if (!string.IsNullOrEmpty(rec)) lines.Add("\u25c6 " + rec);
             return string.Join("\n", lines.ToArray());
         }
         private string RateEvent(string shopName)
@@ -3055,8 +3173,14 @@ namespace BazaarBoardReader
                 var card = kv.Value;
                 if (card.tiers != null && card.tiers.Contains("Legendary")) continue;
                 var ch = card.heroes ?? new List<string>();
-                if (!ch.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
-                if (!CardCanAppearOnDay(card, _currentDay)) continue;
+                bool cardIsNeutral = ch.Any(h => h.Equals("Common", StringComparison.OrdinalIgnoreCase));
+                if (!cardIsNeutral && !ch.Any(h => h.Equals(_detectedHero, StringComparison.OrdinalIgnoreCase))) continue;
+                var forcedTier = ExtractTierFromText(shopName);
+                if (!string.IsNullOrEmpty(forcedTier))
+                {
+                    if (card.tiers == null || !card.tiers.Any(t => t.Equals(forcedTier, StringComparison.OrdinalIgnoreCase))) continue;
+                }
+                else if (!CardCanAppearOnDay(card, _currentDay)) continue;
 
                 if (tags.Count > 0)
                 {
@@ -3126,7 +3250,7 @@ namespace BazaarBoardReader
             int hitPct = pool.Count > 0 ? (int)(needHitsEvt * 100f / pool.Count) : 0;
             float scoreEvt = GetWeightedScore(coreHits, 3) + GetWeightedScore(coreOwned, 3)
                            + GetWeightedScore(flexHits, 1) + GetWeightedScore(flexOwned, 1);
-            if (needHitsEvt <= 0) return null;
+            if (needHitsEvt <= 0) return BuildNoMatchRating(pool.Count, rec);
             linesEvt.Add((scoreEvt >= 9f ? "\u2605\u2605\u2605" : scoreEvt >= 6f ? "\u2605\u2605" : "\u2605") + " " + hitPct + "% (" + needHitsEvt + "/" + pool.Count + ")");
             var cl = new List<string>();
             cl.AddRange(TranslateEach(coreHits));
@@ -3137,7 +3261,7 @@ namespace BazaarBoardReader
             fl.AddRange(TranslateEach(flexOwned).Select(s => "*" + s));
             linesEvt.Add(fl.Count > 0 ? string.Join(",", fl.Take(4).ToArray()) + (fl.Count > 4 ? "..." : "") : "-");
             if (!string.IsNullOrEmpty(rec))
-                linesEvt.Add("◆" + rec);
+                linesEvt.Add("\u25c6 " + rec);
             return string.Join("\n", linesEvt.ToArray());
         }
 
@@ -3565,12 +3689,12 @@ namespace BazaarBoardReader
 
         private static string NormalizeTierStr(string tier)
         {
-            if (string.IsNullOrEmpty(tier)) return "bronze";
+            if (string.IsNullOrEmpty(tier)) return "Bronze";
             var lower = tier.ToLowerInvariant();
-            if (lower.Contains("bronze")) return "Bronze";
-            if (lower.Contains("silver")) return "Silver";
-            if (lower.Contains("gold")) return "Gold";
-            if (lower.Contains("diamond")) return "Diamond";
+            if (lower.Contains("bronze") || tier.Contains("\u94dc") || tier.Contains("\u9752\u94dc")) return "Bronze";
+            if (lower.Contains("silver") || tier.Contains("\u94f6") || tier.Contains("\u767d\u94f6")) return "Silver";
+            if (lower.Contains("gold") || tier.Contains("\u91d1") || tier.Contains("\u9ec4\u91d1")) return "Gold";
+            if (lower.Contains("diamond") || tier.Contains("\u94bb") || tier.Contains("\u94bb\u77f3")) return "Diamond";
             if (lower.Contains("legendary")) return "Legendary";
             return tier;
         }

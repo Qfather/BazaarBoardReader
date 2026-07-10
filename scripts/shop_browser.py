@@ -427,7 +427,7 @@ class App:
                 use_tiers = {tier} if tier else self.available_tiers
                 for k, card in self.cards.items():
                     ch = [h.lower() for h in (card.get("heroes",[]) or [])]
-                    if hero.lower() not in ch: continue
+                    if hero.lower() not in ch and "common" not in ch: continue
                     if size:
                         cs = card.get("size","").lower()
                         if cs != size: continue
@@ -437,6 +437,8 @@ class App:
                     pool.append(card)
             elif tags or tier:
                 for k, card in self.cards.items():
+                    ch = [h.lower() for h in (card.get("heroes",[]) or [])]
+                    if hero.lower() not in ch and "common" not in ch: continue
                     ct = card.get("tiers",[]) or []
                     if tier and tier.lower() not in [t.lower() for t in ct]: continue
                     if size:
@@ -457,8 +459,13 @@ class App:
         # 专属物品
         if "专属" in r and "物品" in r: is_hero_items = True
         # 等级
-        TIER_MAP = {"青铜":"Bronze","白银":"Silver","黄金":"Gold","钻石":"Diamond",
-                     "铜":"Bronze","银":"Silver","金":"Gold","钻":"Diamond"}
+        TIER_MAP = {
+            "青铜": "Bronze", "铜": "Bronze",
+            "白银": "Silver", "银": "Silver",
+            "黄金": "Gold", "金": "Gold",
+            "钻石": "Diamond", "钻": "Diamond",
+            "Bronze": "Bronze", "Silver": "Silver", "Gold": "Gold", "Diamond": "Diamond",
+        }
         for cn, en in TIER_MAP.items():
             if cn in r: tier = en; break
         # 尺寸
@@ -763,7 +770,7 @@ class App:
                         ct = card.get("tiers",[]) or []
                         if event_tiers and not any(t.lower() in {x.lower() for x in event_tiers} for t in ct): continue
                         ch = [h.lower() for h in (card.get("heroes",[]) or [])]
-                        if hero.lower() not in ch: continue
+                        if hero.lower() not in ch and "common" not in ch: continue
                         all_tags = [t.lower() for t in (card.get("tags",[])+card.get("hidden_tags",[]))]
                         if include_tags and not any(t in all_tags for t in include_tags): continue
                         if exclude_set and any(t in all_tags for t in exclude_set): continue
