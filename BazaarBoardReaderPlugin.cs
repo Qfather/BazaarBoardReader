@@ -103,7 +103,7 @@ namespace BazaarBoardReader
     {
         private const string PluginGuid = "com.bazaar.boardreader";
         private const string PluginName = "BazaarBoardReader";
-        private const string PluginVersion = "7.6.2";
+        private const string PluginVersion = "7.6.3";
 
         internal static ManualLogSource _logger;
         private float _lastExportTime;
@@ -279,7 +279,7 @@ namespace BazaarBoardReader
             _showRecommendations = true;
             _showBuildManager = true;
             _mgrCollapsed = true;
-            _logger.LogInfo(string.Format("[BoardReader] v7.4.0 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
+            _logger.LogInfo(string.Format("[BoardReader] v7.6.3 物品={0} 技能={1} 商店={2} 背景={3:F0}%",
                 (int)_itemOffsetY, (int)_skillOffsetY, (int)_shopOffsetY, _bgOpacity * 100f));
 
             _labelStyle = new GUIStyle { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter, wordWrap = false };
